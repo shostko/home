@@ -1,0 +1,59 @@
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+# Uncomment this if you are using SSL/TLS, running in Docker container, etc.
+# http:
+#   base_url: example.duckdns.org:8123
+
+# Text to speech
+tts:
+  - platform: google_translate
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+
+# You can leave MAC empty if you only have one gateway.
+xiaomi_aqara:
+  discovery_retry: 5
+  gateways:
+    - key: !secret xiaomi_gateway_key
+    
+# light:
+#  - platform: xiaomi_miio
+#     name: Xiaomi Philips Smart LED Ball
+#     host: 192.168.1.112
+#     token: YOUR_TOKEN
+#     model: philips.light.bulb
+
+telegram_bot:
+  # Home
+  - platform: polling
+    api_key: !secret telegram_home_key
+    allowed_chat_ids:
+      - !secret telegram_chat_sergey
+      - !secret telegram_chat_alexa
+  # Home Log
+  - platform: polling
+    api_key: !secret telegram_log_key
+    allowed_chat_ids:
+      - !secret telegram_chat_log
+
+notify:
+  - name: log
+    platform: telegram
+    chat_id: !secret telegram_chat_log
+  - name: sergey
+    platform: telegram
+    chat_id: !secret telegram_chat_sergey
+  - name: alexa
+    platform: telegram
+    chat_id: !secret telegram_chat_alexa
+  - name: family
+    platform: group
+    services:
+      - service: sergey
+      - service: alexa
+
+
+timer: !include includes/timer.yaml
