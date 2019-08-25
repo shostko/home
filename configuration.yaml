@@ -19,12 +19,17 @@ xiaomi_aqara:
   gateways:
     - key: !secret xiaomi_gateway_key
     
-# light:
-#  - platform: xiaomi_miio
-#     name: Xiaomi Philips Smart LED Ball
-#     host: 192.168.1.112
-#     token: YOUR_TOKEN
-#     model: philips.light.bulb
+light:
+  - platform: xiaomi_miio
+    host: 192.168.1.41
+    token: !secret xiaomi_bulb1_token
+    model: philips.light.bulb
+
+fan:
+  - platform: xiaomi_miio
+    host: 192.168.1.104
+    model: zhimi.humidifier.ca1
+    token: !secret xiaomi_humidifier_token
 
 switch:
   - platform: mqtt
