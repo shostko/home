@@ -123,6 +123,9 @@
     - service: notify.log
       data:
         message: "Входная дверь открыта"
+    - service: notify.tv
+      data:
+        message: "Входная дверь открыта"
     - service: homeassistant.turn_off
       entity_id: automation.closed_door_with_notification
     - service: homeassistant.turn_on

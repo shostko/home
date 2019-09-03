@@ -63,6 +63,13 @@ switch:
     qos: 1
     retain: false
 
+media_player:
+  - platform: webostv
+    host:  192.168.1.130
+    name: TV
+    filename: webostv.conf
+    timeout: 5
+
 telegram_bot:
   # Home
   - platform: polling
@@ -91,6 +98,9 @@ notify:
     services:
       - service: sergey
       - service: alexa
-
+  - name: tv
+    platform: webostv
+    host: 192.168.1.130
+    filename: webostv.conf
 
 timer: !include includes/timer.yaml
