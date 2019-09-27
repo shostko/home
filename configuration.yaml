@@ -24,76 +24,12 @@ light:
     host: 192.168.1.41
     token: !secret xiaomi_bulb1_token
     model: philips.light.bulb
-#   - platform: mqtt
-#     name: "Аквариум"
-#     effect_list:
-#       - 0
-#       - 1
-#       - 2
-#       - 3
-#       - 4
-#       - 5
-#       - 6
-#       - 7
-#       - 8
-#       - 9
-#       - 10
-#       - 11
-#       - 12
-#     state_topic: "livingroom/aqua/cmnd/POWER2"
-#     command_topic: "livingroom/aqua/cmnd/POWER2"
-#     brightness_state_topic: "livingroom/aqua/cmnd/Dimmer"
-#     brightness_command_topic: "livingroom/aqua/cmnd/Dimmer"
-#     brightness_scale: 100
-#     rgb_command_template: "{{ '%02x%02x%02x' | format(red, green, blue)}}"
-#     rgb_state_topic: "livingroom/aqua/cmnd/Color"
-#     rgb_command_topic: "livingroom/aqua/cmnd/Color"
-#     availability_topic: "livingroom/aqua/tele/LWT"
-#     effect_command_topic: "livingroom/aqua/cmnd/Scheme"
-#     effect_state_topic: "livingroom/aqua/cmnd/Scheme"
-#     state_value_template: "{{ value }}"
-#     brightness_value_template: "{{ value }}"
-#     effect_value_template: "{{ value }}"
-#     rgb_command_mode: hex
-#     qos: 1
-#     payload_on: "ON"
-#     payload_off: "OFF"
-#     payload_available: "Online"
-#     payload_not_available: "Offline"
-#   - platform: mqtt
-#     name: "Аквариум"
-#     effect_list:
-#       - 0
-#       - 1
-#       - 2
-#       - 3
-#       - 4
-#       - 5
-#       - 6
-#       - 7
-#       - 8
-#       - 9
-#       - 10
-#       - 11
-#       - 12
-#     state_topic: "livingroom/aqua/stat/POWER2"
-#     command_topic: "livingroom/aqua/cmnd/POWER2"
-#     rgb_state_topic: "livingroom/aqua/stat/COLOR"
-#     rgb_command_topic: "livingroom/aqua/cmnd/COLOR"
-#     rgb_command_template: "{{ '%02x%02x%02x0000' | format(red, green, blue) }}"
-#     brightness_state_topic: "livingroom/aqua/stat/DIMMER"
-#     brightness_value_template: "{{ value_json.brightness }}"
-#     brightness_command_topic: "livingroom/aqua/cmnd/DIMMER"
-#     brightness_scale: 100
-#     color_temp_command_topic: "livingroom/aqua/cmnd/CT"
-#     qos: 1
-#     payload_on: "ON"
-#     payload_off: "OFF
   - platform: mqtt
     schema: json
     name: "ESP LEDs"
     state_topic: "espleds/state"
     command_topic: "espleds/set"
+    availability_topic: "espleds/LWT"
     effect: true
     effect_list:
       - bpm
@@ -117,6 +53,8 @@ light:
     brightness: true
     # flash: true
     rgb: true
+    payload_available: "Online"
+    payload_not_available: "Offline"
     optimistic: false
     qos: 1
 
