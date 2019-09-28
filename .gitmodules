@@ -1,0 +1,3 @@
+[submodule "custom_components/yandex_smart_home"]
+	path = custom_components/yandex_smart_home
+	url = git@github.com:dmitry-k/yandex_smart_home.git

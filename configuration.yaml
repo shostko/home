@@ -145,3 +145,5 @@ notify:
     filename: webostv.conf
 
 timer: !include includes/timer.yaml
+
+yandex_smart_home:
