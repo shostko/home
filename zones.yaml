@@ -1,0 +1,45 @@
+- name: Универмаг
+  latitude: 53.681939
+  longitude: 23.831259
+  radius: 100
+  icon: mdi:domain
+- name: Лермонтова
+  latitude: 53.685409
+  longitude: 23.824687
+  radius: 100
+  icon: mdi:office-building
+- name: Парковка
+  latitude: 53.681477
+  longitude: 23.827372
+  radius: 50
+  icon: mdi:parking
+- name: Родители Ш.
+  latitude: !secret gps_psh_lt
+  longitude: !secret gps_psh_ln
+  radius: 150
+  icon: mdi:human-male-female
+- name: Южный
+  latitude: !secret gps_gsh_lt
+  longitude: !secret gps_gsh_ln
+  radius: 150
+  icon: mdi:human-female-female
+- name: Родители В.
+  latitude: !secret gps_pv_lt
+  longitude: !secret gps_pv_ln
+  radius: 300
+  icon: mdi:human-male-female
+- name: Головичполе
+  latitude: !secret gps_gv_lt
+  longitude: !secret gps_gv_ln
+  radius: 300
+  icon: mdi:human-female
+- name: Ревки
+  latitude: !secret gps_r_lt
+  longitude: !secret gps_r_ln
+  radius: 1500
+  icon: mdi:beach
+- name: Минск
+  latitude: 53.901915
+  longitude: 27.556374
+  radius: 10000
+  icon: mdi:beehive-outline
