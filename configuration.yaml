@@ -13,6 +13,12 @@ group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
 
+panel_iframe:
+  tasmoadmin:
+    title: TasmoAdmin
+    icon: mdi:lightbulb-on
+    url: !secret tasmoadmin_host
+
 # You can leave MAC empty if you only have one gateway.
 xiaomi_aqara:
   discovery_retry: 5
