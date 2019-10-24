@@ -235,7 +235,21 @@
         service: light.turn_on
 
 
-
+- alias: Sergey arriving home
+  trigger:
+    platform: zone
+    entity_id: device_tracker.sergey_mi5
+    zone: zone.home
+    event: enter
+  condition:
+    condition: zone
+    entity_id: device_tracker.aleksa_mi5
+    zone: zone.home
+  action:
+   service: notify.family
+   data:
+     message: "Сергей приближается к дому"
+  
 
 
 
