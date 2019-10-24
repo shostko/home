@@ -120,16 +120,26 @@ media_player:
 
 telegram_bot:
   # Home
-  - platform: polling
+  - platform: webhooks
+    url: !secret white_host
     api_key: !secret telegram_home_key
     allowed_chat_ids:
       - !secret telegram_chat_sergey
       - !secret telegram_chat_alexa
+    trusted_networks:
+      - 172.30.33.3/32
+      - 149.154.160.0/20
+      - 91.108.4.0/22
   # Home Log
-  - platform: polling
+  - platform: webhooks
+    url: !secret white_host
     api_key: !secret telegram_log_key
     allowed_chat_ids:
       - !secret telegram_chat_log
+    trusted_networks:
+      - 172.30.33.3/32
+      - 149.154.160.0/20
+      - 91.108.4.0/22
 
 notify:
   - name: log
