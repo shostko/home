@@ -177,6 +177,13 @@ switch:
     optimistic: false
     qos: 1
     retain: false
+  - platform: mqtt
+    name: "Бра 2"
+    state_topic: "shellies/shelly1-77294F/relay/0"
+    command_topic: "shellies/shelly1-77294F/relay/0/command"
+    payload_on: "on"
+    payload_off: "off"
+    retain: false
 
 media_player:
   - platform: webostv
