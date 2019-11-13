@@ -132,14 +132,6 @@ light:
       - "[FX=78]  RAILWAY"
       - "[FX=79]  RIPPLE"
 
-input_number:
-  espleds_animation_speed:
-    name: ESP LEDs Animation Speed
-    initial: 150
-    min: 1
-    max: 150
-    step: 10
-
 fan:
   - platform: xiaomi_miio
     host: 192.168.1.104
@@ -181,8 +173,11 @@ switch:
     name: "Бра 2"
     state_topic: "shellies/shelly1-77294F/relay/0"
     command_topic: "shellies/shelly1-77294F/relay/0/command"
+    # availability_topic: "shellies/shelly1-77294F/online"
     payload_on: "on"
     payload_off: "off"
+    # payload_available: "true"
+    # payload_not_available: "false"
     retain: false
 
 media_player:
