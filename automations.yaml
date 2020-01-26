@@ -120,7 +120,7 @@
     from: 'off'
     to: 'on'
   action:
-    - service: notify.log
+    - service: notify.sergey
       data:
         message: "Входная дверь открыта"
     - service: notify.tv
@@ -148,7 +148,7 @@
       entity_id: automation.closed_door_with_notification
     - service: homeassistant.turn_off
       entity_id: automation.closed_door
-    - service: notify.log
+    - service: notify.sergey
       data:
         message: "Входная дверь закрыта"
 - alias: closed door
@@ -171,7 +171,7 @@
     event_data:
       entity_id: timer.door_entrancer
   action:
-    - service: notify.log
+    - service: notify.sergey
       data:
         message: "Входная дверь открыта дольше минуты"
     - service: homeassistant.turn_on
