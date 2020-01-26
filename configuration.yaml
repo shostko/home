@@ -39,46 +39,6 @@ fan:
     token: !secret xiaomi_humidifier_token
 
 switch:
-  - platform: mqtt
-    name: "Зеркало"
-    state_topic: "dressingroom/mirror/stat/RESULT"
-    value_template: "{{ value_json.POWER }}"
-    command_topic: "dressingroom/mirror/cmnd/POWER"
-    availability_topic: "dressingroom/mirror/tele/LWT"
-    state_on: "ON"
-    state_off: "OFF"
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    optimistic: false
-    qos: 1
-    retain: false
-  - platform: mqtt
-    name: "Шкаф"
-    state_topic: "dressingroom/cupboard/stat/RESULT"
-    value_template: "{{ value_json.POWER }}"
-    command_topic: "dressingroom/cupboard/cmnd/POWER"
-    availability_topic: "dressingroom/cupboard/tele/LWT"
-    state_on: "ON"
-    state_off: "OFF"
-    payload_on: "ON"
-    payload_off: "OFF"
-    payload_available: "Online"
-    payload_not_available: "Offline"
-    optimistic: false
-    qos: 1
-    retain: false
-  - platform: mqtt
-    name: "Бра 2"
-    state_topic: "shellies/shelly1-77294F/relay/0"
-    command_topic: "shellies/shelly1-77294F/relay/0/command"
-    # availability_topic: "shellies/shelly1-77294F/online"
-    payload_on: "on"
-    payload_off: "off"
-    # payload_available: "true"
-    # payload_not_available: "false"
-    retain: false
 
 media_player:
   - platform: webostv
