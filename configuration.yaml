@@ -39,13 +39,41 @@ fan:
     token: !secret xiaomi_humidifier_token
 
 switch:
+  - platform: broadlink
+    host: 192.168.1.69
+    mac: 'C8:F7:42:62:FB:3B'
+    type: rm_mini
+    timeout: 15
+    switches:
+      tv_power:
+        friendly_name: "TV Power"
+        command_on: 'JgDAAAABH5UVEBEUEjcVEBUQERQSEhITFTUROBEUEzYVNRE4ETgTNxUQERMTEhI4FRARExUQERQUNRI4ETgRFBQ2ETgROBI4FQAFIAABIUsSAAxQAAEmSxEADFAAASVMEQAMUQABJEwRAAxSAAElSxEADFYAASRMEQAMUQABJEwRAAxQAAElSxIADFMAASJLEQAMUQABJUsRAAxRAAElSxEADFAAASVLEQAMUQABJUsSAAxQAAEmSxEADFEAASVLEQANBQAAAAAAAAAA'
+        command_off: 'JgDAAAABH5UVEBEUEjcVEBUQERQSEhITFTUROBEUEzYVNRE4ETgTNxUQERMTEhI4FRARExUQERQUNRI4ETgRFBQ2ETgROBI4FQAFIAABIUsSAAxQAAEmSxEADFAAASVMEQAMUQABJEwRAAxSAAElSxEADFYAASRMEQAMUQABJEwRAAxQAAElSxIADFMAASJLEQAMUQABJUsRAAxRAAElSxEADFAAASVLEQAMUQABJUsSAAxQAAEmSxEADFEAASVLEQANBQAAAAAAAAAA'
+
+webostv:
+  - host: 192.168.1.130
+    name: TV
+    turn_on_action:
+      service: switch.toggle
+      data:
+        entity_id: switch.tv_power
+    customize:
+      sources:
+        - HDMI1
+        - HDMI2
+        - HDMI3
+        - HDMI4
+        - LiveTV
+        - MEGOGO TV & Movies
+        - Netflix
+        - Tvigle
+        - YouTube
+        - ivi
 
 media_player:
   - platform: webostv
     host:  192.168.1.130
     name: TV
-    filename: webostv.conf
-    timeout: 5
 
 telegram_bot:
   # Home
@@ -88,7 +116,6 @@ notify:
   - name: tv
     platform: webostv
     host: 192.168.1.130
-    filename: webostv.conf
 
 timer: !include includes/timer.yaml
 
