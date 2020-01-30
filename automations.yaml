@@ -194,6 +194,59 @@
    data:
      message: "Сергей приближается к дому"
   
+- alias: Humidifier depth going low
+  trigger:
+    platform: numeric_state
+    entity_id: fan.xiaomi_miio_device
+    # Optional
+    value_template: "{{ state.attributes.depth }}"
+    # At least one of the following required
+    # above: 17
+    below: 70
+  action:
+    - service: notify.sergey
+      data:
+        message: "Пора долить воды в увлажнитель"
+    - service: fan.set_speed
+      data:
+        entity_id: fan.xiaomi_miio_device
+        speed: medium
+  
+- alias: Humidifier empty
+  trigger:
+    platform: numeric_state
+    entity_id: fan.xiaomi_miio_device
+    # Optional
+    value_template: "{{ state.attributes.depth }}"
+    # At least one of the following required
+    # above: 17
+    below: 40
+  action:
+    - service: notify.sergey
+      data:
+        message: "Э, вода в увлажнителе совсем заканчивается!"
+    - service: fan.set_speed
+      data:
+        entity_id: fan.xiaomi_miio_device
+        speed: silent
+  
+- alias: Humidifier full
+  trigger:
+    platform: numeric_state
+    entity_id: fan.xiaomi_miio_device
+    # Optional
+    value_template: "{{ state.attributes.depth }}"
+    # At least one of the following required
+    above: 120
+    # below: 50
+  action:
+    - service: notify.sergey
+      data:
+        message: "Мммм, водичка... начинаем всё вокруг увлажнять!"
+    - service: fan.set_speed
+      data:
+        entity_id: fan.xiaomi_miio_device
+        speed: high
 
 
 
