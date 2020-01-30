@@ -1,0 +1,26 @@
+  switch_tv_to_megogo:
+    alias: Switch TV to MEGOGO
+    description: 'Переключить телевизор на MEGOGO'
+    sequence:
+      - service: media_player.select_source
+        data_template:
+          entity_id: media_player.tv
+          source: MEGOGO TV & Movies
+  
+  switch_tv_to_youtube:
+    alias: Switch TV to YouTube
+    description: 'Переключить телевизор на YouTube'
+    sequence:
+      - service: media_player.select_source
+        data_template:
+          entity_id: media_player.tv
+          source: YouTube
+  
+  switch_tv_to_tvigle:
+    alias: Switch TV to Tvigle
+    description: 'Переключить телевизор на Tvigle'
+    sequence:
+      - service: media_player.select_source
+        data_template:
+          entity_id: media_player.tv
+          source: Tvigle
