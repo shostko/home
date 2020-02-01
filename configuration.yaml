@@ -14,6 +14,8 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 zone: !include zones.yaml
 
+sensor: !include_dir_merge_list includes/sensors
+
 panel_iframe:
   tasmoadmin:
     title: TasmoAdmin

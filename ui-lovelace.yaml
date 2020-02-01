@@ -1,6 +1,12 @@
 title: Дом
 views:
-  - badges:
+
+  ### HOME ###
+
+  - title: Home
+    id: main
+    path: default_view
+    badges:
       - binary_sensor.door_window_sensor_158d0002c5bee3
       - binary_sensor.motion_sensor_158d0001d9203e
       - binary_sensor.water_leak_sensor_158d00022f9bbf
@@ -18,6 +24,7 @@ views:
       - sensor.xiaomi_mijia_d107_temperature
       - timer.door_entrancer
     cards:
+
       - entities:
           - entity: switch.xmastree_relay
           - entity: light.xmas_tree
@@ -28,6 +35,7 @@ views:
         show_header_toggle: true
         title: Спальня
         type: entities
+
       - entities:
           - entity: switch.wall_switch_left_158d0002bffc7e
           - entity: switch.wall_switch_right_158d0002bffc7e
@@ -40,18 +48,21 @@ views:
           - entity: sensor.xiaomi_mijia_d107_battery_level
         title: Зал
         type: entities
+
       - entities:
           - entity: switch.plug_158d0001fa1474
           - entity: switch.mirror_relay
           - entity: switch.cupboard_relay
         title: Гримерка
         type: entities
+
       - entities:
           - entity: sensor.balcony_temperature
           - entity: sensor.balcony_humidity
         show_header_toggle: false
         title: Балкон
         type: entities
+
       - entities:
           - entity: switch.wall_switch_right_158d0003a0eb33
           - entity: switch.wall_switch_left_158d0003a0eb33
@@ -62,6 +73,7 @@ views:
         show_header_toggle: false
         title: Прихожая
         type: entities
+
       - entities:
           - entity: binary_sensor.water_leak_sensor_158d00022f9bbf
           - entity: sensor.xiaomi_mijia_cb15_temperature
@@ -70,8 +82,10 @@ views:
         show_header_toggle: false
         title: Кухня
         type: entities
+
       - entity: media_player.tv
         type: media-control
+
       - entities:
           - entity: script.switch_tv_to_megogo
           - entity: script.switch_tv_to_youtube
@@ -79,9 +93,14 @@ views:
         show_header_toggle: false
         title: Скрипты
         type: entities
-    path: default_view
-    title: Home
-  - badges:
+
+  ### SENSORS ###
+
+  - title: Sensors
+    id: environment
+    path: environment
+    icon: 'mdi:oil-temperature'
+    badges:
       - sensor.temperature_158d00020293a1
       - sensor.xiaomi_mijia_cb15_temperature
       - sensor.xiaomi_mijia_d107_temperature
@@ -110,10 +129,14 @@ views:
         refresh_interval: 0
         title: Зал
         type: history-graph
-    icon: ''
-    path: environment
-    title: Environment
-  - badges: []
+
+  ### BETTERIES ###
+
+  - title: Batteries
+    id: batteries
+    path: batteries
+    icon: "mdi:battery-10"
+    badges: []
     cards:
       - entity: sensor.xiaomi_mijia_d107_battery_level
         max: 100
@@ -124,8 +147,55 @@ views:
           yellow: 10
         theme: default
         type: gauge
-    path: batteries
-    title: Batteries
-  - icon: 'mdi:home-assistant'
+
+  ### SYSTEM ###
+
+  - title: System
+    id: system
+    path: system
+    icon: 'mdi:home-assistant'
     badges: []
-    cards: []
+    cards: 
+      
+      - type: horizontal-stack
+        cards:
+
+        - type: gauge
+          name: Загрузка CPU
+          unit: '%'
+          entity: sensor.processor_use
+          severity:
+            green: 0
+            yellow: 60
+            red: 85 
+
+        - type: gauge
+          name: Загрузка ОЗУ
+          unit: '%'
+          entity: sensor.memory_use_percent
+          severity:
+            green: 0
+            yellow: 60
+            red: 85 
+      
+      - type: horizontal-stack
+        cards:
+
+        - type: gauge
+          name: Температура CPU
+          unit: '℃'
+          entity: sensor.cpu_temp
+          severity:
+            green: 0
+            yellow: 50
+            red: 70 
+
+      - type: entities
+        show_header_toggle: false
+        entities:
+          - entity: sensor.last_boot_custom
+            name: Сервер в онлайне
+            icon: mdi:av-timer
+          - entity: sensor.rpi_power_status
+            name: Питание Raspberry Pi 3 B+ 
+            icon: mdi:power-plug
