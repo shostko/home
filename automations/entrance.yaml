@@ -1,0 +1,62 @@
+- alias: entrance_door_opened
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_window_sensor_158d0001fa3431
+    # entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+    from: 'off'
+    to: 'on'
+  action:
+    - service: notify.sergey
+      data:
+        message: "Входная дверь открыта"
+    - service: notify.tv
+      data:
+        message: "Входная дверь открыта"
+    - service: timer.cancel
+      entity_id: timer.door_entrance
+    - service: timer.start
+      entity_id: timer.door_entrance
+
+- alias: entrance_door_closed_with_notification
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_window_sensor_158d0001fa3431
+    # entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+    from: 'on'
+    to: 'off'
+  condition:
+    - condition: state
+      entity_id: timer.door_entrance
+      state: 'idle'
+  action:
+    - service: timer.cancel
+      entity_id: timer.door_entrancer
+    - service: notify.sergey
+      data:
+        message: "Входная дверь закрыта"
+
+- alias: entrance_door_closed
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_window_sensor_158d0001fa3431
+    # entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+    from: 'on'
+    to: 'off'
+  condition:
+    - condition: state
+      entity_id: timer.door_entrance
+      state: 'active'
+  action:
+    - service: timer.cancel
+      entity_id: timer.door_entrance
+
+- alias: entrance_door_opened_for_a_minute
+  trigger:
+    - platform: event
+      event_type: timer.finished
+      event_data:
+        entity_id: timer.door_entrance
+  action:
+    - service: notify.sergey
+      data:
+        message: "Входная дверь открыта дольше минуты"

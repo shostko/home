@@ -1,0 +1,217 @@
+# Wireless switch
+- alias: Toggle left switch in hall
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001f3aec3
+      click_type: single  ## it can be: 'single', 'double' or 'long_click_press'
+  action:
+    service: switch.toggle
+    entity_id: switch.wall_switch_left_158d0002bffc7e
+- alias: Turn on both switches in hall
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001f3aec3
+      click_type: double  ## it can be: 'single', 'double' or 'long_click_press'
+  condition:
+  - condition: state
+    entity_id: switch.wall_switch_right_158d0002bffc7e
+    state: 'off'
+  action:
+    - service: switch.turn_on
+      entity_id: switch.wall_switch_left_158d0002bffc7e
+    - service: switch.turn_on
+      entity_id: switch.wall_switch_right_158d0002bffc7e
+- alias: Turn off both switches in hall
+  trigger:
+    platform: event
+    event_type: xiaomi_aqara.click
+    event_data:
+      entity_id: binary_sensor.switch_158d0001f3aec3
+      click_type: double  ## it can be: 'single', 'double' or 'long_click_press'
+  condition:
+  - condition: state
+    entity_id: switch.wall_switch_right_158d0002bffc7e
+    state: 'on'
+  action:
+    - service: switch.turn_off
+      entity_id: switch.wall_switch_left_158d0002bffc7e
+    - service: switch.turn_off
+      entity_id: switch.wall_switch_right_158d0002bffc7e
+
+# Motion Sensor in enter
+- alias: If there is motion and its dark turn on the gateway light
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d0001d9203e
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: numeric_state
+    entity_id: sensor.illumination_7811dcb2404d
+    below: 150
+  action:
+    - service: light.turn_on
+      entity_id: light.gateway_light_7811dcb2404d
+      data:
+        brightness: 127
+- alias: If there no motion for 1 minutes turn off the gateway light
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_158d0001d9203e
+    from: 'on'
+    to: 'off'
+    for:
+      minutes: 1
+  action:
+    - service: light.turn_off
+      entity_id: light.gateway_light_7811dcb2404d
+
+# Bedlights
+- alias: Mirror Bedlights
+  trigger:
+    platform: state
+    entity_id: switch.wall_switch_right_158d0001dc4460
+  action:
+    service: switch.toggle
+    entity_id: switch.plug_158d0002426de7
+
+
+
+- alias: 'Telegram start'
+  hide_entity: true
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/start'
+  action:
+    - service: telegram_bot.send_message
+      data_template:
+        target: '{{ trigger.event.data.user_id }}'
+        message: 'check'
+        data:
+          keyboard:
+          - '/ping'
+
+- alias: 'Telegram bot that reply pong to ping'
+  hide_entity: true
+  trigger:
+    platform: event
+    event_type: telegram_command
+    event_data:
+      command: '/ping'
+  action:
+    - service: telegram_bot.send_message
+      data_template:
+        message: 'pong'
+        target: '{{ trigger.event.data.user_id }}'
+
+- alias: Sergey arriving home
+  trigger:
+    platform: zone
+    entity_id: device_tracker.sergey_mi5
+    zone: zone.home
+    event: enter
+  condition:
+    condition: zone
+    entity_id: device_tracker.aleksa_mi5
+    zone: zone.home
+  action:
+   service: notify.family
+   data:
+     message: "Сергей приближается к дому"
+  
+- alias: Humidifier depth going low
+  trigger:
+    platform: numeric_state
+    entity_id: fan.xiaomi_miio_device
+    # Optional
+    value_template: "{{ state.attributes.depth }}"
+    # At least one of the following required
+    # above: 17
+    below: 70
+  action:
+    - service: notify.sergey
+      data:
+        message: "Пора долить воды в увлажнитель"
+    - service: fan.set_speed
+      data:
+        entity_id: fan.xiaomi_miio_device
+        speed: medium
+  
+- alias: Humidifier empty
+  trigger:
+    platform: numeric_state
+    entity_id: fan.xiaomi_miio_device
+    # Optional
+    value_template: "{{ state.attributes.depth }}"
+    # At least one of the following required
+    # above: 17
+    below: 40
+  action:
+    - service: notify.sergey
+      data:
+        message: "Э, вода в увлажнителе совсем заканчивается!"
+    - service: fan.set_speed
+      data:
+        entity_id: fan.xiaomi_miio_device
+        speed: silent
+  
+- alias: Humidifier full
+  trigger:
+    platform: numeric_state
+    entity_id: fan.xiaomi_miio_device
+    # Optional
+    value_template: "{{ state.attributes.depth }}"
+    # At least one of the following required
+    above: 120
+    # below: 50
+  action:
+    - service: notify.sergey
+      data:
+        message: "Мммм, водичка... начинаем всё вокруг увлажнять!"
+    - service: fan.set_speed
+      data:
+        entity_id: fan.xiaomi_miio_device
+        speed: high
+
+
+
+
+
+
+
+
+# Telegram test
+#- alias: test telegram
+#  trigger:
+#    platform: event
+#    event_type: xiaomi_aqara.click
+#    event_data:
+#      entity_id: binary_sensor.switch_158d0001f3aec3
+#      click_type: long_click_press  ## it can be: 'single', 'double' or 'long_click_press'
+#  action:
+#    - service: notify.log
+#      data:
+#        message: "Wireless button long click"
+    #   title: '*Send a message*'
+    #   message: "That's an example that _sends_ a *formatted* message with a custom inline keyboard."
+    #   data:
+    #     inline_keyboard:
+    #       - 'Task 1:/command1, Task 2:/command2'
+    #       - 'Task 3:/command3, Task 4:/command4'
+
+
+
+
+
+
+
+
+
+
+
