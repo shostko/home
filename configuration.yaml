@@ -6,6 +6,9 @@ default_config:
 tts:
   - platform: google_translate
 
+lovelace:
+  mode: yaml
+
 group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml

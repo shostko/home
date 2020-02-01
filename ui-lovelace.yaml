@@ -1,0 +1,131 @@
+title: Дом
+views:
+  - badges:
+      - binary_sensor.door_window_sensor_158d0002c5bee3
+      - binary_sensor.motion_sensor_158d0001d9203e
+      - binary_sensor.water_leak_sensor_158d00022f9bbf
+      - binary_sensor.door_window_sensor_158d0001fa3431
+      - person.sergey
+      - person.aleksa
+      - sensor.humidity_158d00020293a1
+      - sensor.temperature_158d00020293a1
+      - sensor.illumination_7811dcb2404d
+      - sensor.xiaomi_mijia_cb15_humidity
+      - sensor.xiaomi_mijia_cb15_battery_level
+      - sensor.xiaomi_mijia_cb15_temperature
+      - sensor.xiaomi_mijia_d107_battery_level
+      - sensor.xiaomi_mijia_d107_humidity
+      - sensor.xiaomi_mijia_d107_temperature
+      - timer.door_entrancer
+    cards:
+      - entities:
+          - entity: switch.xmastree_relay
+          - entity: light.xmas_tree
+          - entity: switch.wall_switch_left_158d0001dc4460
+          - entity: switch.plug_158d0002426de7
+          - entity: sensor.temperature_158d00020293a1
+          - entity: sensor.humidity_158d00020293a1
+        show_header_toggle: true
+        title: Спальня
+        type: entities
+      - entities:
+          - entity: switch.wall_switch_left_158d0002bffc7e
+          - entity: switch.wall_switch_right_158d0002bffc7e
+          - entity: switch.bra2_relay
+          - entity: light.xiaomi_philips_light
+          - entity: light.aqua
+          - entity: fan.xiaomi_miio_device
+          - entity: sensor.xiaomi_mijia_d107_temperature
+          - entity: sensor.xiaomi_mijia_d107_humidity
+          - entity: sensor.xiaomi_mijia_d107_battery_level
+        title: Зал
+        type: entities
+      - entities:
+          - entity: switch.plug_158d0001fa1474
+          - entity: switch.mirror_relay
+          - entity: switch.cupboard_relay
+        title: Гримерка
+        type: entities
+      - entities:
+          - entity: sensor.balcony_temperature
+          - entity: sensor.balcony_humidity
+        show_header_toggle: false
+        title: Балкон
+        type: entities
+      - entities:
+          - entity: switch.wall_switch_right_158d0003a0eb33
+          - entity: switch.wall_switch_left_158d0003a0eb33
+          - entity: light.gateway_light_7811dcb2404d
+          - entity: sensor.illumination_7811dcb2404d
+          - entity: binary_sensor.motion_sensor_158d0001d9203e
+          - entity: binary_sensor.door_window_sensor_158d0001fa3431
+        show_header_toggle: false
+        title: Прихожая
+        type: entities
+      - entities:
+          - entity: binary_sensor.water_leak_sensor_158d00022f9bbf
+          - entity: sensor.xiaomi_mijia_cb15_temperature
+          - entity: sensor.xiaomi_mijia_cb15_humidity
+          - entity: sensor.xiaomi_mijia_cb15_battery_level
+        show_header_toggle: false
+        title: Кухня
+        type: entities
+      - entity: media_player.tv
+        type: media-control
+      - entities:
+          - entity: script.switch_tv_to_megogo
+          - entity: script.switch_tv_to_youtube
+          - entity: script.switch_tv_to_tvigle
+        show_header_toggle: false
+        title: Скрипты
+        type: entities
+    path: default_view
+    title: Home
+  - badges:
+      - sensor.temperature_158d00020293a1
+      - sensor.xiaomi_mijia_cb15_temperature
+      - sensor.xiaomi_mijia_d107_temperature
+      - sensor.illumination_7811dcb2404d
+      - sensor.humidity_158d00020293a1
+      - sensor.xiaomi_mijia_cb15_humidity
+      - sensor.xiaomi_mijia_d107_humidity
+    cards:
+      - entities:
+          - entity: sensor.humidity_158d00020293a1
+          - entity: sensor.temperature_158d00020293a1
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Спальня
+        type: history-graph
+      - entities:
+          - entity: sensor.illumination_7811dcb2404d
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Корридор
+        type: history-graph
+      - entities:
+          - entity: sensor.xiaomi_mijia_d107_temperature
+          - entity: sensor.xiaomi_mijia_d107_humidity
+        hours_to_show: 24
+        refresh_interval: 0
+        title: Зал
+        type: history-graph
+    icon: ''
+    path: environment
+    title: Environment
+  - badges: []
+    cards:
+      - entity: sensor.xiaomi_mijia_d107_battery_level
+        max: 100
+        min: 0
+        severity:
+          green: 30
+          red: 0
+          yellow: 10
+        theme: default
+        type: gauge
+    path: batteries
+    title: Batteries
+  - icon: 'mdi:home-assistant'
+    badges: []
+    cards: []
