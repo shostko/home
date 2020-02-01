@@ -1,0 +1,12 @@
+- platform: workday
+  name: Workday [today]
+  country: BY
+  add_holidays:
+    - '2020-02-12'
+
+- platform: workday
+  name: Workday [tomorrow]
+  country: BY
+  days_offset: 1
+  add_holidays:
+    - '2020-02-12'
