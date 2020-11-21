@@ -1,0 +1,610 @@
+resources:
+  - url: /local/vertical-stack-in-card.js?v=0.3.2
+    type: js
+
+title: Дом
+views:
+
+  ### HOME ###
+
+  - title: Home
+    id: main
+    path: default_view
+    badges:
+      - entity: person.sergey
+      - entity: person.aleksa
+      - entity: binary_sensor.door_window_sensor_158d0001fa3431
+        name: Вход
+      - entity: sun.sun
+    cards:
+      - type: custom:vertical-stack-in-card
+        title: Зал
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: switch.hall_wall_switch_switch_left
+                name: Люстра 2
+                icon: mdi:ceiling-light
+              - type: button
+                entity: switch.hall_wall_switch_switch_right
+                name: Люстра 3
+                icon: mdi:vanity-light
+              - type: button
+                entity: switch.bra2_relay
+                name: Бра 2
+      - type: custom:vertical-stack-in-card
+        title: Спальня
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: switch.bedroom_wall_switch_switch_left
+                name: Люстра
+                icon: mdi:ceiling-light
+              - type: button
+                entity: switch.xiaomi_power_plug_1_switch
+                name: Кровать
+                icon: mdi:bed-king-outline
+              - type: button
+                entity: switch.mirror_relay
+                name: Зеркало
+          - type: horizontal-stack
+            cards:
+              - type: light
+                entity: light.wled
+                name: Кроватка
+                icon: mdi:led-strip-variant
+              - type: light
+                entity: light.xmas_tree
+                name: Кровать
+                icon: mdi:led-strip-variant
+      - type: custom:vertical-stack-in-card
+        title: Кухня
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: light.kitchen_ceiling
+                name: Люстра
+                icon: mdi:ceiling-light
+              - type: button
+                entity: light.kitchen_ceiling_nightlight
+                name: Ночник
+                icon: mdi:weather-night
+      - type: custom:vertical-stack-in-card
+        title: Кабинет
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: switch.cupboard_relay
+                name: Шкаф
+              - type: button
+                entity: light.midesklamp1s_9133
+                name: Настольная лампа
+      - type: custom:vertical-stack-in-card
+        title: Прихожая
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: switch.entrance_wall_switch_switch_right
+                name: Люстра
+                icon: mdi:ceiling-light
+              - type: button
+                entity: switch.entrance_wall_switch_switch_left
+                name: Корридор
+                icon: mdi:coach-lamp
+              - type: button
+                entity: light.xiaomi_gateway_light
+                name: Ночник
+                icon: mdi:circle-slice-8
+
+
+
+
+  - title: Зал
+    id: hall
+    path: hall
+    icon: mdi:television-classic
+    cards:
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: switch.hall_wall_switch_switch_left
+                name: Люстра 2
+                icon: mdi:ceiling-light
+              - type: button
+                entity: switch.hall_wall_switch_switch_right
+                name: Люстра 3
+                icon: mdi:vanity-light
+              - type: button
+                entity: switch.bra2_relay
+                name: Бра 2
+      - type: media-control
+        entity: media_player.tv
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: sensor
+            name: Температура
+            entity: sensor.hall_average_temperature_floating
+          - type: glance
+            show_icon: false
+            entities:
+              - entity: sensor.xiaomi_mijia_d107_temperature
+                name: Датчик
+              - entity: sensor.humidifier_1_temp
+                name: Увлажнитель
+              - entity: sensor.radiator_1_temp
+                name: Радиатор
+          - type: entities
+            entities: []
+            footer:
+                type: graph
+                entity: sensor.hall_average_temperature_floating
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: sensor
+            name: Влажность
+            entity: sensor.hall_average_humidity_floating
+          - type: glance
+            show_icon: false
+            entities:
+              - entity: sensor.xiaomi_mijia_d107_humidity
+                name: Датчик
+              - entity: sensor.humidifier_1_hum
+                name: Увлажнитель
+          - type: entities
+            entities: []
+            footer:
+                type: graph
+                entity: sensor.hall_average_humidity_floating
+      - type: entities
+        entities:
+          - entity: fan.humidifier_1
+            name: Увлажнитель
+          - entity: lock.moes_radiator_actuator_1_child_lock
+            name: Радиатор (блокировка)
+          - entity: sensor.radiator_1_position
+            name: Радиатор (положение)
+      - type: thermostat
+        entity: climate.moes_radiator_actuator_1_climate
+
+
+
+
+  - title: Спальня
+    id: bedroom
+    path: bedroom
+    icon: mdi:bed
+    cards:
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: switch.bedroom_wall_switch_switch_left
+                name: Люстра
+                icon: mdi:ceiling-light
+              - type: button
+                entity: switch.xiaomi_power_plug_1_switch
+                name: Кровать
+                icon: mdi:bed-king-outline
+              - type: button
+                entity: switch.mirror_relay
+                name: Зеркало
+          - type: horizontal-stack
+            cards:
+              - type: light
+                entity: light.wled
+                name: Кроватка
+                icon: mdi:led-strip-variant
+              - type: light
+                entity: light.xmas_tree
+                name: Кровать
+                icon: mdi:led-strip-variant
+      - type: media-control
+        entity: media_player.yandex_station_ff98f02997470e7b4ca9be2f
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: sensor
+            name: Температура
+            entity: sensor.bedroom_average_temperature_floating
+          - type: glance
+            show_icon: false
+            entities:
+              - entity: sensor.lumi_lumi_sens_a1930202_temperature
+                name: Датчик
+              - entity: sensor.humidifier_2_temp
+                name: Увлажнитель
+          - type: entities
+            entities: []
+            footer:
+                type: graph
+                entity: sensor.bedroom_average_temperature_floating
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: sensor
+            name: Влажность
+            entity: sensor.bedroom_average_humidity_floating
+          - type: glance
+            show_icon: false
+            entities:
+              - entity: sensor.lumi_lumi_sens_a1930202_humidity
+                name: Датчик
+              - entity: sensor.humidifier_2_hum
+                name: Увлажнитель
+          - type: entities
+            entities: []
+            footer:
+                type: graph
+                entity: sensor.bedroom_average_humidity_floating
+      - type: entities
+        entities:
+          - entity: fan.humidifier_2
+            name: Увлажнитель
+
+
+  - title: Кухня
+    id: kitchen
+    path: kitchen
+    icon: mdi:stove
+    cards:
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: light.kitchen_ceiling
+                name: Люстра
+                icon: mdi:ceiling-light
+              - type: button
+                entity: light.kitchen_ceiling_nightlight
+                name: Ночник
+                icon: mdi:weather-night
+      - type: media-control
+        entity: media_player.yandex_station_ff98f0102ae5595dd3b0bd40
+      - type: sensor
+        name: Температура
+        graph: line
+        entity: sensor.xiaomi_mijia_cb15_temperature
+      - type: sensor
+        name: Влажность
+        graph: line
+        entity: sensor.xiaomi_mijia_cb15_humidity
+      - type: glance
+        entities:
+          - entity: binary_sensor.aqara_water_leak_1_water_leak
+            name: Протечка
+          - entity: binary_sensor.rf_motion_0
+            name: Движение
+            show_last_changed: true
+        
+
+
+
+  - title: Кабинет
+    id: cabinet
+    path: cabinet
+    icon: mdi:desk
+    cards:
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: switch.cupboard_relay
+                name: Шкаф
+              - type: button
+                entity: light.midesklamp1s_9133
+                name: Настольная лампа
+      - type: sensor
+        name: Температура
+        graph: line
+        entity: sensor.cabinet_average_temperature_floating
+      - type: sensor
+        name: CO2
+        graph: line
+        entity: sensor.cabinet_average_co2_floating
+      - type: custom:vertical-stack-in-card
+        title: Мониторы
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: switch.useelink_multiprise_switch_l3
+                name: Левый
+              - type: button
+                entity: switch.useelink_multiprise_switch_l1
+                name: Правый
+      - type: custom:vertical-stack-in-card
+        title: Аквариум
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: light.aqua
+                name: Свет
+                icon: mdi:lightbulb-on-outline
+              - type: button
+                entity: switch.useelink_multiprise_switch_l2
+                name: Обогреватель
+              - type: button
+                entity: switch.useelink_multiprise_switch_l4
+                name: Фильтр
+
+
+
+  - title: Прихожая
+    id: entrance
+    path: entrance
+    icon: mdi:door-closed
+    cards:
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: switch.entrance_wall_switch_switch_right
+                name: Люстра
+                icon: mdi:ceiling-light
+              - type: button
+                entity: switch.entrance_wall_switch_switch_left
+                name: Корридор
+                icon: mdi:coach-lamp
+              - type: button
+                entity: light.xiaomi_gateway_light
+                name: Ночник
+                icon: mdi:circle-slice-8
+      - type: sensor
+        name: Освещенность
+        graph: line
+        entity: sensor.xiaomi_gateway_illuminance
+      - type: glance
+        entities:
+          - entity: binary_sensor.door_window_sensor_158d0001fa3431
+            name: Входная дверь
+            show_last_changed: true
+          - entity: binary_sensor.motion_sensor_158d0001d9203e
+            name: Движение
+            show_last_changed: true
+
+
+
+  - title: Окружение
+    id: environment
+    path: environment
+    icon: mdi:oil-temperature
+    cards:
+      - type: custom:vertical-stack-in-card
+        title: Зал
+        cards:
+          - type: history-graph
+            title: Температура
+            hours_to_show: 24
+            entities:
+              - entity: sensor.xiaomi_mijia_d107_temperature
+                name: Датчик
+              - entity: sensor.humidifier_1_temp
+                name: Увлажнитель
+              - entity: sensor.radiator_1_temp
+                name: Радиатор
+              - entity: sensor.hall_average_temperature
+                name: Среднее
+              - entity: sensor.hall_average_temperature_floating
+                name: Плавающее среднее
+          - type: history-graph
+            title: Влажность
+            hours_to_show: 24
+            entities:
+              - entity: sensor.xiaomi_mijia_d107_humidity
+                name: Датчик
+              - entity: sensor.humidifier_1_hum
+                name: Увлажнитель
+              - entity: sensor.hall_average_humidity
+                name: Среднее
+              - entity: sensor.hall_average_humidity_floating
+                name: Плавающее среднее
+      - type: custom:vertical-stack-in-card
+        title: Кабинет
+        cards:
+          - type: history-graph
+            title: Температура
+            hours_to_show: 24
+            entities:
+              - entity: sensor.hall_mh_z19_temperature
+                name: Датчик
+              - entity: sensor.cabinet_average_temperature_floating
+                name: Плавающее среднее
+          - type: history-graph
+            title: CO2
+            hours_to_show: 24
+            entities:
+              - entity: sensor.hall_mh_z19_co2
+                name: Датчик
+              - entity: sensor.cabinet_average_co2_floating
+                name: Плавающее среднее
+
+
+
+
+
+  - title: Archive
+    id: archive
+    path: archive
+    icon: mdi:archive-outline
+    badges:
+      - entity: binary_sensor.rpi_power_status
+      - entity: binary_sensor.door_window_sensor_158d0002c5bee3
+      - entity: binary_sensor.smoke_sensor_158d00041208c5
+      - entity: binary_sensor.rf_bridge_status
+      - entity: binary_sensor.rf_motion_0
+      - entity: binary_sensor.switch_158d0001f3aec3
+      - entity: binary_sensor.lumi_lumi_sensor_magnet_64594d04_on_off
+      - entity: binary_sensor.lumi_lumi_sensor_magnet_733c0704_on_off
+      - entity: binary_sensor.lumi_lumi_sensor_magnet_a3bad003_on_off
+      - entity: person.sergey
+      - entity: person.alice
+      - entity: person.aleksa
+      - entity: sensor.radiator_1_position
+      - entity: sensor.humidifier_1_temp
+      - entity: sensor.humidifier_1_hum
+      - entity: sensor.humidifier_2_temp
+      - entity: sensor.humidifier_2_hum
+      - entity: sensor.illumination_7811dcb2404d
+      - entity: sensor.battery_158d0002c5bee3
+      - entity: sensor.battery_158d00041208c5
+      - entity: sensor.hall_mh_z19_co2
+      - entity: sensor.xiaomi_mijia_d107_temperature
+      - entity: sensor.hall_mh_z19_temperature
+      - entity: sensor.xiaomi_mijia_d107_humidity
+      - entity: sensor.xiaomi_mijia_d107_battery_level
+      - entity: sensor.0x00158d0001fa1474_power
+      - entity: sensor.0x00158d0001fa1474_energy
+      - entity: sensor.0x00158d0001fa1474_linkquality
+      - entity: sensor.0x00158d00049dec35_click
+      - entity: sensor.0x00158d00049dec35_battery
+      - entity: sensor.0x00158d00049dec35_action
+      - entity: sensor.0x00158d00049dec35_linkquality
+      - entity: sensor.hacs
+      - entity: sensor.battery_158d0001f3aec3
+      - entity: sensor.battery_158d00022f9bbf
+      - entity: sensor.temperature_lumi_158d00020293a1
+      - entity: sensor.humidity_lumi_158d00020293a1
+      - entity: sensor.lumi_lumi_sensor_switch_c3aef301_power
+      - entity: sensor.lumi_lumi_sensor_magnet_64594d04_power
+      - entity: sensor.lumi_lumi_relay_c2acn01_2cd74b04_electrical_measurement
+      - entity: sensor.lumi_lumi_sensor_magnet_733c0704_power
+      - entity: sensor.lumi_lumi_sensor_magnet_a3bad003_power
+      - entity: sun.sun
+    cards:
+      - type: entities
+        entities:
+          - switch.mirror_relay
+          - switch.xmastree_relay
+          - light.xmas_tree
+          - entity: sensor.lumi_lumi_sens_a1930202_humidity
+            name: humidity
+          - entity: sensor.lumi_lumi_sens_a1930202_temperature
+            name: Temperature
+          - light.wled
+          - sensor.xiaomi_power_plug_1_energy
+          - sensor.xiaomi_power_plug_1_linkquality
+          - sensor.xiaomi_power_plug_1_power
+          - switch.xiaomi_power_plug_1_switch
+          - entity: sensor.bedroom_wall_switch_action
+            name: Wall Switch_action
+          - entity: sensor.bedroom_wall_switch_click
+            name: Wall Switch_click
+          - entity: sensor.bedroom_wall_switch_linkquality
+            name: Wall Switch_linkquality
+          - entity: switch.bedroom_wall_switch_switch_left
+            name: Wall Switch_switch_left
+          - entity: switch.bedroom_wall_switch_switch_right
+            name: Wall Switch_switch_right
+        title: Bedroom
+      - type: entities
+        entities:
+          - entity: binary_sensor.motion_sensor_158d0001d9203e
+            name: Motion Sensor
+          - sensor.xiaomi_gateway_illuminance
+          - light.xiaomi_gateway_light
+        title: Corridor
+      - type: entities
+        entities:
+          - entity: binary_sensor.door_window_sensor_158d0001fa3431
+            name: Door Magnet Sensor
+          - entity: sensor.entrance_wall_switch_action
+            name: Wall Switch_action
+          - entity: sensor.entrance_wall_switch_click
+            name: Wall Switch_click
+          - entity: sensor.entrance_wall_switch_linkquality
+            name: Wall Switch_linkquality
+          - entity: switch.entrance_wall_switch_switch_left
+            name: Wall Switch_switch_left
+          - entity: switch.entrance_wall_switch_switch_right
+            name: Wall Switch_switch_right
+        title: Entrance
+      - type: entities
+        entities:
+          - switch.bra2_relay
+          - entity: sensor.hall_wall_switch_action
+            name: Wall Switch_action
+          - entity: sensor.hall_wall_switch_click
+            name: Wall Switch_click
+          - entity: sensor.hall_wall_switch_linkquality
+            name: Wall Switch_linkquality
+          - entity: switch.hall_wall_switch_switch_left
+            name: Wall Switch_switch_left
+          - entity: switch.hall_wall_switch_switch_right
+            name: Wall Switch_switch_right
+          - lock.moes_radiator_actuator_1_child_lock
+          - sensor.moes_radiator_actuator_1_linkquality
+        title: Hall
+      - type: thermostat
+        entity: climate.moes_radiator_actuator_1_climate
+      - type: entities
+        entities:
+          - sensor.drink_water_drink_filter
+          - sensor.raw_water_drink_filter
+          - entity: light.kitchen_ceiling
+            name: Ceiling
+          - entity: light.kitchen_ceiling_nightlight
+            name: Ceiling nightlight
+          - sensor.aqara_water_leak_1_linkquality
+          - entity: binary_sensor.aqara_water_leak_1_water_leak
+            name: Water Leak
+        title: Kitchen
+      - type: entities
+        entities:
+          - switch.cupboard_relay
+          - light.midesklamp1s_9133
+          - light.aqua
+          - sensor.blitzwolf_plug_current
+          - sensor.blitzwolf_plug_energy
+          - sensor.blitzwolf_plug_linkquality
+          - sensor.blitzwolf_plug_power
+          - switch.blitzwolf_plug_switch
+          - sensor.blitzwolf_plug_voltage
+          - sensor.0x842e14fffefd9823_linkquality
+          - switch.useelink_multiprise_switch_l1
+          - switch.useelink_multiprise_switch_l2
+          - switch.useelink_multiprise_switch_l3
+          - switch.useelink_multiprise_switch_l4
+          - switch.useelink_multiprise_switch_l5
+        title: Сabinet
+      - type: picture-entity
+        entity: camera.sonoff_camera_1
+      - type: entities
+        entities:
+          - fan.humidifier_1
+          - fan.humidifier_2
+        title: Fan
+      - type: entities
+        entities:
+          - light.lumi_lumi_relay_c2acn01_2cd74b04_on_off
+          - light.lumi_lumi_relay_c2acn01_2cd74b04_on_off_2
+        title: Light
+      - type: media-control
+        entity: media_player.yandex_station_ff98f0102ae5595dd3b0bd40
+      - type: media-control
+        entity: media_player.tv
+      - type: media-control
+        entity: media_player.yandex_station_ff98f02997470e7b4ca9be2f
+      - type: entities
+        entities:
+          - switch.tv_power
+          - switch.xiaomi_power_plug_2_switch
+        title: Switch
+      - type: weather-forecast
+        entity: weather.home
+        show_forecast: false
+
+
+
+
+
+

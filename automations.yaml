@@ -1,0 +1,436 @@
+
+# Kitchen Ceiling
+
+- alias: Turn off Kitchen Ceiling with Corridor Switch Top
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+      from: 'off'
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+      from: 'on'
+      to: 'off'
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:65:3a:96
+        command: single
+  condition:
+    - condition: state
+      entity_id: light.kitchen_ceiling
+      state: 'on'
+  action:
+    - service: light.turn_off
+      entity_id: light.kitchen_ceiling
+      
+- alias: Turn off Kitchen Nightlight with Corridor Switch Top
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+      from: 'off'
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+      from: 'on'
+      to: 'off'
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:65:3a:96
+        command: single
+  condition:
+    - condition: state
+      entity_id: light.kitchen_ceiling_nightlight
+      state: 'on'
+  action:
+    - service: light.turn_off
+      entity_id: light.kitchen_ceiling_nightlight
+
+
+- alias: Turn on Kitchen Ceiling with Corridor Switch Top (DAY)
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+      from: 'off'
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+      from: 'on'
+      to: 'off'
+    - platform: state
+      entity_id: binary_sensor.rf_motion_0
+      to: 'on'
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:65:3a:96
+        command: single
+  condition:
+    - condition: state
+      entity_id: light.kitchen_ceiling
+      state: 'off'
+    - condition: state
+      entity_id: light.kitchen_ceiling_nightlight
+      state: 'off'
+    - condition: state
+      entity_id: binary_sensor.tod_day
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.kitchen_ceiling
+
+- alias: Turn on Kitchen Nightlight with Corridor Switch Top (NIGHT)
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+      from: 'off'
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+      from: 'on'
+      to: 'off'
+    - platform: state
+      entity_id: binary_sensor.rf_motion_0
+      to: 'on'
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:65:3a:96
+        command: single
+  condition:
+    - condition: state
+      entity_id: light.kitchen_ceiling
+      state: 'off'
+    - condition: state
+      entity_id: light.kitchen_ceiling_nightlight
+      state: 'off'
+    - condition: state
+      entity_id: binary_sensor.tod_night
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.kitchen_ceiling_nightlight
+
+- alias: Turn on Kitchen Nightlight by Double Click
+  trigger:
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:65:3a:96
+        command: double
+  condition:
+    - condition: state
+      entity_id: light.kitchen_ceiling_nightlight
+      state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.kitchen_ceiling_nightlight
+
+- alias: Toggle Kitchen Ceiling and Nightlight by Double Click
+  trigger:
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:65:3a:96
+        command: double
+  condition:
+    - condition: state
+      entity_id: light.kitchen_ceiling_nightlight
+      state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.kitchen_ceiling
+
+########################################################################
+
+# Bedroom Mirror
+
+- alias: Toggle Bedroom Mirror with Switch
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.lumi_lumi_sensor_magnet_733c0704_on_off
+      from: 'on'
+      to: 'off'
+    - platform: state
+      entity_id: binary_sensor.lumi_lumi_sensor_magnet_733c0704_on_off
+      from: 'off'
+      to: 'on'
+  action:
+    - service: switch.toggle
+      entity_id: switch.mirror_relay
+
+########################################################################
+
+# Bath + Toilet
+
+- alias: Turn off Bath lights with Corridor Switch Bottom Left
+  trigger:
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:9d:ec:35
+        command: left_single
+  condition:
+    - condition: state
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off
+      state: 'on'
+  action:
+    - service: light.turn_off
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off
+
+- alias: Turn on Bath lights with Corridor Switch Bottom Left
+  trigger:
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:9d:ec:35
+        command: left_single
+  condition:
+    - condition: state
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off
+      state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off
+
+- alias: Turn off Toilet lights with Corridor Switch Bottom Right
+  trigger:
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:9d:ec:35
+        command: right_single
+  condition:
+    - condition: state
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off_2
+      state: 'on'
+  action:
+    - service: light.turn_off
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off_2
+
+- alias: Turn on Toilet lights with Corridor Switch Bottom Right
+  trigger:
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:9d:ec:35
+        command: right_single
+  condition:
+    - condition: state
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off_2
+      state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off_2
+
+- alias: Turn off Bath+Toilet lights with Corridor Switch Bottom Both
+  trigger:
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:9d:ec:35
+        command: both_single
+  condition:
+    condition: or
+    conditions:
+      - condition: state
+        entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off
+        state: 'on'
+      - condition: state
+        entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off_2
+        state: 'on'
+  action:
+    - service: light.turn_off
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off
+    - service: light.turn_off
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off_2
+
+- alias: Turn on Bath+Toilet lights with Corridor Switch Bottom Both
+  trigger:
+    - platform: event
+      event_type: zha_event
+      event_data:
+        device_ieee: 00:15:8d:00:04:9d:ec:35
+        command: both_single
+  condition:
+    - condition: state
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off
+      state: 'off'
+    - condition: state
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off_2
+      state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off
+    - service: light.turn_on
+      entity_id: light.lumi_lumi_relay_c2acn01_2cd74b04_on_off_2
+
+########################################################################
+
+# Telegram
+
+- alias: 'Telegram start'
+  trigger:
+    - platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/start'
+  action:
+    - service: telegram_bot.send_message
+      data:
+        target: '{{ trigger.event.data.chat_id }}'
+        message: 'Командуй'
+        keyboard: '/ping, /test, /alarm'
+
+- alias: 'Telegram ping/pong'
+  trigger:
+    - platform: event
+      event_type: telegram_command
+      event_data:
+        command: '/ping'
+  action:
+    - service: telegram_bot.send_message
+      data:
+        target: '{{ trigger.event.data.chat_id }}'
+        message: 'pong'
+        disable_notification: true
+
+########################################################################
+
+# Log
+
+- alias: 'Log: ToD.Night'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.tod_night
+      from: 'off'
+      to: 'on'
+  action:
+    - service: notify.log
+      data:
+        message: "Началась ночь"
+
+- alias: 'Log: ToD.Day'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.tod_day
+      from: 'off'
+      to: 'on'
+  action:
+    - service: notify.log
+      data:
+        message: "Начался день"
+
+- alias: 'Log: Entrance door opened'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0001fa3431
+      from: 'off'
+      to: 'on'
+  action:
+    - service: notify.log
+      data:
+        message: "Входная дверь открыта"
+    - service: notify.tv
+      data:
+        message: "Входная дверь открыта"
+      
+- alias: 'Log: Entrance door closed'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.door_window_sensor_158d0001fa3431
+      from: 'on'
+      to: 'off'
+  action:
+    - service: notify.log
+      data:
+        message: "Входная дверь закрыта"
+
+- alias: 'Log: Corridor motion in the night'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_sensor_158d0001d9203e
+      from: 'off'
+      to: 'on'
+  condition:
+    - condition: state
+      entity_id: binary_sensor.tod_night
+      state: 'on'
+  action:
+    - service: notify.log
+      data:
+        message: "Движение в корридоре!"
+
+########################################################################
+
+# Motion Sensor in enter
+
+- alias: If there is motion and its dark turn on the gateway light
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_sensor_158d0001d9203e
+      from: 'off'
+      to: 'on'
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.illumination_7811dcb2404d
+      below: 150
+  action:
+    - service: light.turn_on
+      entity_id: light.xiaomi_gateway_light
+      data:
+        brightness: 64
+
+- alias: If there no motion for 1 minutes turn off the gateway light
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.motion_sensor_158d0001d9203e
+      from: 'on'
+      to: 'off'
+      for:
+        minutes: 1
+  action:
+    - service: light.turn_off
+      entity_id: light.xiaomi_gateway_light
+
+########################################################################
+
+# Kitchen Water Leak Sensor
+
+- alias: 'Notify about Kitchen Water Leak'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.aqara_water_leak_1_water_leak
+      from: 'off'
+      to: 'on'
+  action:
+    - service: notify.family
+      data:
+        message: "Протечка на кухне!"
+
+- alias: 'Notify about Kitchen Water Leak Stop'
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.aqara_water_leak_1_water_leak
+      from: 'on'
+      to: 'off'
+  action:
+    - service: notify.family
+      data:
+        message: "Протечка на кухне устранена..."
+
+########################################################################
+
+- alias: Toggle Bed with Wall Switch Right
+  trigger:
+    - platform: state
+      entity_id: sensor.bedroom_wall_switch_action
+      to: 'single_right'
+  action:
+    - service: switch.toggle
+      entity_id: switch.xiaomi_power_plug_1_switch
+
+########################################################################
+
+

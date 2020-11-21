@@ -1,0 +1,45 @@
+
+sensor.hall_average_temperature_floating:
+  device_class: temperature
+  icon: mdi:thermometer
+  unit_of_measurement: '°C'
+sensor.hall_average_temperature:
+  device_class: temperature
+  icon: mdi:thermometer
+  unit_of_measurement: '°C'
+sensor.hall_average_humidity_floating:
+  device_class: humidity
+  icon: mdi:water-percent
+  unit_of_measurement: '%'
+sensor.hall_average_humidity:
+  device_class: humidity
+  icon: mdi:water-percent
+  unit_of_measurement: '%'
+  
+sensor.bedroom_average_temperature_floating:
+  device_class: temperature
+  icon: mdi:thermometer
+  unit_of_measurement: '°C'
+sensor.bedroom_average_temperature:
+  device_class: temperature
+  icon: mdi:thermometer
+  unit_of_measurement: '°C'
+sensor.bedroom_average_humidity_floating:
+  device_class: humidity
+  icon: mdi:water-percent
+  unit_of_measurement: '%'
+sensor.bedroom_average_humidity:
+  device_class: humidity
+  icon: mdi:water-percent
+  unit_of_measurement: '%'
+
+sensor.cabinet_average_temperature_floating:
+  device_class: temperature
+  icon: mdi:thermometer
+  unit_of_measurement: '°C'
+sensor.cabinet_average_co2_floating:
+  icon: mdi:molecule-co2
+  unit_of_measurement: 'ppm'
+
+binary_sensor.door_window_sensor_158d0001fa3431:
+  device_class: door

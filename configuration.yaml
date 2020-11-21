@@ -1,0 +1,245 @@
+
+# Configure a default setup of Home Assistant (frontend, api, etc)
+default_config:
+
+homeassistant:
+  name: Home
+  latitude: !secret lat
+  longitude: !secret long
+  elevation: 140
+  unit_system: metric
+  time_zone: Europe/Minsk
+  external_url: !secret white_host
+  internal_url: http://192.168.1.2:8123
+  customize: !include customize.yaml
+
+# Text to speech
+#tts:
+#  - platform: google_translate
+
+lovelace:
+  mode: yaml
+
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+mqtt:
+  broker: core-mosquitto  # Локальный брокер
+  #broker: IP adress  # Внешний брокер
+  discovery: true
+  discovery_prefix: homeassistant  
+  username: mqtt
+  password: mqtt
+
+yeelight:
+  devices:
+    192.168.1.226:
+      name: Kitchen Ceiling
+      save_on_change: true
+      nightlight_switch_type: light
+      model: ceiling3
+
+fan:
+  - platform: xiaomi_miio
+    host: 192.168.1.104
+    model: zhimi.humidifier.ca1
+    name: "Humidifier #1"
+    token: !secret xiaomi_humidifier1_token
+  - platform: xiaomi_miio
+    host: 192.168.1.203
+    model: zhimi.humidifier.ca1
+    name: "Humidifier #2"
+    token: !secret xiaomi_humidifier2_token
+
+
+binary_sensor:
+  - platform: tod
+    name: tod_night
+    after: '00:00'
+    before: '07:00'
+  - platform: tod
+    name: tod_day
+    after: '07:00'
+    before: '00:00'
+
+telegram_bot:
+  - platform: webhooks
+    api_key: !secret telegram_home_key
+    allowed_chat_ids:
+      - !secret telegram_chat_sergey
+      - !secret telegram_chat_alexa
+      - !secret telegram_chat_log
+    trusted_networks:
+      - 172.30.33.2/32
+      - 172.30.33.3/32
+      - 149.154.160.0/20
+      - 91.108.4.0/22
+      - 149.154.160.0/20
+      - 91.108.4.0/22
+
+camera:
+  - platform: ffmpeg
+    name: Sonoff-Camera-1
+    input: -rtsp_transport tcp -i rtsp://rtsp:sonoff@192.168.1.93:554/av_stream/ch0
+
+switch:
+  - platform: broadlink
+    mac: 'C8:F7:42:62:FB:3B'
+    switches:
+      - name: "TV Power"
+        command_on: !secret ir_tv_power
+        command_off: !secret ir_tv_power
+
+sensor:
+  - platform: template
+    sensors:
+      radiator_1_position:
+        unique_id: radiator_1_position
+        friendly_name: "Radiator Actuator #1 Position"
+        unit_of_measurement: '%'
+        value_template: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'position') }}"
+      radiator_1_temp:
+        unique_id: radiator_1_current_temperature
+        friendly_name: "Radiator Actuator #1 Current Temperature"
+        unit_of_measurement: '°C'
+        value_template: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') }}"
+      humidifier_1_temp:
+        unique_id: humidifier_1_temp
+        friendly_name: "Humidifier #1 Temperature"
+        unit_of_measurement: '°C'
+        value_template: "{{ state_attr('fan.humidifier_1', 'temperature') }}"
+      humidifier_1_hum:
+        unique_id: humidifier_1_hum
+        friendly_name: "Humidifier #1 Humidity"
+        unit_of_measurement: '%'
+        value_template: "{{ state_attr('fan.humidifier_1', 'humidity') }}"
+      humidifier_2_temp:
+        unique_id: humidifier_2_temp
+        friendly_name: "Humidifier #2 Temperature"
+        unit_of_measurement: '°C'
+        value_template: "{{ state_attr('fan.humidifier_2', 'temperature') }}"
+      humidifier_2_hum:
+        unique_id: humidifier_2_hum
+        friendly_name: "Humidifier #2 Humidity"
+        unit_of_measurement: '%'
+        value_template: "{{ state_attr('fan.humidifier_2', 'humidity') }}"
+  - platform: average
+    name: 'Hall Average Temperature'
+    precision: 1
+    entities:
+      - sensor.xiaomi_mijia_d107_temperature
+      - sensor.humidifier_1_temp
+      - sensor.radiator_1_temp
+  - platform: average
+    name: 'Hall Average Temperature Floating'
+    precision: 1
+    duration:
+      minutes: 5
+    entities:
+      - sensor.hall_average_temperature
+  - platform: average
+    name: 'Hall Average Humidity'
+    precision: 1
+    entities:
+      - sensor.xiaomi_mijia_d107_humidity
+      - sensor.humidifier_1_hum
+  - platform: average
+    name: 'Hall Average Humidity Floating'
+    precision: 1
+    duration:
+      minutes: 5
+    entities:
+      - sensor.hall_average_humidity
+  - platform: average
+    name: 'Bedroom Average Temperature'
+    precision: 1
+    entities:
+      - sensor.lumi_lumi_sens_a1930202_temperature
+      - sensor.humidifier_2_temp
+  - platform: average
+    name: 'Bedroom Average Temperature Floating'
+    precision: 1
+    duration:
+      minutes: 5
+    entities:
+      - sensor.bedroom_average_temperature
+  - platform: average
+    name: 'Bedroom Average Humidity'
+    precision: 1
+    entities:
+      - sensor.lumi_lumi_sens_a1930202_humidity
+      - sensor.humidifier_2_hum
+  - platform: average
+    name: 'Bedroom Average Humidity Floating'
+    precision: 1
+    duration:
+      minutes: 5
+    entities:
+      - sensor.bedroom_average_humidity
+  - platform: average
+    name: 'Cabinet Average Temperature Floating'
+    precision: 1
+    duration:
+      minutes: 3
+    entities:
+      - sensor.hall_mh_z19_temperature
+  - platform: average
+    name: 'Cabinet Average CO2 Floating'
+    precision: 0
+    duration:
+      minutes: 3
+    entities:
+      - sensor.hall_mh_z19_co2
+
+webostv:
+  - host: 192.168.1.130
+    name: TV
+    turn_on_action:
+      service: switch.toggle
+      data:
+        entity_id: switch.tv_power
+    customize:
+      sources:
+        - HDMI1
+        - HDMI2
+        - HDMI3
+        - HDMI4
+        - LiveTV
+        - MEGOGO TV & Movies
+        - Netflix
+        - Tvigle
+        - YouTube
+        - ivi
+        - Kinopoisk HD
+
+media_player:
+  - platform: webostv
+    host:  192.168.1.130
+    name: TV
+
+yandex_smart_home:
+yandex_smart_home_fix:
+yandex_station:
+  username: !secret ya_username
+  password: !secret ya_password
+
+notify:
+  - name: sergey
+    platform: telegram
+    chat_id: !secret telegram_chat_sergey
+  - name: alexa
+    platform: telegram
+    chat_id: !secret telegram_chat_alexa
+  - name: log
+    platform: telegram
+    chat_id: !secret telegram_chat_log
+  - name: family
+    platform: group
+    services:
+      - service: sergey
+      - service: alexa
+  - name: tv
+    platform: webostv
+    host: 192.168.1.130

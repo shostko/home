@@ -1,0 +1,12 @@
+.storage
+.cloud
+.google.token
+.uuid
+.yandex_station.json
+ip_bans.yaml
+secrets.yaml
+known_devices.yaml
+*.db
+*.log
+home-assistant_v2.*
+webostv.conf
