@@ -409,6 +409,33 @@ views:
               - entity: sensor.hall_average_humidity_floating
                 name: Плавающее среднее
       - type: custom:vertical-stack-in-card
+        title: Спальня
+        cards:
+          - type: history-graph
+            title: Температура
+            hours_to_show: 24
+            entities:
+              - entity: sensor.lumi_lumi_sens_a1930202_temperature
+                name: Датчик
+              - entity: sensor.humidifier_2_temp
+                name: Увлажнитель
+              - entity: sensor.bedroom_average_temperature
+                name: Среднее
+              - entity: sensor.hall_average_temperature_floating
+                name: Плавающее среднее
+          - type: history-graph
+            title: Влажность
+            hours_to_show: 24
+            entities:
+              - entity: sensor.xiaomi_mijia_d107_humidity
+                name: Датчик
+              - entity: sensor.humidifier_1_hum
+                name: Увлажнитель
+              - entity: sensor.hall_average_humidity
+                name: Среднее
+              - entity: sensor.hall_average_humidity_floating
+                name: Плавающее среднее
+      - type: custom:vertical-stack-in-card
         title: Кабинет
         cards:
           - type: history-graph
