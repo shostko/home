@@ -41,6 +41,12 @@ yeelight:
       nightlight_switch_type: light
       model: ceiling3
 
+light:
+  - platform: xiaomi_miio
+    host: 192.168.1.44
+    token: !secret xiaomi_bulb1_token
+    model: philips.light.bulb
+
 fan:
   - platform: xiaomi_miio
     host: 192.168.1.104
