@@ -40,6 +40,10 @@ yeelight:
       save_on_change: true
       nightlight_switch_type: light
       model: ceiling3
+    192.168.1.182:
+      name: Cabinet Desk Lamp
+      save_on_change: true
+      model: lamp1
 
 light:
   - platform: xiaomi_miio
@@ -162,7 +166,7 @@ sensor:
     name: 'Bedroom Average Temperature'
     precision: 1
     entities:
-      - sensor.lumi_lumi_sens_a1930202_temperature
+      - sensor.bedroom_temp_and_hum_temperature
       - sensor.humidifier_2_temp
   - platform: average
     name: 'Bedroom Average Temperature Floating'
@@ -175,7 +179,7 @@ sensor:
     name: 'Bedroom Average Humidity'
     precision: 1
     entities:
-      - sensor.lumi_lumi_sens_a1930202_humidity
+      - sensor.bedroom_temp_and_hum_humidity
       - sensor.humidifier_2_hum
   - platform: average
     name: 'Bedroom Average Humidity Floating'

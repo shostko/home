@@ -12,10 +12,13 @@ views:
     path: default_view
     badges:
       - entity: person.sergey
-      - entity: person.aleksa
+        name: Папа
+      - entity: person.alexa
+        name: Мама
       - entity: binary_sensor.door_window_sensor_158d0001fa3431
         name: Вход
       - entity: sun.sun
+        name: Солнце
     cards:
       - type: custom:vertical-stack-in-card
         title: Зал
@@ -23,11 +26,11 @@ views:
           - type: horizontal-stack
             cards:
               - type: button
-                entity: switch.hall_wall_switch_switch_left
+                entity: switch.hall_wall_switch_left
                 name: Люстра 2
                 icon: mdi:ceiling-light
               - type: button
-                entity: switch.hall_wall_switch_switch_right
+                entity: switch.hall_wall_switch_right
                 name: Люстра 3
                 icon: mdi:vanity-light
           - type: horizontal-stack
@@ -39,13 +42,14 @@ views:
               - type: button
                 entity: switch.bra2_relay
                 name: Бра 2
+                icon: mdi:lightbulb-multiple
       - type: custom:vertical-stack-in-card
         title: Спальня
         cards:
           - type: horizontal-stack
             cards:
               - type: button
-                entity: switch.bedroom_wall_switch_switch_left
+                entity: switch.bedroom_wall_switch_left
                 name: Люстра
                 icon: mdi:ceiling-light
               - type: button
@@ -55,6 +59,7 @@ views:
               - type: button
                 entity: switch.mirror_relay
                 name: Зеркало
+                icon: mdi:account-circle-outline
           - type: horizontal-stack
             cards:
               - type: light
@@ -86,20 +91,22 @@ views:
               - type: button
                 entity: switch.cupboard_relay
                 name: Шкаф
+                icon: mdi:cupboard
               - type: button
-                entity: light.midesklamp1s_9133
+                entity: light.cabinet_desk_lamp
                 name: Настольная лампа
+                icon: mdi:desk-lamp
       - type: custom:vertical-stack-in-card
         title: Прихожая
         cards:
           - type: horizontal-stack
             cards:
               - type: button
-                entity: switch.entrance_wall_switch_switch_right
+                entity: switch.entrance_wall_switch_right
                 name: Люстра
                 icon: mdi:ceiling-light
               - type: button
-                entity: switch.entrance_wall_switch_switch_left
+                entity: switch.entrance_wall_switch_left
                 name: Корридор
                 icon: mdi:coach-lamp
               - type: button
@@ -120,11 +127,11 @@ views:
           - type: horizontal-stack
             cards:
               - type: button
-                entity: switch.hall_wall_switch_switch_left
+                entity: switch.hall_wall_switch_left
                 name: Люстра 2
                 icon: mdi:ceiling-light
               - type: button
-                entity: switch.hall_wall_switch_switch_right
+                entity: switch.hall_wall_switch_right
                 name: Люстра 3
                 icon: mdi:vanity-light
           - type: horizontal-stack
@@ -136,6 +143,7 @@ views:
               - type: button
                 entity: switch.bra2_relay
                 name: Бра 2
+                icon: mdi:lightbulb-multiple
       - type: media-control
         entity: media_player.tv
       - type: custom:vertical-stack-in-card
@@ -198,7 +206,7 @@ views:
           - type: horizontal-stack
             cards:
               - type: button
-                entity: switch.bedroom_wall_switch_switch_left
+                entity: switch.bedroom_wall_switch_left
                 name: Люстра
                 icon: mdi:ceiling-light
               - type: button
@@ -208,6 +216,7 @@ views:
               - type: button
                 entity: switch.mirror_relay
                 name: Зеркало
+                icon: mdi:account-circle-outline
           - type: horizontal-stack
             cards:
               - type: light
@@ -228,7 +237,7 @@ views:
           - type: glance
             show_icon: false
             entities:
-              - entity: sensor.lumi_lumi_sens_a1930202_temperature
+              - entity: sensor.bedroom_temp_and_hum_temperature
                 name: Датчик
               - entity: sensor.humidifier_2_temp
                 name: Увлажнитель
@@ -245,7 +254,7 @@ views:
           - type: glance
             show_icon: false
             entities:
-              - entity: sensor.lumi_lumi_sens_a1930202_humidity
+              - entity: sensor.bedroom_temp_and_hum_humidity
                 name: Датчик
               - entity: sensor.humidifier_2_hum
                 name: Увлажнитель
@@ -289,7 +298,7 @@ views:
         entity: sensor.xiaomi_mijia_cb15_humidity
       - type: glance
         entities:
-          - entity: binary_sensor.aqara_water_leak_1_water_leak
+          - entity: binary_sensor.kitchen_water_leak
             name: Протечка
           - entity: binary_sensor.rf_motion_0
             name: Движение
@@ -310,9 +319,11 @@ views:
               - type: button
                 entity: switch.cupboard_relay
                 name: Шкаф
+                icon: mdi:cupboard
               - type: button
-                entity: light.midesklamp1s_9133
+                entity: light.cabinet_desk_lamp
                 name: Настольная лампа
+                icon: mdi:desk-lamp
       - type: sensor
         name: Температура
         graph: line
@@ -360,11 +371,11 @@ views:
           - type: horizontal-stack
             cards:
               - type: button
-                entity: switch.entrance_wall_switch_switch_right
+                entity: switch.entrance_wall_switch_right
                 name: Люстра
                 icon: mdi:ceiling-light
               - type: button
-                entity: switch.entrance_wall_switch_switch_left
+                entity: switch.entrance_wall_switch_left
                 name: Корридор
                 icon: mdi:coach-lamp
               - type: button
@@ -380,7 +391,7 @@ views:
           - entity: binary_sensor.door_window_sensor_158d0001fa3431
             name: Входная дверь
             show_last_changed: true
-          - entity: binary_sensor.motion_sensor_158d0001d9203e
+          - entity: binary_sensor.entrance_motion_sensor_occupancy
             name: Движение
             show_last_changed: true
 
@@ -427,19 +438,19 @@ views:
             title: Температура
             hours_to_show: 24
             entities:
-              - entity: sensor.lumi_lumi_sens_a1930202_temperature
+              - entity: sensor.bedroom_temp_and_hum_temperature
                 name: Датчик
               - entity: sensor.humidifier_2_temp
                 name: Увлажнитель
               - entity: sensor.bedroom_average_temperature
                 name: Среднее
-              - entity: sensor.hall_average_temperature_floating
+              - entity: sensor.bedroom_average_temperature_floating
                 name: Плавающее среднее
           - type: history-graph
             title: Влажность
             hours_to_show: 24
             entities:
-              - entity: sensor.xiaomi_mijia_d107_humidity
+              - entity: sensor.bedroom_temp_and_hum_humidity
                 name: Датчик
               - entity: sensor.humidifier_1_hum
                 name: Увлажнитель

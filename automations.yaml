@@ -11,11 +11,9 @@
       entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
       from: 'on'
       to: 'off'
-    - platform: event
-      event_type: zha_event
-      event_data:
-        device_ieee: 00:15:8d:00:04:65:3a:96
-        command: single
+    - platform: state
+      entity_id: sensor.kitchen_wireless_switch_action
+      to: 'single'
   condition:
     - condition: state
       entity_id: light.kitchen_ceiling
@@ -34,11 +32,9 @@
       entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
       from: 'on'
       to: 'off'
-    - platform: event
-      event_type: zha_event
-      event_data:
-        device_ieee: 00:15:8d:00:04:65:3a:96
-        command: single
+    - platform: state
+      entity_id: sensor.kitchen_wireless_switch_action
+      to: 'single'
   condition:
     - condition: state
       entity_id: light.kitchen_ceiling_nightlight
@@ -61,11 +57,9 @@
     - platform: state
       entity_id: binary_sensor.rf_motion_0
       to: 'on'
-    - platform: event
-      event_type: zha_event
-      event_data:
-        device_ieee: 00:15:8d:00:04:65:3a:96
-        command: single
+    - platform: state
+      entity_id: sensor.kitchen_wireless_switch_action
+      to: 'single'
   condition:
     - condition: state
       entity_id: light.kitchen_ceiling
@@ -93,11 +87,9 @@
     - platform: state
       entity_id: binary_sensor.rf_motion_0
       to: 'on'
-    - platform: event
-      event_type: zha_event
-      event_data:
-        device_ieee: 00:15:8d:00:04:65:3a:96
-        command: single
+    - platform: state
+      entity_id: sensor.kitchen_wireless_switch_action
+      to: 'single'
   condition:
     - condition: state
       entity_id: light.kitchen_ceiling
@@ -114,11 +106,9 @@
 
 - alias: Turn on Kitchen Nightlight by Double Click
   trigger:
-    - platform: event
-      event_type: zha_event
-      event_data:
-        device_ieee: 00:15:8d:00:04:65:3a:96
-        command: double
+    - platform: state
+      entity_id: sensor.kitchen_wireless_switch_action
+      to: 'double'
   condition:
     - condition: state
       entity_id: light.kitchen_ceiling_nightlight
@@ -129,11 +119,9 @@
 
 - alias: Toggle Kitchen Ceiling and Nightlight by Double Click
   trigger:
-    - platform: event
-      event_type: zha_event
-      event_data:
-        device_ieee: 00:15:8d:00:04:65:3a:96
-        command: double
+    - platform: state
+      entity_id: sensor.kitchen_wireless_switch_action
+      to: 'double'
   condition:
     - condition: state
       entity_id: light.kitchen_ceiling_nightlight
@@ -149,11 +137,11 @@
 - alias: Toggle Bedroom Mirror with Switch
   trigger:
     - platform: state
-      entity_id: binary_sensor.lumi_lumi_sensor_magnet_733c0704_on_off
+      entity_id: binary_sensor.bedroom_mirror_switch_contact
       from: 'on'
       to: 'off'
     - platform: state
-      entity_id: binary_sensor.lumi_lumi_sensor_magnet_733c0704_on_off
+      entity_id: binary_sensor.bedroom_mirror_switch_contact
       from: 'off'
       to: 'on'
   action:
@@ -163,6 +151,7 @@
 ########################################################################
 
 # Bath + Toilet
+# ToDo rework after real installation
 
 - alias: Turn off Bath lights with Corridor Switch Bottom Left
   trigger:
@@ -350,7 +339,7 @@
 - alias: 'Log: Corridor motion in the night'
   trigger:
     - platform: state
-      entity_id: binary_sensor.motion_sensor_158d0001d9203e
+      entity_id: binary_sensor.entrance_motion_sensor_occupancy
       from: 'off'
       to: 'on'
   condition:
@@ -369,12 +358,12 @@
 - alias: If there is motion and its dark turn on the gateway light
   trigger:
     - platform: state
-      entity_id: binary_sensor.motion_sensor_158d0001d9203e
+      entity_id: binary_sensor.entrance_motion_sensor_occupancy
       from: 'off'
       to: 'on'
   condition:
     - condition: numeric_state
-      entity_id: sensor.illumination_7811dcb2404d
+      entity_id: sensor.xiaomi_gateway_illuminance
       below: 150
   action:
     - service: light.turn_on
@@ -385,11 +374,9 @@
 - alias: If there no motion for 1 minutes turn off the gateway light
   trigger:
     - platform: state
-      entity_id: binary_sensor.motion_sensor_158d0001d9203e
+      entity_id: binary_sensor.entrance_motion_sensor_occupancy
       from: 'on'
       to: 'off'
-      for:
-        minutes: 1
   action:
     - service: light.turn_off
       entity_id: light.xiaomi_gateway_light
@@ -401,7 +388,7 @@
 - alias: 'Notify about Kitchen Water Leak'
   trigger:
     - platform: state
-      entity_id: binary_sensor.aqara_water_leak_1_water_leak
+      entity_id: binary_sensor.kitchen_water_leak
       from: 'off'
       to: 'on'
   action:
@@ -412,7 +399,7 @@
 - alias: 'Notify about Kitchen Water Leak Stop'
   trigger:
     - platform: state
-      entity_id: binary_sensor.aqara_water_leak_1_water_leak
+      entity_id: binary_sensor.kitchen_water_leak
       from: 'on'
       to: 'off'
   action:
