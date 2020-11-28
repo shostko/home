@@ -340,9 +340,11 @@ views:
               - type: button
                 entity: switch.useelink_multiprise_switch_l3
                 name: Левый
+                icon: mdi:monitor-edit
               - type: button
                 entity: switch.useelink_multiprise_switch_l1
                 name: Правый
+                icon: mdi:monitor-dashboard
       - type: custom:vertical-stack-in-card
         title: Аквариум
         cards:
@@ -355,9 +357,11 @@ views:
               - type: button
                 entity: switch.useelink_multiprise_switch_l2
                 name: Обогреватель
+                icon: mdi:patio-heater
               - type: button
                 entity: switch.useelink_multiprise_switch_l4
                 name: Фильтр
+                icon: mdi:air-filter
 
 
 
