@@ -115,6 +115,16 @@ sensor:
         friendly_name: "Radiator Actuator #1 Current Temperature"
         unit_of_measurement: '°C'
         value_template: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') }}"
+      radiator_2_position:
+        unique_id: radiator_2_position
+        friendly_name: "Radiator Actuator #2 Position"
+        unit_of_measurement: '%'
+        value_template: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'position') }}"
+      radiator_2_temp:
+        unique_id: radiator_2_current_temperature
+        friendly_name: "Radiator Actuator #2 Current Temperature"
+        unit_of_measurement: '°C'
+        value_template: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'current_temperature') }}"
       humidifier_1_temp:
         unique_id: humidifier_1_temp
         friendly_name: "Humidifier #1 Temperature"
@@ -167,6 +177,7 @@ sensor:
     precision: 1
     entities:
       - sensor.bedroom_temp_and_hum_temperature
+      - sensor.radiator_2_current_temperature
       - sensor.humidifier_2_temp
   - platform: average
     name: 'Bedroom Average Temperature Floating'

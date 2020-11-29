@@ -241,6 +241,8 @@ views:
                 name: Датчик
               - entity: sensor.humidifier_2_temp
                 name: Увлажнитель
+              - entity: sensor.radiator_2_temp
+                name: Радиатор
           - type: entities
             entities: []
             footer:
@@ -267,6 +269,12 @@ views:
         entities:
           - entity: fan.humidifier_2
             name: Увлажнитель
+          - entity: lock.moes_radiator_actuator_2_child_lock
+            name: Радиатор (блокировка)
+          - entity: sensor.radiator_2_position
+            name: Радиатор (положение)
+      - type: thermostat
+        entity: climate.moes_radiator_actuator_2_climate
 
 
   - title: Кухня
