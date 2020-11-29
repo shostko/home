@@ -454,6 +454,8 @@ views:
                 name: Датчик
               - entity: sensor.humidifier_2_temp
                 name: Увлажнитель
+              - entity: sensor.radiator_2_temp
+                name: Радиатор
               - entity: sensor.bedroom_average_temperature
                 name: Среднее
               - entity: sensor.bedroom_average_temperature_floating
