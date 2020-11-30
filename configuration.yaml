@@ -17,6 +17,11 @@ homeassistant:
 #tts:
 #  - platform: google_translate
 
+recorder:
+  auto_purge: true
+  purge_keep_days: 2
+  commit_interval: 30
+
 lovelace:
   mode: yaml
 
