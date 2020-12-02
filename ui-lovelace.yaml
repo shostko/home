@@ -182,16 +182,18 @@ views:
             footer:
                 type: graph
                 entity: sensor.hall_average_humidity_floating
-      - type: entities
-        entities:
-          - entity: fan.humidifier_1
-            name: Увлажнитель
-          - entity: lock.moes_radiator_actuator_1_child_lock
-            name: Радиатор (блокировка)
-          - entity: sensor.radiator_1_position
-            name: Радиатор (положение)
-      - type: thermostat
-        entity: climate.moes_radiator_actuator_1_climate
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: entities
+            entities:
+              - entity: fan.humidifier_1
+                name: Увлажнитель
+              - entity: lock.moes_radiator_actuator_1_child_lock
+                name: Радиатор (блокировка)
+              - entity: sensor.radiator_1_position
+                name: Радиатор (положение)
+          - type: thermostat
+            entity: climate.moes_radiator_actuator_1_climate
 
 
 
@@ -265,16 +267,18 @@ views:
             footer:
                 type: graph
                 entity: sensor.bedroom_average_humidity_floating
-      - type: entities
-        entities:
-          - entity: fan.humidifier_2
-            name: Увлажнитель
-          - entity: lock.moes_radiator_actuator_2_child_lock
-            name: Радиатор (блокировка)
-          - entity: sensor.radiator_2_position
-            name: Радиатор (положение)
-      - type: thermostat
-        entity: climate.moes_radiator_actuator_2_climate
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: entities
+            entities:
+              - entity: fan.humidifier_2
+                name: Увлажнитель
+              - entity: lock.moes_radiator_actuator_2_child_lock
+                name: Радиатор (блокировка)
+              - entity: sensor.radiator_2_position
+                name: Радиатор (положение)
+          - type: thermostat
+            entity: climate.moes_radiator_actuator_2_climate
 
 
   - title: Кухня
@@ -324,14 +328,16 @@ views:
           - entity: binary_sensor.rf_motion_0
             name: Движение
             show_last_changed: true
-      - type: entities
-        entities:
-          - entity: lock.moes_radiator_actuator_3_child_lock
-            name: Радиатор (блокировка)
-          - entity: sensor.radiator_3_position
-            name: Радиатор (положение)
-      - type: thermostat
-        entity: climate.moes_radiator_actuator_3_climate
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: entities
+            entities:
+              - entity: lock.moes_radiator_actuator_3_child_lock
+                name: Радиатор (блокировка)
+              - entity: sensor.radiator_3_position
+                name: Радиатор (положение)
+          - type: thermostat
+            entity: climate.moes_radiator_actuator_3_climate
         
 
 
