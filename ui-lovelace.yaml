@@ -458,6 +458,8 @@ views:
                 name: Среднее
               - entity: sensor.hall_average_temperature_floating
                 name: Плавающее среднее
+              - entity: sensor.radiator_1_position
+                name: Радиатор (положение)
           - type: history-graph
             title: Влажность
             hours_to_show: 24
@@ -487,18 +489,43 @@ views:
                 name: Среднее
               - entity: sensor.bedroom_average_temperature_floating
                 name: Плавающее среднее
+              - entity: sensor.radiator_2_position
+                name: Радиатор (положение)
           - type: history-graph
             title: Влажность
             hours_to_show: 24
             entities:
               - entity: sensor.bedroom_temp_and_hum_humidity
                 name: Датчик
-              - entity: sensor.humidifier_1_hum
+              - entity: sensor.humidifier_2_hum
                 name: Увлажнитель
-              - entity: sensor.hall_average_humidity
+              - entity: sensor.bedroom_average_humidity
                 name: Среднее
-              - entity: sensor.hall_average_humidity_floating
+              - entity: sensor.bedroom_average_humidity_floating
                 name: Плавающее среднее
+      - type: custom:vertical-stack-in-card
+        title: Кухня
+        cards:
+          - type: history-graph
+            title: Температура
+            hours_to_show: 24
+            entities:
+              - entity: sensor.xiaomi_mijia_cb15_temperature
+                name: Датчик
+              - entity: sensor.radiator_3_temp
+                name: Радиатор
+              - entity: sensor.kitchen_average_temperature
+                name: Среднее
+              - entity: sensor.kitchen_average_temperature_floating
+                name: Плавающее среднее
+              - entity: sensor.radiator_3_position
+                name: Радиатор (положение)
+          - type: history-graph
+            title: Влажность
+            hours_to_show: 24
+            entities:
+              - entity: sensor.xiaomi_mijia_cb15_humidity
+                name: Датчик
       - type: custom:vertical-stack-in-card
         title: Кабинет
         cards:
