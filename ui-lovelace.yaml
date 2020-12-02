@@ -63,11 +63,11 @@ views:
           - type: horizontal-stack
             cards:
               - type: light
-                entity: light.wled
+                entity: light.wled_maria_bed
                 name: Кроватка
                 icon: mdi:led-strip-variant
               - type: light
-                entity: light.xmas_tree
+                entity: light.wled_tree
                 name: Кровать
                 icon: mdi:led-strip-variant
       - type: custom:vertical-stack-in-card
@@ -220,11 +220,11 @@ views:
           - type: horizontal-stack
             cards:
               - type: light
-                entity: light.wled
+                entity: light.wled_maria_bed
                 name: Кроватка
                 icon: mdi:led-strip-variant
               - type: light
-                entity: light.xmas_tree
+                entity: light.wled_tree
                 name: Кровать
                 icon: mdi:led-strip-variant
       - type: media-control
@@ -359,7 +359,7 @@ views:
           - type: horizontal-stack
             cards:
               - type: button
-                entity: light.aqua
+                entity: light.wled_aqua
                 name: Свет
                 icon: mdi:lightbulb-on-outline
               - type: button
