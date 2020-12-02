@@ -130,6 +130,16 @@ sensor:
         friendly_name: "Radiator Actuator #2 Current Temperature"
         unit_of_measurement: '°C'
         value_template: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'current_temperature') }}"
+      radiator_3_position:
+        unique_id: radiator_3_position
+        friendly_name: "Radiator Actuator #3 Position"
+        unit_of_measurement: '%'
+        value_template: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'position') }}"
+      radiator_3_temp:
+        unique_id: radiator_3_current_temperature
+        friendly_name: "Radiator Actuator #3 Current Temperature"
+        unit_of_measurement: '°C'
+        value_template: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'current_temperature') }}"
       humidifier_1_temp:
         unique_id: humidifier_1_temp
         friendly_name: "Humidifier #1 Temperature"
@@ -204,6 +214,19 @@ sensor:
       minutes: 5
     entities:
       - sensor.bedroom_average_humidity
+  - platform: average
+    name: 'Kitchen Average Temperature'
+    precision: 1
+    entities:
+      - sensor.xiaomi_mijia_cb15_temperature
+      - sensor.radiator_3_current_temperature
+  - platform: average
+    name: 'Kitchen Average Temperature Floating'
+    precision: 1
+    duration:
+      minutes: 5
+    entities:
+      - sensor.kitchen_average_temperature
   - platform: average
     name: 'Cabinet Average Temperature Floating'
     precision: 1

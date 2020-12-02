@@ -296,10 +296,23 @@ views:
                 icon: mdi:weather-night
       - type: media-control
         entity: media_player.yandex_station_ff98f0102ae5595dd3b0bd40
-      - type: sensor
-        name: Температура
-        graph: line
-        entity: sensor.xiaomi_mijia_cb15_temperature
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: sensor
+            name: Температура
+            entity: sensor.kitchen_average_temperature_floating
+          - type: glance
+            show_icon: false
+            entities:
+              - entity: sensor.xiaomi_mijia_cb15_temperature
+                name: Датчик
+              - entity: sensor.radiator_3_temp
+                name: Радиатор
+          - type: entities
+            entities: []
+            footer:
+                type: graph
+                entity: sensor.kitchen_average_temperature_floating
       - type: sensor
         name: Влажность
         graph: line
@@ -311,6 +324,14 @@ views:
           - entity: binary_sensor.rf_motion_0
             name: Движение
             show_last_changed: true
+      - type: entities
+        entities:
+          - entity: lock.moes_radiator_actuator_3_child_lock
+            name: Радиатор (блокировка)
+          - entity: sensor.radiator_3_position
+            name: Радиатор (положение)
+      - type: thermostat
+        entity: climate.moes_radiator_actuator_3_climate
         
 
 
