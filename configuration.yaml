@@ -286,13 +286,14 @@ yandex_smart_home:
       - switch.entrance_wall_switch_right
       - switch.entrance_wall_switch_left
       - light.xiaomi_philips_light
-      - light.wled
-      - light.xmas_tree
+      - light.wled_maria_bed
+      - light.wled_tree
       - light.kitchen_ceiling
       - light.kitchen_ceiling_nightlight
       - light.cabinet_desk_lamp
       - light.xiaomi_gateway_light
       - media_player.tv
+      - sensor.bedroom_average_temperature_floating
   entity_config:
     switch.cupboard_relay:
       type: devices.types.light
@@ -334,11 +335,11 @@ yandex_smart_home:
       type: devices.types.light
       name: 'Бра 1'
       room: 'Зал'
-    light.wled:
+    light.wled_maria_bed:
       type: devices.types.light
       name: 'Машин ночник'
       room: 'Спальня'
-    light.xmas_tree:
+    light.wled_tree:
       type: devices.types.light
       name: 'Ночник родителей'
       room: 'Спальня'
@@ -362,6 +363,10 @@ yandex_smart_home:
       type: devices.types.media_device.tv
       name: 'Телевизор'
       room: 'Зал'
+    sensor.bedroom_average_temperature_floating:
+      type: devices.types.sensor
+      name: 'Температура'
+      room: 'Спальня'
       
 
 notify:
