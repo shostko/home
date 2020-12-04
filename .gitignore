@@ -4,7 +4,7 @@
 .uuid
 .yandex_station.json
 ip_bans.yaml
-secrets.yaml
+/secrets.yaml
 known_devices.yaml
 *.db
 *.log

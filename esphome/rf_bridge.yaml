@@ -1,0 +1,106 @@
+esphome:
+  name: rf_bridge
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pwd
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Mirror Fallback Hotspot"
+    password: !secret esphome_pwd
+
+captive_portal:
+
+web_server:
+  port: 80
+  auth:
+    username: admin
+    password: !secret esphome_pwd
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: !secret esphome_pwd
+
+ota:
+  password: !secret esphome_pwd
+
+binary_sensor:
+  - platform: status
+    name: "RF Bridge Status"
+  - platform: remote_receiver
+    name: "RF Motion #0"
+    device_class: motion
+    filters:
+      delayed_off: 10000ms
+    rc_switch_raw:
+      code: '111110100111111110111110'
+      protocol: 4
+  - platform: remote_receiver
+    name: "RF Motion #1"
+    device_class: motion
+    filters:
+      delayed_off: 10000ms
+    rc_switch_raw:
+      code: '000101010101000100101100'
+      protocol: 4
+  - platform: remote_receiver
+    name: "RF Smoke #0"
+    device_class: smoke
+    filters:
+      delayed_off: 5000ms
+    rc_switch_raw:
+      code: '100011011110110101100100'
+      protocol: 4
+
+remote_receiver:
+  pin: 4
+  dump: rc_switch
+  #filter: 4us
+  #idle: 4ms
+
+remote_transmitter:
+  pin: 5
+  carrier_duty_percent: 100%
+
+status_led:
+  pin:
+    number: GPIO13
+    inverted: yes
+
+switch:
+  - platform: template
+    name: "Table On/Off"
+    turn_on_action:
+      remote_transmitter.transmit_rc_switch_raw:
+        code: '110111001101000100000001'
+        protocol: 4
+        repeat: 5
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

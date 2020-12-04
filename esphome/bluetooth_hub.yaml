@@ -1,0 +1,60 @@
+esphome:
+  name: bluetooth_hub
+  platform: ESP32
+  board: nodemcu-32s
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pwd
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "BluetoothHub Fallback Hotspot"
+    password: !secret esphome_pwd
+
+captive_portal:
+
+#web_server:
+#  port: 80
+#  auth:
+#    username: admin
+#    password: !secret esphome_pwd
+    
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: !secret esphome_pwd
+
+ota:
+  password: !secret esphome_pwd
+
+#esp32_ble_tracker:
+
+#sensor:
+#  - platform: xiaomi_lywsdcgq
+#    mac_address: 58:2D:34:35:CB:15
+#    temperature:
+#      name: "Xiaomi MiJia CB15 Temperature"
+#    humidity:
+#      name: "Xiaomi MiJia CB15 Humidity"
+#    battery_level:
+#      name: "Xiaomi MiJia CB15 Battery Level"
+#  - platform: xiaomi_lywsdcgq
+#    mac_address: 58:2D:34:35:D1:07
+#    temperature:
+#      name: "Xiaomi MiJia D107 Temperature"
+#    humidity:
+#      name: "Xiaomi MiJia D107 Humidity"
+#    battery_level:
+#      name: "Xiaomi MiJia D107 Battery Level"
+#  - platform: xiaomi_lywsd03mmc
+#    mac_address: "A4:C1:38:72:30:D0"
+#    bindkey: "174fc465e83cd0ba0f7ef3564359df5f"
+#    temperature:
+#      name: "Xiaomi MiJia 30D0 Temperature"
+#    humidity:
+#      name: "Xiaomi MiJia 30D0 Humidity"
+#    battery_level:
+#      name: "Xiaomi MiJia 30D0 Battery Level"
