@@ -321,13 +321,22 @@ views:
         name: Влажность
         graph: line
         entity: sensor.xiaomi_mijia_cb15_humidity
-      - type: glance
-        entities:
-          - entity: binary_sensor.kitchen_water_leak
-            name: Протечка
-          - entity: binary_sensor.rf_motion_0
-            name: Движение
-            show_last_changed: true
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: glance
+            entities:
+              - entity: binary_sensor.kitchen_water_leak
+                name: Протечка
+              - entity: binary_sensor.rf_smoke_0
+                name: Задымление
+          - type: glance
+            entities:
+              - entity: binary_sensor.rf_motion_0
+                name: Движение 0
+                show_last_changed: true
+              - entity: binary_sensor.rf_motion_1
+                name: Движение 1
+                show_last_changed: true
       - type: custom:vertical-stack-in-card
         cards:
           - type: entities
