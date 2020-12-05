@@ -53,7 +53,7 @@ binary_sensor:
     name: "RF Smoke #0"
     device_class: smoke
     filters:
-      delayed_off: 5000ms
+      delayed_off: 90000ms
     rc_switch_raw:
       code: '100011011110110101100100'
       protocol: 4
