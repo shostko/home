@@ -23,6 +23,10 @@ views:
       - type: custom:vertical-stack-in-card
         title: Зал
         cards:
+          - type: light
+            entity: light.wled_tree
+            name: Ёлка
+            icon: mdi:led-strip-variant
           - type: horizontal-stack
             cards:
               - type: button
@@ -60,16 +64,10 @@ views:
                 entity: switch.mirror_relay
                 name: Зеркало
                 icon: mdi:account-circle-outline
-          - type: horizontal-stack
-            cards:
-              - type: light
-                entity: light.wled_maria_bed
-                name: Кроватка
-                icon: mdi:led-strip-variant
-              - type: light
-                entity: light.wled_tree
-                name: Кровать
-                icon: mdi:led-strip-variant
+          - type: light
+            entity: light.wled_maria_bed
+            name: Кроватка
+            icon: mdi:led-strip-variant
       - type: custom:vertical-stack-in-card
         title: Кухня
         cards:
@@ -124,6 +122,10 @@ views:
     cards:
       - type: custom:vertical-stack-in-card
         cards:
+          - type: light
+            entity: light.wled_tree
+            name: Ёлка
+            icon: mdi:led-strip-variant
           - type: horizontal-stack
             cards:
               - type: button
@@ -219,16 +221,10 @@ views:
                 entity: switch.mirror_relay
                 name: Зеркало
                 icon: mdi:account-circle-outline
-          - type: horizontal-stack
-            cards:
-              - type: light
-                entity: light.wled_maria_bed
-                name: Кроватка
-                icon: mdi:led-strip-variant
-              - type: light
-                entity: light.wled_tree
-                name: Кровать
-                icon: mdi:led-strip-variant
+          - type: light
+            entity: light.wled_maria_bed
+            name: Кроватка
+            icon: mdi:led-strip-variant
       - type: media-control
         entity: media_player.yandex_station_ff98f02997470e7b4ca9be2f
       - type: custom:vertical-stack-in-card
