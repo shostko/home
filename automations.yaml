@@ -363,8 +363,14 @@
       to: 'on'
   condition:
     - condition: numeric_state
-      entity_id: sensor.xiaomi_gateway_illuminance
+      entity_id: sensor.illumination_7811dcb2404d
       below: 150
+    - condition: state
+      entity_id: switch.entrance_wall_switch_left
+      state: 'off'
+    - condition: state
+      entity_id: switch.entrance_wall_switch_right
+      state: 'off'
   action:
     - service: light.turn_on
       entity_id: light.xiaomi_gateway_light
