@@ -441,6 +441,37 @@ views:
 
 
 
+  - title: TEST
+    id: test
+    path: test
+    panel: true
+    cards:
+      - type: custom:vertical-stack-in-card
+        title: Кухня
+        cards:
+          - type: entities
+            entities:
+              - entity: input_datetime.kitchen_light_started_at
+              - entity: binary_sensor.kitchen_light_timer_required
+              - entity: timer.kitchen_light
+              - entity: binary_sensor.kitchen_motion
+              - entity: input_boolean.kitchen_demo_light
+          - type: history-graph
+            hours_to_show: 1
+            entities:
+              - entity: binary_sensor.rf_motion_0
+                name: Движение 0
+              - entity: binary_sensor.rf_motion_1
+                name: Движение 1
+              - entity: binary_sensor.kitchen_motion
+                name: Объедидённый
+              - entity: input_boolean.kitchen_demo_light
+                name: Демо
+              - entity: light.kitchen_ceiling
+                name: Люстра
+
+
+
   - title: Окружение
     id: environment
     path: environment

@@ -1,0 +1,170 @@
+kitchen_light:
+
+    input_boolean:
+    
+      kitchen_demo_light:
+        name: Kitchen Demo Light
+        icon: mdi:bulb
+        initial: false
+        
+    input_datetime:
+    
+      kitchen_light_started_at:
+        name: Kitchen light started at
+        has_date: true
+        has_time: true
+    
+    binary_sensor:
+    
+      - platform: template
+        sensors:
+          kitchen_light_timer_required:
+            value_template: >-
+              {{ 
+                is_state('input_boolean.kitchen_demo_light', 'on')
+              and
+                is_state('binary_sensor.kitchen_motion', 'off')
+              }}
+            icon_template: >-
+              {% if is_state("binary_sensor.kitchen_light_timer_required", "on") %}
+                mdi:timer
+              {% else %}
+                mdi:timer-off
+              {% endif %}
+    
+    timer:
+    
+      kitchen_light:
+        duration: '00:05:00'
+    
+    automation:
+    
+      - alias: Kitchen light timer reload
+        trigger:
+          # Таймер должен быть включен
+          - platform: state
+            entity_id: binary_sensor.kitchen_light_timer_required
+            to: 'on'
+        action:
+          # Включить таймер
+          - service: timer.start
+            entity_id: timer.kitchen_light
+            data_template: 
+              duration: > 
+                {% set minutes = ((as_timestamp(now()) - as_timestamp(states('input_datetime.kitchen_light_started_at'))) / 60) %}
+                {% if minutes > 144000 %}
+                  00:00:30
+                {% elif minutes < 1 %}
+                  00:00:30
+                {% elif minutes < 2 %}
+                  00:01:00
+                {% elif minutes < 5 %}
+                  00:02:00
+                {% elif minutes < 10 %}
+                  00:05:00
+                {%- else -%}
+                  00:10:00
+                {% endif %}
+    
+      - alias: Kitchen light timer cancel
+        trigger:
+          # Таймер должен быть выключен
+          - platform: state
+            entity_id: binary_sensor.kitchen_light_timer_required
+            to: 'off'
+        action:
+          # Выключить таймер
+          - service: timer.cancel
+            entity_id: timer.kitchen_light
+    
+      - alias: Kitchen light ON
+        trigger:
+          # Выключатель в корридоре
+          - platform: state
+            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+            from: 'off'
+            to: 'on'
+          - platform: state
+            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+            from: 'on'
+            to: 'off'
+          # Выключатель на входе
+          - platform: state
+            entity_id: sensor.kitchen_wireless_switch_action
+            to: 'single'
+          # Датчики движения
+          - platform: state
+            entity_id: binary_sensor.kitchen_motion
+            to: 'on'
+        condition:
+          # Свет выключен
+          - condition: state
+            entity_id: input_boolean.kitchen_demo_light
+            state: 'off'
+        action:
+          # Включить свет
+          - service: input_boolean.turn_on
+            entity_id: input_boolean.kitchen_demo_light
+    
+      - alias: Kitchen light OFF
+        trigger:
+          # Выключатель в корридоре
+          - platform: state
+            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+            from: 'off'
+            to: 'on'
+          - platform: state
+            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+            from: 'on'
+            to: 'off'
+          # Выключатель на входе
+          - platform: state
+            entity_id: sensor.kitchen_wireless_switch_action
+            to: 'single'
+          # Таймер
+          - platform: event
+            event_type: timer.finished
+            event_data:
+              entity_id: timer.kitchen_light
+        condition:
+          # Свет включен
+          - condition: state
+            entity_id: input_boolean.kitchen_demo_light
+            state: 'on'
+        action:
+          # Выключить свет
+          - service: input_boolean.turn_off
+            entity_id: input_boolean.kitchen_demo_light
+    
+      - alias: Kitchen light started recording
+        trigger:
+          # Свет включился
+          - platform: state
+            entity_id: input_boolean.kitchen_demo_light
+            from: 'off'
+            to: 'on'
+        condition:
+          # Дата и время сброшены
+          - condition: template
+            value_template: '{{ as_timestamp(states("input_datetime.kitchen_light_started_at")) | timestamp_custom("%Y",true) == "1970" }}'
+        action:
+          # Записать дату и время
+          - service: input_datetime.set_datetime
+            data:
+              entity_id: input_datetime.kitchen_light_started_at
+              timestamp: "{{ now().timestamp() }}"
+
+      - alias: Kitchen light stopped recording
+        trigger:
+          # Свет выключился на 20 секунд
+          - platform: state
+            entity_id: input_boolean.kitchen_demo_light
+            to: 'off'
+            for: 
+              seconds: 20
+        action:
+          # Сбросить дату и время
+          - service: input_datetime.set_datetime
+            data:
+              entity_id: input_datetime.kitchen_light_started_at
+              timestamp: 1
