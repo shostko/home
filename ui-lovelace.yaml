@@ -451,11 +451,14 @@ views:
         cards:
           - type: entities
             entities:
-              - entity: input_datetime.kitchen_light_started_at
+              - entity: input_boolean.kitchen_light_auto
+              - entity: input_select.kitchen_light_mode
               - entity: binary_sensor.kitchen_light_timer_required
+              - entity: binary_sensor.kitchen_light_motion_trigger
+              - entity: input_datetime.kitchen_light_started_at
               - entity: timer.kitchen_light
               - entity: binary_sensor.kitchen_motion
-              - entity: input_boolean.kitchen_demo_light
+              - entity: binary_sensor.kitchen_light_any
           - type: history-graph
             hours_to_show: 1
             entities:
@@ -465,10 +468,12 @@ views:
                 name: Движение 1
               - entity: binary_sensor.kitchen_motion
                 name: Объедидённый
-              - entity: input_boolean.kitchen_demo_light
-                name: Демо
               - entity: light.kitchen_ceiling
                 name: Люстра
+              - entity: light.kitchen_ceiling_nightlight
+                name: Луна
+              - entity: binary_sensor.kitchen_light_any
+                name: Любой
 
 
 

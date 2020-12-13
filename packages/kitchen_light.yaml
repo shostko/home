@@ -2,11 +2,20 @@ kitchen_light:
 
     input_boolean:
     
-      kitchen_demo_light:
-        name: Kitchen Demo Light
-        icon: mdi:bulb
-        initial: false
-        
+      kitchen_light_auto:
+        name: Kitchen Light Auto
+        icon: mdi:flash-auto
+
+    input_select:
+
+      kitchen_light_mode:
+        name: Kitchen Light Mode
+        options:
+          - 'Full'
+          - 'Moon'
+          - 'Auto'
+        icon: mdi:theme-light-dark
+    
     input_datetime:
     
       kitchen_light_started_at:
@@ -21,9 +30,11 @@ kitchen_light:
           kitchen_light_timer_required:
             value_template: >-
               {{ 
-                is_state('input_boolean.kitchen_demo_light', 'on')
+                is_state('binary_sensor.kitchen_light_any', 'on')
               and
                 is_state('binary_sensor.kitchen_motion', 'off')
+              and
+                is_state('input_boolean.kitchen_light_auto', 'on')
               }}
             icon_template: >-
               {% if is_state("binary_sensor.kitchen_light_timer_required", "on") %}
@@ -31,6 +42,32 @@ kitchen_light:
               {% else %}
                 mdi:timer-off
               {% endif %}
+          kitchen_light_motion_trigger:
+            value_template: >-
+              {{
+                is_state('binary_sensor.kitchen_motion', 'on')
+              and
+                is_state('input_boolean.kitchen_light_auto', 'on')
+              }}
+            icon_template: >-
+              {% if is_state("binary_sensor.kitchen_light_motion_trigger", "on") %}
+                mdi:motion-sensor
+              {% else %}
+                mdi:motion-sensor-off
+              {% endif %}
+          kitchen_light_any:
+            value_template: >-
+              {{
+                is_state('light.kitchen_ceiling', 'on')
+              or
+                is_state('light.kitchen_ceiling_nightlight', 'on')
+              }}
+            availability_template: >-
+              {{
+                not is_state('light.kitchen_ceiling', 'unavailable')
+              or 
+                not is_state('light.kitchen_ceiling_nightlight', 'unavailable')
+              }}
     
     timer:
     
@@ -92,19 +129,31 @@ kitchen_light:
           - platform: state
             entity_id: sensor.kitchen_wireless_switch_action
             to: 'single'
-          # Датчики движения
+          # Датчики движения & режим Auto
           - platform: state
-            entity_id: binary_sensor.kitchen_motion
+            entity_id: binary_sensor.kitchen_light_motion_trigger
             to: 'on'
         condition:
-          # Свет выключен
+          # Весь свет выключен
           - condition: state
-            entity_id: input_boolean.kitchen_demo_light
+            entity_id: binary_sensor.kitchen_light_any
             state: 'off'
         action:
           # Включить свет
-          - service: input_boolean.turn_on
-            entity_id: input_boolean.kitchen_demo_light
+          - service: light.turn_on
+            data_template:
+              entity_id: >
+                {% if is_state('input_select.kitchen_light_mode', 'Full') %}
+                  light.kitchen_ceiling
+                {% elif is_state('input_select.kitchen_light_mode', 'Moon') %}
+                  light.kitchen_ceiling_nightlight
+                {% elif is_state('input_select.kitchen_light_mode', 'Auto') %}
+                  {% if is_state('binary_sensor.tod_day', 'on') %}
+                    light.kitchen_ceiling
+                  {% elif is_state('binary_sensor.tod_night', 'on') %}
+                    light.kitchen_ceiling_nightlight
+                  {% endif %}
+                {% endif %}
     
       - alias: Kitchen light OFF
         trigger:
@@ -127,20 +176,23 @@ kitchen_light:
             event_data:
               entity_id: timer.kitchen_light
         condition:
-          # Свет включен
+          # Любой свет включен
           - condition: state
-            entity_id: input_boolean.kitchen_demo_light
+            entity_id: binary_sensor.kitchen_light_any
             state: 'on'
         action:
           # Выключить свет
-          - service: input_boolean.turn_off
-            entity_id: input_boolean.kitchen_demo_light
+          - service: light.turn_off
+            entity_id: light.kitchen_ceiling
+          # Выключить луну
+          - service: light.turn_off
+            entity_id: light.kitchen_ceiling_nightlight
     
       - alias: Kitchen light started recording
         trigger:
-          # Свет включился
+          # Любой свет включился
           - platform: state
-            entity_id: input_boolean.kitchen_demo_light
+            entity_id: binary_sensor.kitchen_light_any
             from: 'off'
             to: 'on'
         condition:
@@ -156,9 +208,9 @@ kitchen_light:
 
       - alias: Kitchen light stopped recording
         trigger:
-          # Свет выключился на 20 секунд
+          # Весь свет выключился на 20 секунд
           - platform: state
-            entity_id: input_boolean.kitchen_demo_light
+            entity_id: binary_sensor.kitchen_light_any
             to: 'off'
             for: 
               seconds: 20
@@ -168,3 +220,20 @@ kitchen_light:
             data:
               entity_id: input_datetime.kitchen_light_started_at
               timestamp: 1
+
+      - alias: Kitchen switch double click
+        trigger:
+          # Выключатель на входе (двойной клик)
+          - platform: state
+            entity_id: sensor.kitchen_wireless_switch_action
+            to: 'double'
+        action:
+          # Включить луну или свет
+          - service: light.turn_on
+            data_template:
+              entity_id: >
+                {% if is_state('light.kitchen_ceiling_nightlight', 'off') %}
+                  light.kitchen_ceiling_nightlight
+                {% elif is_state('light.kitchen_ceiling', 'off') %}
+                  light.kitchen_ceiling
+                {% endif %}
