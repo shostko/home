@@ -1,0 +1,102 @@
+balcony_panel:
+
+    script:
+      balcony_panel_off:
+        sequence:
+          - service: mqtt.publish
+            data:
+              topic: "BalconyPanel-0/cmd"
+              payload: "$14 0"
+      balcony_panel_manual:
+        sequence:
+          - service: mqtt.publish
+            data:
+              topic: "BalconyPanel-0/cmd"
+              payload: "$16 0"
+      balcony_panel_auto:
+        sequence:
+          - service: mqtt.publish
+            data:
+              topic: "BalconyPanel-0/cmd"
+              payload: "$16 1"
+
+    input_select:
+      balcony_panel_effect:
+        name: Balcony Panel Effect
+        options:
+          - "Часы"
+          - "Лампа"
+          - "Снегопад"
+          - "Кубик"
+          - "Радуга"
+          - "Пейнтбол"
+          - "Огонь"
+          - "The Matrix"
+          - "Шарики"
+          - "Звездопад"
+          - "Конфетти"
+          - "Цветной шум"
+          - "Облака"
+          - "Лава"
+          - "Плазма"
+          - "Радужные переливы"
+          - "Полосатые переливы"
+          - "Зебра"
+          - "Шумящий лес"
+          - "Морской прибой"
+          - "Смена цвета"
+          - "Светлячки"
+          - "Водоворот"
+          - "Циклон"
+          - "Мерцание"
+          - "Северное сияние"
+          - "Тени"
+          - "Лабиринт"
+          - "Змейка"
+          - "Тетрис"
+          - "Арканоид"
+          - "Палитра"
+          - "Спектрум"
+          - "Синусы"
+          - "Вышиванка"
+          - "Дождь"
+          - "Камин"
+          - "Водопад"
+          - "Стрелки"
+          - "Анимация"
+          - "Погода"
+          - "Жизнь"
+          - "Узоры"
+          - "Рассвет"
+
+    automation:
+      - alias: Balcony panel effect with MQTT
+        trigger:
+          - platform: state
+            entity_id: input_select.balcony_panel_effect
+        action:
+          - service: mqtt.publish
+            data:
+              topic: "BalconyPanel-0/cmd"
+              payload_template: >-
+                {{- "$8 0 " -}}
+                {%- set list = "Часы,Лампа,Снегопад,Кубик,Радуга,Пейнтбол,Огонь,The Matrix,Шарики,Звездопад,Конфетти,Цветной шум,Облака,Лава,Плазма,Радужные переливы,Полосатые переливы,Зебра,Шумящий лес,Морской прибой,Смена цвета,Светлячки,Водоворот,Циклон,Мерцание,Северное сияние,Тени,Лабиринт,Змейка,Тетрис,Арканоид,Палитра,Спектрум,Синусы,Вышиванка,Дождь,Камин,Водопад,Стрелки,Анимация,Погода,Жизнь,Узоры,Рассвет".split(',') -%}
+                {%- for item in list -%}
+                  {%- if item == states('input_select.balcony_panel_effect') -%}
+                      {{- loop.index0 -}}
+                  {%- endif %}
+                {%- endfor -%}
+      - alias: Balcony panel effect from MQTT
+        trigger:
+          - platform: mqtt
+            topic: "BalconyPanel-0/nfo"
+        condition:
+          - condition: template
+            value_template: '{{ (trigger.payload | replace("NFO:","") | from_json).act == "MODE" }}'
+        action:
+          - service: input_select.select_option
+            data:
+              entity_id: input_select.balcony_panel_effect
+              option: >-
+                {% set json = trigger.payload | replace("NFO:","") | from_json %}
+                {{ json.name | replace("\'","") }}
