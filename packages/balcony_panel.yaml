@@ -89,9 +89,6 @@ balcony_panel:
                       {{- loop.index0 -}}
                   {%- endif %}
                 {%- endfor -%}
-          - service: notify.log
-            data:
-              message: 'triggered'
       - alias: Balcony panel effect from MQTT
         trigger:
           - platform: mqtt
