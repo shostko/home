@@ -11,3 +11,4 @@ known_devices.yaml
 home-assistant_v2.*
 webostv.conf
 id_rsa
+sftp-config.json
