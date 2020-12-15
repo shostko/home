@@ -89,6 +89,9 @@ balcony_panel:
                       {{- loop.index0 -}}
                   {%- endif %}
                 {%- endfor -%}
+          - service: notify.log
+            data:
+              message: 'triggered'
       - alias: Balcony panel effect from MQTT
         trigger:
           - platform: mqtt
@@ -97,9 +100,15 @@ balcony_panel:
           - condition: template
             value_template: '{{ (trigger.payload | replace("NFO:","") | from_json).act == "MODE" }}'
         action:
+          - service: automation.turn_off
+            data:
+              entity_id: automation.balcony_panel_effect_with_mqtt
           - service: input_select.select_option
             data:
               entity_id: input_select.balcony_panel_effect
               option: >-
                 {% set json = trigger.payload | replace("NFO:","") | from_json %}
                 {{ json.name | replace("\'","") }}
+          - service: automation.turn_on
+            data:
+              entity_id: automation.balcony_panel_effect_with_mqtt
