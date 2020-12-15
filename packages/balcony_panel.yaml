@@ -74,6 +74,9 @@ balcony_panel:
         trigger:
           - platform: state
             entity_id: input_select.balcony_panel_effect
+        condition:
+          - condition: template
+            value_template: "{{ trigger.from_state.state != trigger.to_state.state }}"
         action:
           - service: mqtt.publish
             data:
