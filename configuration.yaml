@@ -340,6 +340,8 @@ yandex_smart_home:
       - light.wled_tree
       - light.kitchen_ceiling
       - light.kitchen_ceiling_nightlight
+      - switch.kitchen_2_relay_l1
+      - switch.kitchen_2_relay_l2
       - light.cabinet_desk_lamp
       - light.xiaomi_gateway_light
       - media_player.tv
@@ -401,13 +403,21 @@ yandex_smart_home:
       type: devices.types.light
       name: 'Луна'
       room: 'Кухня'
+    switch.kitchen_2_relay_l1:
+      type: devices.types.light
+      name: 'Гирлянда'
+      room: 'Кухня'
+    switch.kitchen_2_relay_l2:
+      type: devices.types.light
+      name: 'Подсветка'
+      room: 'Кухня'
     light.cabinet_desk_lamp:
       type: devices.types.light
       name: 'Настольная лампа'
       room: 'Кабинет'
     light.xiaomi_gateway_light:
       type: devices.types.light
-      name: 'Подсветка'
+      name: 'Шайба'
       room: 'Прихожая'
     media_player.tv:
       type: devices.types.media_device.tv

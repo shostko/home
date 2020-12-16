@@ -81,6 +81,16 @@ views:
                 entity: light.kitchen_ceiling_nightlight
                 name: Ночник
                 icon: mdi:weather-night
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: switch.kitchen_2_relay_l1
+                name: Гирлянда
+                icon: mdi:string-lights
+              - type: button
+                entity: switch.kitchen_2_relay_l2
+                name: Подсветка
+                icon: mdi:led-strip-variant
       - type: custom:vertical-stack-in-card
         title: Кабинет
         cards:
@@ -294,6 +304,16 @@ views:
                 entity: light.kitchen_ceiling_nightlight
                 name: Ночник
                 icon: mdi:weather-night
+          - type: horizontal-stack
+            cards:
+              - type: button
+                entity: switch.kitchen_2_relay_l1
+                name: Гирлянда
+                icon: mdi:string-lights
+              - type: button
+                entity: switch.kitchen_2_relay_l2
+                name: Подсветка
+                icon: mdi:led-strip-variant
       - type: media-control
         entity: media_player.yandex_station_ff98f0102ae5595dd3b0bd40
       - type: custom:vertical-stack-in-card
