@@ -13,7 +13,9 @@ kitchen_light:
         options:
           - 'Full'
           - 'Moon'
-          - 'Auto'
+          - 'Work'
+          - 'Full+Moon'
+          - 'Full+Work'
         icon: mdi:theme-light-dark
     
     input_datetime:
@@ -61,12 +63,16 @@ kitchen_light:
                 is_state('light.kitchen_ceiling', 'on')
               or
                 is_state('light.kitchen_ceiling_nightlight', 'on')
+              or
+                is_state('light.kitchen_2_relay_l2', 'on')
               }}
             availability_template: >-
               {{
                 not is_state('light.kitchen_ceiling', 'unavailable')
               or 
                 not is_state('light.kitchen_ceiling_nightlight', 'unavailable')
+              or 
+                not is_state('light.kitchen_2_relay_l2', 'unavailable')
               }}
     
     timer:
@@ -87,7 +93,7 @@ kitchen_light:
           - service: timer.start
             entity_id: timer.kitchen_light
             data_template: 
-              duration: > 
+              duration: >
                 {% set minutes = ((as_timestamp(now()) - as_timestamp(states('input_datetime.kitchen_light_started_at'))) / 60) %}
                 {% if minutes > 144000 %}
                   00:00:30
@@ -114,21 +120,8 @@ kitchen_light:
           - service: timer.cancel
             entity_id: timer.kitchen_light
     
-      - alias: Kitchen light ON
+      - alias: Kitchen light ON (via sensors)
         trigger:
-          # Выключатель в корридоре
-          - platform: state
-            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
-            from: 'off'
-            to: 'on'
-          - platform: state
-            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
-            from: 'on'
-            to: 'off'
-          # Выключатель на входе
-          - platform: state
-            entity_id: sensor.kitchen_wireless_switch_action
-            to: 'single'
           # Датчики движения & режим Auto
           - platform: state
             entity_id: binary_sensor.kitchen_light_motion_trigger
@@ -147,15 +140,23 @@ kitchen_light:
                   light.kitchen_ceiling
                 {% elif is_state('input_select.kitchen_light_mode', 'Moon') %}
                   light.kitchen_ceiling_nightlight
-                {% elif is_state('input_select.kitchen_light_mode', 'Auto') %}
+                {% elif is_state('input_select.kitchen_light_mode', 'Work') %}
+                  light.kitchen_2_relay_l2
+                {% elif is_state('input_select.kitchen_light_mode', 'Full+Moon') %}
                   {% if is_state('binary_sensor.tod_day', 'on') %}
                     light.kitchen_ceiling
                   {% elif is_state('binary_sensor.tod_night', 'on') %}
                     light.kitchen_ceiling_nightlight
                   {% endif %}
+                {% elif is_state('input_select.kitchen_light_mode', 'Full+Work') %}
+                  {% if is_state('binary_sensor.tod_day', 'on') %}
+                    light.kitchen_ceiling
+                  {% elif is_state('binary_sensor.tod_night', 'on') %}
+                    light.kitchen_2_relay_l2
+                  {% endif %}
                 {% endif %}
     
-      - alias: Kitchen light OFF
+      - alias: Kitchen light ON (manualy)
         trigger:
           # Выключатель в корридоре
           - platform: state
@@ -170,6 +171,28 @@ kitchen_light:
           - platform: state
             entity_id: sensor.kitchen_wireless_switch_action
             to: 'single'
+        condition:
+          # Люстра выключена
+          - condition: state
+            entity_id: light.kitchen_ceiling
+            state: 'off'
+          # Луна выключена
+          - condition: state
+            entity_id: light.kitchen_ceiling_nightlight
+            state: 'off'
+        action:
+          # Включить люстру или луну
+          - service: light.turn_on
+            data_template:
+              entity_id: >
+                {% if is_state('binary_sensor.tod_day', 'on') %}
+                  light.kitchen_ceiling
+                {% elif is_state('binary_sensor.tod_night', 'on') %}
+                  light.kitchen_ceiling_nightlight
+                {% endif %}
+    
+      - alias: Kitchen light OFF (via timer)
+        trigger:
           # Таймер
           - platform: event
             event_type: timer.finished
@@ -181,12 +204,56 @@ kitchen_light:
             entity_id: binary_sensor.kitchen_light_any
             state: 'on'
         action:
-          # Выключить свет
+          # Выключить весь свет
           - service: light.turn_off
-            entity_id: light.kitchen_ceiling
-          # Выключить луну
+            entity_id:
+              - light.kitchen_ceiling
+              - light.kitchen_ceiling_nightlight
+              - light.kitchen_2_relay_l2
+    
+      - alias: Kitchen light OFF (manualy)
+        mode: restart
+        trigger:
+          # Выключатель в корридоре
+          - platform: state
+            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+            from: 'off'
+            to: 'on'
+          - platform: state
+            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
+            from: 'on'
+            to: 'off'
+          # Выключатель на входе
+          - platform: state
+            entity_id: sensor.kitchen_wireless_switch_action
+            to: 'single'
+        condition:
+          - condition: or
+            conditions:
+              # Люстра включена
+              - condition: state
+                entity_id: light.kitchen_ceiling
+                state: 'on'
+              # Луна включена
+              - condition: state
+                entity_id: light.kitchen_ceiling_nightlight
+                state: 'on'
+        action:
+          # Выключить люстру и луну
           - service: light.turn_off
-            entity_id: light.kitchen_ceiling_nightlight
+            entity_id:
+              - light.kitchen_ceiling
+              - light.kitchen_ceiling_nightlight
+          # Деактивировать автоматическое включение света
+          - service: automation.turn_off
+            data:
+              entity_id: automation.kitchen_light_on_via_sensors
+          # Подождать 10 секунд
+          - delay: '00:00:10'
+          # Активировать автоматическое включение света
+          - service: automation.turn_on
+            data:
+              entity_id: automation.kitchen_light_on_via_sensors
     
       - alias: Kitchen light started recording
         trigger:
@@ -237,3 +304,32 @@ kitchen_light:
                 {% elif is_state('light.kitchen_ceiling', 'off') %}
                   light.kitchen_ceiling
                 {% endif %}
+
+      - alias: Kitchen switch hold
+        trigger:
+          # Выключатель на входе (удержание)
+          - platform: state
+            entity_id: sensor.kitchen_wireless_switch_action
+            to: 'hold'
+        condition:
+          # Любой свет включен
+          - condition: state
+            entity_id: binary_sensor.kitchen_light_any
+            state: 'on'
+        action:
+          # Выключить весь свет
+          - service: light.turn_off
+            entity_id:
+              - light.kitchen_ceiling
+              - light.kitchen_ceiling_nightlight
+              - light.kitchen_2_relay_l2
+          # Деактивировать автоматическое включение света
+          - service: automation.turn_off
+            data:
+              entity_id: automation.kitchen_light_on_via_sensors
+          # Подождать 10 секунд
+          - delay: '00:00:10'
+          # Активировать автоматическое включение света
+          - service: automation.turn_on
+            data:
+              entity_id: automation.kitchen_light_on_via_sensors

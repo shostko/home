@@ -36,6 +36,7 @@ recorder:
       - sensor.*_co2
       - sensor.*_co2_floating
       - sensor.*_power
+      - sensor.*_action
     entities:
       # Person
       - person.sergey
@@ -97,6 +98,12 @@ light:
     host: 192.168.1.44
     token: !secret xiaomi_bulb1_token
     model: philips.light.bulb
+  - platform: switch
+    name: Kitchen 2 Relay L1
+    entity_id: switch.kitchen_2_relay_l1
+  - platform: switch
+    name: Kitchen 2 Relay L2
+    entity_id: switch.kitchen_2_relay_l2
 
 fan:
   - platform: xiaomi_miio

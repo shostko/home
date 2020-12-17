@@ -84,11 +84,11 @@ views:
           - type: horizontal-stack
             cards:
               - type: button
-                entity: switch.kitchen_2_relay_l1
+                entity: light.kitchen_2_relay_l1
                 name: Гирлянда
                 icon: mdi:string-lights
               - type: button
-                entity: switch.kitchen_2_relay_l2
+                entity: light.kitchen_2_relay_l2
                 name: Подсветка
                 icon: mdi:led-strip-variant
       - type: custom:vertical-stack-in-card
@@ -307,11 +307,11 @@ views:
           - type: horizontal-stack
             cards:
               - type: button
-                entity: switch.kitchen_2_relay_l1
+                entity: light.kitchen_2_relay_l1
                 name: Гирлянда
                 icon: mdi:string-lights
               - type: button
-                entity: switch.kitchen_2_relay_l2
+                entity: light.kitchen_2_relay_l2
                 name: Подсветка
                 icon: mdi:led-strip-variant
       - type: media-control
@@ -505,6 +505,10 @@ views:
                 name: Люстра
               - entity: light.kitchen_ceiling_nightlight
                 name: Луна
+              - entity: light.kitchen_2_relay_l2
+                name: Подсветка
+              - entity: light.kitchen_2_relay_l1
+                name: Гирлянда
               - entity: binary_sensor.kitchen_light_any
                 name: Любой
 
