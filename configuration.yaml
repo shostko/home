@@ -230,84 +230,35 @@ sensor:
   - platform: average
     name: 'Hall Average Temperature'
     precision: 1
-    entities:
-      - sensor.xiaomi_mijia_d107_temperature
-      - sensor.humidifier_1_temp
-      - sensor.radiator_1_temp
-  - platform: average
-    name: 'Hall Average Temperature Floating'
-    precision: 1
     duration:
       minutes: 5
     entities:
-      - sensor.hall_average_temperature
+      - sensor.xiaomi_mijia_d107_temperature
+      - sensor.humidifier_1_temp
   - platform: average
     name: 'Hall Average Humidity'
     precision: 1
+    duration:
+      minutes: 5
     entities:
       - sensor.xiaomi_mijia_d107_humidity
       - sensor.humidifier_1_hum
   - platform: average
-    name: 'Hall Average Humidity Floating'
-    precision: 1
-    duration:
-      minutes: 5
-    entities:
-      - sensor.hall_average_humidity
-  - platform: average
     name: 'Bedroom Average Temperature'
     precision: 1
-    entities:
-      - sensor.bedroom_temp_and_hum_temperature
-      - sensor.radiator_2_current_temperature
-      - sensor.humidifier_2_temp
-  - platform: average
-    name: 'Bedroom Average Temperature Floating'
-    precision: 1
     duration:
       minutes: 5
     entities:
-      - sensor.bedroom_average_temperature
+      - sensor.bedroom_temp_and_hum_temperature
+      - sensor.humidifier_2_temp
   - platform: average
     name: 'Bedroom Average Humidity'
     precision: 1
+    duration:
+      minutes: 5
     entities:
       - sensor.bedroom_temp_and_hum_humidity
       - sensor.humidifier_2_hum
-  - platform: average
-    name: 'Bedroom Average Humidity Floating'
-    precision: 1
-    duration:
-      minutes: 5
-    entities:
-      - sensor.bedroom_average_humidity
-  - platform: average
-    name: 'Kitchen Average Temperature'
-    precision: 1
-    entities:
-      - sensor.xiaomi_mijia_cb15_temperature
-      - sensor.radiator_3_current_temperature
-  - platform: average
-    name: 'Kitchen Average Temperature Floating'
-    precision: 1
-    duration:
-      minutes: 5
-    entities:
-      - sensor.kitchen_average_temperature
-  - platform: average
-    name: 'Cabinet Average Temperature Floating'
-    precision: 1
-    duration:
-      minutes: 3
-    entities:
-      - sensor.hall_mh_z19_temperature
-  - platform: average
-    name: 'Cabinet Average CO2 Floating'
-    precision: 0
-    duration:
-      minutes: 3
-    entities:
-      - sensor.hall_mh_z19_co2
 
 webostv:
   - host: 192.168.1.130

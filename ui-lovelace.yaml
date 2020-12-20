@@ -162,7 +162,7 @@ views:
         cards:
           - type: sensor
             name: Температура
-            entity: sensor.hall_average_temperature_floating
+            entity: sensor.hall_average_temperature
           - type: glance
             show_icon: false
             entities:
@@ -170,18 +170,16 @@ views:
                 name: Датчик
               - entity: sensor.humidifier_1_temp
                 name: Увлажнитель
-              - entity: sensor.radiator_1_temp
-                name: Радиатор
           - type: entities
             entities: []
             footer:
                 type: graph
-                entity: sensor.hall_average_temperature_floating
+                entity: sensor.hall_average_temperature
       - type: custom:vertical-stack-in-card
         cards:
           - type: sensor
             name: Влажность
-            entity: sensor.hall_average_humidity_floating
+            entity: sensor.hall_average_humidity
           - type: glance
             show_icon: false
             entities:
@@ -193,13 +191,15 @@ views:
             entities: []
             footer:
                 type: graph
-                entity: sensor.hall_average_humidity_floating
+                entity: sensor.hall_average_humidity
       - type: custom:vertical-stack-in-card
         cards:
           - type: entities
             entities:
               - entity: fan.humidifier_1
                 name: Увлажнитель
+              - entity: sensor.radiator_1_temp
+                name: Радиатор (температура)
               - entity: lock.moes_radiator_actuator_1_child_lock
                 name: Радиатор (блокировка)
               - entity: sensor.radiator_1_position
@@ -241,7 +241,7 @@ views:
         cards:
           - type: sensor
             name: Температура
-            entity: sensor.bedroom_average_temperature_floating
+            entity: sensor.bedroom_average_temperature
           - type: glance
             show_icon: false
             entities:
@@ -249,18 +249,16 @@ views:
                 name: Датчик
               - entity: sensor.humidifier_2_temp
                 name: Увлажнитель
-              - entity: sensor.radiator_2_temp
-                name: Радиатор
           - type: entities
             entities: []
             footer:
                 type: graph
-                entity: sensor.bedroom_average_temperature_floating
+                entity: sensor.bedroom_average_temperature
       - type: custom:vertical-stack-in-card
         cards:
           - type: sensor
             name: Влажность
-            entity: sensor.bedroom_average_humidity_floating
+            entity: sensor.bedroom_average_humidity
           - type: glance
             show_icon: false
             entities:
@@ -272,13 +270,15 @@ views:
             entities: []
             footer:
                 type: graph
-                entity: sensor.bedroom_average_humidity_floating
+                entity: sensor.bedroom_average_humidity
       - type: custom:vertical-stack-in-card
         cards:
           - type: entities
             entities:
               - entity: fan.humidifier_2
                 name: Увлажнитель
+              - entity: sensor.radiator_2_temp
+                name: Радиатор (температура)
               - entity: lock.moes_radiator_actuator_2_child_lock
                 name: Радиатор (блокировка)
               - entity: sensor.radiator_2_position
@@ -316,23 +316,10 @@ views:
                 icon: mdi:led-strip-variant
       - type: media-control
         entity: media_player.yandex_station_ff98f0102ae5595dd3b0bd40
-      - type: custom:vertical-stack-in-card
-        cards:
-          - type: sensor
-            name: Температура
-            entity: sensor.kitchen_average_temperature_floating
-          - type: glance
-            show_icon: false
-            entities:
-              - entity: sensor.xiaomi_mijia_cb15_temperature
-                name: Датчик
-              - entity: sensor.radiator_3_temp
-                name: Радиатор
-          - type: entities
-            entities: []
-            footer:
-                type: graph
-                entity: sensor.kitchen_average_temperature_floating
+      - type: sensor
+        name: Температура
+        graph: line
+        entity: sensor.xiaomi_mijia_cb15_temperature
       - type: sensor
         name: Влажность
         graph: line
@@ -357,6 +344,8 @@ views:
         cards:
           - type: entities
             entities:
+              - entity: sensor.radiator_3_temp
+                name: Радиатор (температура)
               - entity: lock.moes_radiator_actuator_3_child_lock
                 name: Радиатор (блокировка)
               - entity: sensor.radiator_3_position
