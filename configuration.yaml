@@ -172,51 +172,61 @@ sensor:
         friendly_name: "Radiator Actuator #1 Position"
         unit_of_measurement: '%'
         value_template: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'position') }}"
+        availability_template: "{{ not is_state('climate.moes_radiator_actuator_1_climate', 'unavailable') }}"
       radiator_1_temp:
         unique_id: radiator_1_current_temperature
         friendly_name: "Radiator Actuator #1 Current Temperature"
         unit_of_measurement: '°C'
         value_template: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') }}"
+        availability_template: "{{ not is_state('climate.moes_radiator_actuator_1_climate', 'unavailable') }}"
       radiator_2_position:
         unique_id: radiator_2_position
         friendly_name: "Radiator Actuator #2 Position"
         unit_of_measurement: '%'
         value_template: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'position') }}"
+        availability_template: "{{ not is_state('climate.moes_radiator_actuator_2_climate', 'unavailable') }}"
       radiator_2_temp:
         unique_id: radiator_2_current_temperature
         friendly_name: "Radiator Actuator #2 Current Temperature"
         unit_of_measurement: '°C'
         value_template: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'current_temperature') }}"
+        availability_template: "{{ not is_state('climate.moes_radiator_actuator_2_climate', 'unavailable') }}"
       radiator_3_position:
         unique_id: radiator_3_position
         friendly_name: "Radiator Actuator #3 Position"
         unit_of_measurement: '%'
         value_template: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'position') }}"
+        availability_template: "{{ not is_state('climate.moes_radiator_actuator_3_climate', 'unavailable') }}"
       radiator_3_temp:
         unique_id: radiator_3_current_temperature
         friendly_name: "Radiator Actuator #3 Current Temperature"
         unit_of_measurement: '°C'
         value_template: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'current_temperature') }}"
+        availability_template: "{{ not is_state('climate.moes_radiator_actuator_3_climate', 'unavailable') }}"
       humidifier_1_temp:
         unique_id: humidifier_1_temp
         friendly_name: "Humidifier #1 Temperature"
         unit_of_measurement: '°C'
         value_template: "{{ state_attr('fan.humidifier_1', 'temperature') }}"
+        availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
       humidifier_1_hum:
         unique_id: humidifier_1_hum
         friendly_name: "Humidifier #1 Humidity"
         unit_of_measurement: '%'
         value_template: "{{ state_attr('fan.humidifier_1', 'humidity') }}"
+        availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
       humidifier_2_temp:
         unique_id: humidifier_2_temp
         friendly_name: "Humidifier #2 Temperature"
         unit_of_measurement: '°C'
         value_template: "{{ state_attr('fan.humidifier_2', 'temperature') }}"
+        availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
       humidifier_2_hum:
         unique_id: humidifier_2_hum
         friendly_name: "Humidifier #2 Humidity"
         unit_of_measurement: '%'
         value_template: "{{ state_attr('fan.humidifier_2', 'humidity') }}"
+        availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
   - platform: average
     name: 'Hall Average Temperature'
     precision: 1
