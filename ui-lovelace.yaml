@@ -376,11 +376,11 @@ views:
       - type: sensor
         name: Температура
         graph: line
-        entity: sensor.cabinet_average_temperature_floating
+        entity: sensor.hall_mh_z19_temperature
       - type: sensor
         name: CO2
         graph: line
-        entity: sensor.cabinet_average_co2_floating
+        entity: sensor.hall_mh_z19_co2
       - type: custom:vertical-stack-in-card
         title: Мониторы
         cards:
