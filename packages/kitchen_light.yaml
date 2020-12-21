@@ -1,16 +1,11 @@
 kitchen_light:
 
-    input_boolean:
-    
-      kitchen_light_auto:
-        name: Kitchen Light Auto
-        icon: mdi:flash-auto
-
     input_select:
 
       kitchen_light_mode:
         name: Kitchen Light Mode
         options:
+          - 'None'
           - 'Full'
           - 'Moon'
           - 'Work'
@@ -29,14 +24,30 @@ kitchen_light:
     
       - platform: template
         sensors:
+          kitchen_motion:
+            unique_id: kitchen_motion
+            friendly_name: "Kitchen Motion"
+            device_class: motion
+            value_template: >-
+              {{ 
+                is_state('binary_sensor.rf_motion_0', 'on')
+              and
+                is_state('binary_sensor.rf_motion_1', 'on')
+              }}
+            availability_template: >-
+              {{ 
+                not is_state('binary_sensor.rf_motion_0', 'unavailable')
+              or
+                not is_state('binary_sensor.rf_motion_1', 'unavailable')
+              }}
           kitchen_light_timer_required:
             value_template: >-
               {{ 
-                is_state('binary_sensor.kitchen_light_any', 'on')
+                is_state('group.kitchen_lights', 'on')
               and
                 is_state('binary_sensor.kitchen_motion', 'off')
               and
-                is_state('input_boolean.kitchen_light_auto', 'on')
+                not is_state('input_select.kitchen_light_mode', 'None')
               }}
             icon_template: >-
               {% if is_state("binary_sensor.kitchen_light_timer_required", "on") %}
@@ -49,7 +60,7 @@ kitchen_light:
               {{
                 is_state('binary_sensor.kitchen_motion', 'on')
               and
-                is_state('input_boolean.kitchen_light_auto', 'on')
+                not is_state('input_select.kitchen_light_mode', 'None')
               }}
             icon_template: >-
               {% if is_state("binary_sensor.kitchen_light_motion_trigger", "on") %}
@@ -57,23 +68,15 @@ kitchen_light:
               {% else %}
                 mdi:motion-sensor-off
               {% endif %}
-          kitchen_light_any:
-            value_template: >-
-              {{
-                is_state('light.kitchen_ceiling', 'on')
-              or
-                is_state('light.kitchen_ceiling_nightlight', 'on')
-              or
-                is_state('light.kitchen_2_relay_l2', 'on')
-              }}
-            availability_template: >-
-              {{
-                not is_state('light.kitchen_ceiling', 'unavailable')
-              or 
-                not is_state('light.kitchen_ceiling_nightlight', 'unavailable')
-              or 
-                not is_state('light.kitchen_2_relay_l2', 'unavailable')
-              }}
+
+    group:
+    
+      kitchen_lights:
+        name: Kitchen Lights
+        entities:
+          - light.kitchen_ceiling
+          - light.kitchen_ceiling_nightlight
+          - light.kitchen_2_relay_l2
     
     timer:
     
@@ -129,7 +132,7 @@ kitchen_light:
         condition:
           # Весь свет выключен
           - condition: state
-            entity_id: binary_sensor.kitchen_light_any
+            entity_id: group.kitchen_lights
             state: 'off'
         action:
           # Включить свет
@@ -201,15 +204,13 @@ kitchen_light:
         condition:
           # Любой свет включен
           - condition: state
-            entity_id: binary_sensor.kitchen_light_any
+            entity_id: group.kitchen_lights
             state: 'on'
         action:
           # Выключить весь свет
-          - service: light.turn_off
+          - service: homeassistant.turn_off
             entity_id:
-              - light.kitchen_ceiling
-              - light.kitchen_ceiling_nightlight
-              - light.kitchen_2_relay_l2
+              - group.kitchen_lights
     
       - alias: Kitchen light OFF (manualy)
         mode: restart
@@ -259,7 +260,7 @@ kitchen_light:
         trigger:
           # Любой свет включился
           - platform: state
-            entity_id: binary_sensor.kitchen_light_any
+            entity_id: group.kitchen_lights
             from: 'off'
             to: 'on'
         condition:
@@ -277,7 +278,7 @@ kitchen_light:
         trigger:
           # Весь свет выключился на 20 секунд
           - platform: state
-            entity_id: binary_sensor.kitchen_light_any
+            entity_id: group.kitchen_lights
             to: 'off'
             for: 
               seconds: 20
@@ -314,15 +315,13 @@ kitchen_light:
         condition:
           # Любой свет включен
           - condition: state
-            entity_id: binary_sensor.kitchen_light_any
+            entity_id: group.kitchen_lights
             state: 'on'
         action:
           # Выключить весь свет
-          - service: light.turn_off
+          - service: homeassistant.turn_off
             entity_id:
-              - light.kitchen_ceiling
-              - light.kitchen_ceiling_nightlight
-              - light.kitchen_2_relay_l2
+              - group.kitchen_lights
           # Деактивировать автоматическое включение света
           - service: automation.turn_off
             data:

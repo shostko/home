@@ -314,6 +314,18 @@ views:
                 entity: light.kitchen_2_relay_l2
                 name: Подсветка
                 icon: mdi:led-strip-variant
+          - type: entities
+            entities:
+              - type: section
+              - entity: input_select.kitchen_light_mode
+                name: Авторежим
+              - type: conditional
+                conditions:
+                  - entity: timer.kitchen_light
+                    state_not: idle
+                row:
+                  entity: timer.kitchen_light
+                  name: Свет выключится через
       - type: media-control
         entity: media_player.yandex_station_ff98f0102ae5595dd3b0bd40
       - type: sensor
@@ -324,22 +336,15 @@ views:
         name: Влажность
         graph: line
         entity: sensor.xiaomi_mijia_cb15_humidity
-      - type: custom:vertical-stack-in-card
-        cards:
-          - type: glance
-            entities:
-              - entity: binary_sensor.kitchen_water_leak
-                name: Протечка
-              - entity: binary_sensor.rf_smoke_0
-                name: Задымление
-          - type: glance
-            entities:
-              - entity: binary_sensor.rf_motion_0
-                name: Движение 0
-                show_last_changed: true
-              - entity: binary_sensor.rf_motion_1
-                name: Движение 1
-                show_last_changed: true
+      - type: glance
+        entities:
+          - entity: binary_sensor.kitchen_water_leak
+            name: Протечка
+          - entity: binary_sensor.rf_smoke_0
+            name: Задымление
+          - entity: binary_sensor.kitchen_motion
+            name: Движение 
+            show_last_changed: true
       - type: custom:vertical-stack-in-card
         cards:
           - type: entities
@@ -460,46 +465,6 @@ views:
           - entity: script.balcony_panel_manual
           - entity: script.balcony_panel_auto
           - entity: input_select.balcony_panel_effect
-
-
-
-  - title: TEST
-    id: test
-    path: test
-    panel: true
-    cards:
-      - type: custom:vertical-stack-in-card
-        title: Кухня
-        cards:
-          - type: entities
-            entities:
-              - entity: input_boolean.kitchen_light_auto
-              - entity: input_select.kitchen_light_mode
-              - entity: binary_sensor.kitchen_light_timer_required
-              - entity: binary_sensor.kitchen_light_motion_trigger
-              - entity: input_datetime.kitchen_light_started_at
-              - entity: timer.kitchen_light
-              - entity: binary_sensor.kitchen_motion
-              - entity: binary_sensor.kitchen_light_any
-          - type: history-graph
-            hours_to_show: 1
-            entities:
-              - entity: binary_sensor.rf_motion_0
-                name: Движение 0
-              - entity: binary_sensor.rf_motion_1
-                name: Движение 1
-              - entity: binary_sensor.kitchen_motion
-                name: Объедидённый
-              - entity: light.kitchen_ceiling
-                name: Люстра
-              - entity: light.kitchen_ceiling_nightlight
-                name: Луна
-              - entity: light.kitchen_2_relay_l2
-                name: Подсветка
-              - entity: light.kitchen_2_relay_l1
-                name: Гирлянда
-              - entity: binary_sensor.kitchen_light_any
-                name: Любой
 
 
 
