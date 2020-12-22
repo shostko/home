@@ -295,23 +295,6 @@ kitchen_light:
           - platform: state
             entity_id: sensor.kitchen_wireless_switch_action
             to: 'double'
-        action:
-          # Включить луну или свет
-          - service: light.turn_on
-            data_template:
-              entity_id: >
-                {% if is_state('light.kitchen_ceiling_nightlight', 'off') %}
-                  light.kitchen_ceiling_nightlight
-                {% elif is_state('light.kitchen_ceiling', 'off') %}
-                  light.kitchen_ceiling
-                {% endif %}
-
-      - alias: Kitchen switch hold
-        trigger:
-          # Выключатель на входе (удержание)
-          - platform: state
-            entity_id: sensor.kitchen_wireless_switch_action
-            to: 'hold'
         condition:
           # Любой свет включен
           - condition: state
@@ -332,3 +315,20 @@ kitchen_light:
           - service: automation.turn_on
             data:
               entity_id: automation.kitchen_light_on_via_sensors
+
+      - alias: Kitchen switch hold
+        trigger:
+          # Выключатель на входе (удержание)
+          - platform: state
+            entity_id: sensor.kitchen_wireless_switch_action
+            to: 'hold'
+        action:
+          # Включить луну или свет
+          - service: light.turn_on
+            data_template:
+              entity_id: >
+                {% if is_state('light.kitchen_ceiling_nightlight', 'off') %}
+                  light.kitchen_ceiling_nightlight
+                {% elif is_state('light.kitchen_ceiling', 'off') %}
+                  light.kitchen_ceiling
+                {% endif %}
