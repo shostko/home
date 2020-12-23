@@ -58,6 +58,9 @@ recorder:
       - sensor.radiator_1_position
       - sensor.radiator_2_position
       - sensor.radiator_3_position
+      - sensor.moes_radiator_actuator_1_position
+      - sensor.moes_radiator_actuator_2_position
+      - sensor.moes_radiator_actuator_3_position
       # Humidifier
       - fan.humidifier_1
       - fan.humidifier_2

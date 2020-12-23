@@ -500,7 +500,9 @@ views:
               - entity: sensor.hall_average_temperature_floating
                 name: Плавающее среднее
               - entity: sensor.radiator_1_position
-                name: Радиатор (положение)
+                name: Радиатор (положение template)
+              - entity: sensor.moes_radiator_actuator_1_position
+                name: Радиатор (положение original)
           - type: history-graph
             title: Влажность
             hours_to_show: 24
@@ -531,7 +533,9 @@ views:
               - entity: sensor.bedroom_average_temperature_floating
                 name: Плавающее среднее
               - entity: sensor.radiator_2_position
-                name: Радиатор (положение)
+                name: Радиатор (положение template)
+              - entity: sensor.moes_radiator_actuator_2_position
+                name: Радиатор (положение original)
           - type: history-graph
             title: Влажность
             hours_to_show: 24
@@ -560,7 +564,9 @@ views:
               - entity: sensor.kitchen_average_temperature_floating
                 name: Плавающее среднее
               - entity: sensor.radiator_3_position
-                name: Радиатор (положение)
+                name: Радиатор (положение template)
+              - entity: sensor.moes_radiator_actuator_3_position
+                name: Радиатор (положение original)
           - type: history-graph
             title: Влажность
             hours_to_show: 24
