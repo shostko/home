@@ -440,6 +440,15 @@ views:
                 entity: light.xiaomi_gateway_light
                 name: Ночник
                 icon: mdi:circle-slice-8
+          - type: entities
+            entities:
+              - type: conditional
+                conditions:
+                  - entity: timer.entrance_light
+                    state_not: idle
+                row:
+                  entity: timer.entrance_light
+                  name: Свет выключится через
       - type: sensor
         name: Освещенность
         graph: line

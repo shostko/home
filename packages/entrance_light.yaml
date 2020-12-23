@@ -1,0 +1,127 @@
+entrance_light:
+
+  group:
+  
+    entrance_lights:
+      name: Entrance Lights
+      entities:
+        - light.entrance_wall_switch_right
+        - light.entrance_wall_switch_left
+        - light.xiaomi_gateway_light
+
+  binary_sensor:
+  
+    - platform: template
+      sensors:
+        entrance_light_timer_required:
+          value_template: >-
+            {{ 
+              is_state('group.entrance_lights', 'on')
+            and
+              is_state('binary_sensor.entrance_motion_sensor_occupancy', 'off')
+            }}
+          icon_template: >-
+            {% if is_state("binary_sensor.entrance_light_timer_required", "on") %}
+              mdi:timer
+            {% else %}
+              mdi:timer-off
+            {% endif %}
+    
+  timer:
+  
+    entrance_light:
+      duration: '00:01:00'
+
+  automation:
+  
+    - alias: Entrance light timer reload
+      trigger:
+        # Таймер должен быть включен
+        - platform: state
+          entity_id: binary_sensor.entrance_light_timer_required
+          to: 'on'
+      action:
+        # Включить таймер
+        - service: timer.start
+          entity_id: timer.entrance_light
+  
+    - alias: Entrance light timer cancel
+      trigger:
+        # Таймер должен быть выключен
+        - platform: state
+          entity_id: binary_sensor.entrance_light_timer_required
+          to: 'off'
+      action:
+        # Выключить таймер
+        - service: timer.cancel
+          entity_id: timer.entrance_light
+  
+    - alias: Entrance lights OFF (via timer)
+      trigger:
+        # Таймер
+        - platform: event
+          event_type: timer.finished
+          event_data:
+            entity_id: timer.entrance_light
+      condition:
+        # Любой свет включен
+        - condition: state
+          entity_id: group.entrance_lights
+          state: 'on'
+      action:
+        # Выключить весь свет
+        - service: homeassistant.turn_off
+          entity_id:
+            - group.entrance_lights
+
+    - alias: Entrance puck ON (via sensor)
+      trigger:
+        # Появилось движение
+        - platform: state
+          entity_id: binary_sensor.entrance_motion_sensor_occupancy
+          from: 'off'
+          to: 'on'
+      condition:
+        # Освещённость ниже порога
+        - condition: numeric_state
+          entity_id: sensor.illumination_7811dcb2404d
+          below: 150
+        # Весь выключен
+        - condition: state
+          entity_id: group.entrance_lights
+          state: 'off'
+      action:
+        # Включить шайбу
+        - service: light.turn_on
+          entity_id: light.xiaomi_gateway_light
+          data:
+            brightness: 64
+
+    - alias: Entrance light ON (via door)
+      trigger:
+        # Открылась дверь
+        - platform: state
+          entity_id: binary_sensor.door_window_sensor_158d0001fa3431
+          from: 'off'
+          to: 'on'
+      condition:
+        # Весь выключен
+        - condition: state
+          entity_id: group.entrance_lights
+          state: 'off'
+        # Давно не было движения
+        - condition: state
+          entity_id: binary_sensor.entrance_motion_sensor_occupancy
+          state: 'off'
+          for: 
+            minutes: 1
+      action:
+        # Включить свет
+        - service: light.turn_on
+          data_template:
+            entity_id: >
+              {% if is_state('binary_sensor.tod_day', 'on') %}
+                light.entrance_wall_switch_right
+              {% elif is_state('binary_sensor.tod_night', 'on') %}
+                light.entrance_wall_switch_left
+              {% endif %}

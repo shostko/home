@@ -104,6 +104,12 @@ light:
   - platform: switch
     name: Kitchen 2 Relay L2
     entity_id: switch.kitchen_2_relay_l2
+  - platform: switch
+    name: Entrance Wall Switch Right
+    entity_id: switch.entrance_wall_switch_right
+  - platform: switch
+    name: Entrance Wall Switch Left
+    entity_id: switch.entrance_wall_switch_left
 
 fan:
   - platform: xiaomi_miio
