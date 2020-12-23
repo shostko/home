@@ -13,7 +13,7 @@
       to: 'on'
   action:
     - service: switch.toggle
-      entity_id: switch.mirror_relay
+      entity_id: switch.blitzwolf_plug_switch
 
 ########################################################################
 

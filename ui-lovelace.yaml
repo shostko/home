@@ -61,7 +61,7 @@ views:
                 name: Кровать
                 icon: mdi:bed-king-outline
               - type: button
-                entity: switch.mirror_relay
+                entity: switch.blitzwolf_plug_switch
                 name: Зеркало
                 icon: mdi:account-circle-outline
           - type: light
@@ -228,7 +228,7 @@ views:
                 name: Кровать
                 icon: mdi:bed-king-outline
               - type: button
-                entity: switch.mirror_relay
+                entity: switch.blitzwolf_plug_switch
                 name: Зеркало
                 icon: mdi:account-circle-outline
           - type: light
