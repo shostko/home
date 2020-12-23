@@ -111,6 +111,18 @@ light:
     name: Entrance Wall Switch Left
     entity_id: switch.entrance_wall_switch_left
 
+adaptive_lighting:
+  - name: "Cabinet Desk Lamp"
+    lights: 
+      - light.cabinet_desk_lamp
+    interval: 30
+    min_brightness: 1
+    max_brightness: 100
+    min_color_temp: 2000
+    max_color_temp: 5500
+    sleep_brightness: 1
+    sleep_color_temp: 1000
+
 fan:
   - platform: xiaomi_miio
     host: 192.168.1.104
@@ -225,6 +237,42 @@ sensor:
         unit_of_measurement: '%'
         value_template: "{{ state_attr('fan.humidifier_2', 'humidity') }}"
         availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
+      cabinet_desk_lamp_brightness:
+        unique_id: cabinet_desk_lamp_brightness
+        friendly_name: "Cabinet Desk Lamp Brightness"
+        unit_of_measurement: '%'
+        value_template: "{{ (state_attr('light.cabinet_desk_lamp', 'brightness') * 100 / 255) | int }}"
+        availability_template: "{{ not is_state('light.cabinet_desk_lamp', 'unavailable') }}"
+      cabinet_desk_lamp_color_temp:
+        unique_id: cabinet_desk_lamp_color_temp
+        friendly_name: "Cabinet Desk Lamp Color Temp"
+        unit_of_measurement: 'mired'
+        value_template: "{{ state_attr('light.cabinet_desk_lamp', 'color_temp') }}"
+        availability_template: "{{ not is_state('light.cabinet_desk_lamp', 'unavailable') }}"
+      cabinet_desk_lamp_adaptive_brightness:
+        unique_id: cabinet_desk_lamp_adaptive_brightness
+        friendly_name: "Cabinet Desk Lamp [adaptive] Brightness"
+        unit_of_measurement: '%'
+        value_template: "{{ state_attr('switch.adaptive_lighting_cabinet_desk_lamp', 'brightness_pct') }}"
+        availability_template: "{{ not is_state('switch.adaptive_lighting_cabinet_desk_lamp', 'unavailable') }}"
+      cabinet_desk_lamp_adaptive_color_temp:
+        unique_id: cabinet_desk_lamp_adaptive_color_temp
+        friendly_name: "Cabinet Desk Lamp [adaptive] Color Temp"
+        unit_of_measurement: 'mired'
+        value_template: "{{ state_attr('switch.adaptive_lighting_cabinet_desk_lamp', 'color_temp_mired') }}"
+        availability_template: "{{ not is_state('switch.adaptive_lighting_cabinet_desk_lamp', 'unavailable') }}"
+      cabinet_desk_lamp_adaptive_sun:
+        unique_id: cabinet_desk_lamp_adaptive_sun
+        friendly_name: "Cabinet Desk Lamp [adaptive] Sun"
+        unit_of_measurement: 'sun'
+        value_template: "{{ state_attr('switch.adaptive_lighting_cabinet_desk_lamp', 'sun_position') }}"
+        availability_template: "{{ not is_state('switch.adaptive_lighting_cabinet_desk_lamp', 'unavailable') }}"
+      cabinet_desk_lamp_sun:
+        unique_id: cabinet_desk_lamp_sun
+        friendly_name: "Cabinet Desk Lamp Sun"
+        unit_of_measurement: 'sun'
+        value_template: "{{ state_attr('sun.sun', 'elevation') }}"
+        availability_template: "{{ not is_state('sun.sun', 'unavailable') }}"
   - platform: average
     name: 'Hall Average Temperature'
     precision: 1

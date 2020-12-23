@@ -576,16 +576,28 @@ views:
             entities:
               - entity: sensor.hall_mh_z19_temperature
                 name: Датчик
-              - entity: sensor.cabinet_average_temperature_floating
-                name: Плавающее среднее
           - type: history-graph
             title: CO2
             hours_to_show: 24
             entities:
               - entity: sensor.hall_mh_z19_co2
                 name: Датчик
-              - entity: sensor.cabinet_average_co2_floating
-                name: Плавающее среднее
+          - type: history-graph
+            title: Свет
+            hours_to_show: 24
+            entities:
+              - entity: sensor.cabinet_desk_lamp_brightness
+                name: Яркость Реал
+              - entity: sensor.cabinet_desk_lamp_adaptive_brightness
+                name: Яркость Адапт
+              - entity: sensor.cabinet_desk_lamp_color_temp
+                name: Температура Реал
+              - entity: sensor.cabinet_desk_lamp_adaptive_color_temp
+                name: Температура Адапт
+              - entity: sensor.cabinet_desk_lamp_sun
+                name: Солнце Реал
+              - entity: sensor.cabinet_desk_lamp_adaptive_sun
+                name: Солнце Адапт
 
 
 
