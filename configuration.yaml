@@ -64,6 +64,13 @@ recorder:
       # Filter
       - sensor.drink_water_drink_filter
       - sensor.raw_water_drink_filter
+      # Temporary
+      - sensor.cabinet_desk_lamp_brightness
+      - sensor.cabinet_desk_lamp_adaptive_brightness
+      - sensor.cabinet_desk_lamp_color_temp
+      - sensor.cabinet_desk_lamp_adaptive_color_temp
+      - sensor.cabinet_desk_lamp_sun
+      - sensor.cabinet_desk_lamp_adaptive_sun
 
 lovelace:
   mode: yaml
@@ -115,13 +122,15 @@ adaptive_lighting:
   - name: "Cabinet Desk Lamp"
     lights: 
       - light.cabinet_desk_lamp
-    interval: 30
+    transition: 60
+    interval: 300
     min_brightness: 1
     max_brightness: 100
     min_color_temp: 2000
     max_color_temp: 5500
     sleep_brightness: 1
     sleep_color_temp: 1000
+    detect_non_ha_changes: true
 
 fan:
   - platform: xiaomi_miio
@@ -246,7 +255,7 @@ sensor:
       cabinet_desk_lamp_color_temp:
         unique_id: cabinet_desk_lamp_color_temp
         friendly_name: "Cabinet Desk Lamp Color Temp"
-        unit_of_measurement: 'mired'
+        unit_of_measurement: '°'
         value_template: "{{ state_attr('light.cabinet_desk_lamp', 'color_temp') }}"
         availability_template: "{{ not is_state('light.cabinet_desk_lamp', 'unavailable') }}"
       cabinet_desk_lamp_adaptive_brightness:
@@ -258,7 +267,7 @@ sensor:
       cabinet_desk_lamp_adaptive_color_temp:
         unique_id: cabinet_desk_lamp_adaptive_color_temp
         friendly_name: "Cabinet Desk Lamp [adaptive] Color Temp"
-        unit_of_measurement: 'mired'
+        unit_of_measurement: '°'
         value_template: "{{ state_attr('switch.adaptive_lighting_cabinet_desk_lamp', 'color_temp_mired') }}"
         availability_template: "{{ not is_state('switch.adaptive_lighting_cabinet_desk_lamp', 'unavailable') }}"
       cabinet_desk_lamp_adaptive_sun:
