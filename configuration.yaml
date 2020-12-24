@@ -184,11 +184,8 @@ camera:
 
 switch:
   - platform: broadlink
+    host: 192.168.1.69
     mac: 'C8:F7:42:62:FB:3B'
-    switches:
-      - name: "TV Power"
-        command_on: !secret ir_tv_power
-        command_off: !secret ir_tv_power
 
 sensor:
   - platform: template
@@ -284,9 +281,10 @@ webostv:
   - host: 192.168.1.130
     name: TV
     turn_on_action:
-      service: switch.toggle
+      service: remote.send_command
       data:
-        entity_id: switch.tv_power
+        entity_id: remote.broadlink_ir_bridge_remote
+        command: !secret ir_tv_power
     customize:
       sources:
         - HDMI1
