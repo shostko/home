@@ -73,3 +73,10 @@ cards:
     entities:
       - sensor.drink_water_drink_filter
       - sensor.raw_water_drink_filter
+  - type: glance
+    title: Доп.датчик
+    entities:
+      - entity: sensor.xiaomi_mijia_30d0_temperature
+        name: Температура
+      - entity: sensor.xiaomi_mijia_30d0_humidity
+        name: Влажность
