@@ -45,11 +45,12 @@ recorder:
       - binary_sensor.entrance_motion_sensor_occupancy
       - binary_sensor.rf_motion_0
       - binary_sensor.rf_motion_1
+      - binary_sensor.kitchen_motion
       # Water leak
       - binary_sensor.kitchen_water_leak
       # Smoke detection
       - binary_sensor.rf_smoke_0
-      - binary_sensor.smoke_sensor_158d00041208c5
+      - binary_sensor.honeywell_smoke_sensor
       # Reed switch
       - binary_sensor.door_window_sensor_158d0001fa3431
       # Illumination
