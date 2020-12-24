@@ -1,0 +1,10 @@
+title: Балкон
+id: balcony
+path: balcony
+cards:
+  - type: entities
+    entities:
+      - entity: script.balcony_panel_off
+      - entity: script.balcony_panel_manual
+      - entity: script.balcony_panel_auto
+      - entity: input_select.balcony_panel_effect

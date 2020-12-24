@@ -1,0 +1,75 @@
+title: Кухня
+id: kitchen
+path: kitchen
+icon: mdi:stove
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: button
+            entity: light.kitchen_ceiling
+            name: Люстра
+            icon: mdi:ceiling-light
+          - type: button
+            entity: light.kitchen_ceiling_nightlight
+            name: Ночник
+            icon: mdi:weather-night
+      - type: horizontal-stack
+        cards:
+          - type: button
+            entity: light.kitchen_2_relay_l1
+            name: Гирлянда
+            icon: mdi:string-lights
+          - type: button
+            entity: light.kitchen_2_relay_l2
+            name: Подсветка
+            icon: mdi:led-strip-variant
+      - type: entities
+        entities:
+          - type: section
+          - entity: input_select.kitchen_light_mode
+            name: Авторежим
+          - type: conditional
+            conditions:
+              - entity: timer.kitchen_light
+                state_not: idle
+            row:
+              entity: timer.kitchen_light
+              name: Свет выключится через
+  - type: media-control
+    entity: media_player.yandex_station_ff98f0102ae5595dd3b0bd40
+  - type: sensor
+    name: Температура
+    graph: line
+    entity: sensor.xiaomi_mijia_cb15_temperature
+  - type: sensor
+    name: Влажность
+    graph: line
+    entity: sensor.xiaomi_mijia_cb15_humidity
+  - type: glance
+    entities:
+      - entity: binary_sensor.kitchen_water_leak
+        name: Протечка
+      - entity: binary_sensor.rf_smoke_0
+        name: Задымление
+      - entity: binary_sensor.kitchen_motion
+        name: Движение 
+        show_last_changed: true
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: entities
+        entities:
+          - entity: sensor.radiator_3_temp
+            name: Радиатор (температура)
+          - entity: lock.moes_radiator_actuator_3_child_lock
+            name: Радиатор (блокировка)
+          - entity: sensor.moes_radiator_actuator_3_position
+            name: Радиатор (положение)
+      - type: thermostat
+        entity: climate.moes_radiator_actuator_3_climate
+  - type: entities
+    title: Фильтры
+    entities:
+      - sensor.drink_water_drink_filter
+      - sensor.raw_water_drink_filter

@@ -70,6 +70,17 @@ recorder:
 
 lovelace:
   mode: yaml
+  resources:
+    - url: /local/vertical-stack-in-card.js?v=0.3.2
+      type: js
+  dashboards:
+    lovelace-environment:
+      mode: yaml
+      filename: lovelace/environment.yaml
+      title: Environment
+      icon: mdi:chart-areaspline
+      show_in_sidebar: true
+      require_admin: false
 
 group: !include groups.yaml
 automation: !include automations.yaml

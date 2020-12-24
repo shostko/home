@@ -1,0 +1,60 @@
+title: Кабинет
+id: cabinet
+path: cabinet
+icon: mdi:desk
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: button
+            entity: switch.cupboard_relay
+            name: Шкаф
+            icon: mdi:cupboard
+          - type: button
+            entity: light.cabinet_desk_lamp
+            name: Настольная лампа
+            icon: mdi:desk-lamp
+  - type: sensor
+    name: Температура
+    graph: line
+    entity: sensor.hall_mh_z19_temperature
+  - type: sensor
+    name: CO2
+    graph: line
+    entity: sensor.hall_mh_z19_co2
+  - type: custom:vertical-stack-in-card
+    title: Мониторы
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: button
+            entity: switch.useelink_multiprise_switch_l3
+            name: Левый
+            icon: mdi:monitor-edit
+          - type: button
+            entity: switch.useelink_multiprise_switch_l1
+            name: Правый
+            icon: mdi:monitor-dashboard
+  - type: custom:vertical-stack-in-card
+    title: Аквариум
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: button
+            entity: light.wled_aqua
+            name: Свет
+            icon: mdi:lightbulb-on-outline
+          - type: button
+            entity: switch.useelink_multiprise_switch_l2
+            name: Обогреватель
+            icon: mdi:patio-heater
+          - type: button
+            entity: switch.useelink_multiprise_switch_l4
+            name: Фильтр
+            icon: mdi:air-filter
+  - type: entities
+    entities:
+      - entity: switch.useelink_multiprise_switch_l5
+        name: USB
+        icon: mdi:usb-port

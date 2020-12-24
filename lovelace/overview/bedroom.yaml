@@ -1,0 +1,79 @@
+title: Спальня
+id: bedroom
+path: bedroom
+icon: mdi:bed
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: button
+            entity: switch.bedroom_wall_switch_left
+            name: Люстра
+            icon: mdi:ceiling-light
+          - type: button
+            entity: switch.xiaomi_power_plug_1_switch
+            name: Кровать
+            icon: mdi:bed-king-outline
+          - type: button
+            entity: switch.blitzwolf_plug_switch
+            name: Зеркало
+            icon: mdi:account-circle-outline
+      - type: light
+        entity: light.wled_maria_bed
+        name: Кроватка
+        icon: mdi:led-strip-variant
+  - type: media-control
+    entity: media_player.yandex_station_ff98f02997470e7b4ca9be2f
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: sensor
+        name: Температура
+        entity: sensor.bedroom_average_temperature
+      - type: glance
+        show_icon: false
+        entities:
+          - entity: sensor.bedroom_temp_and_hum_temperature
+            name: Датчик
+          - entity: sensor.humidifier_2_temp
+            name: Увлажнитель
+      - type: entities
+        entities: []
+        footer:
+            type: graph
+            entity: sensor.bedroom_average_temperature
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: sensor
+        name: Влажность
+        entity: sensor.bedroom_average_humidity
+      - type: glance
+        show_icon: false
+        entities:
+          - entity: sensor.bedroom_temp_and_hum_humidity
+            name: Датчик
+          - entity: sensor.humidifier_2_hum
+            name: Увлажнитель
+      - type: entities
+        entities: []
+        footer:
+            type: graph
+            entity: sensor.bedroom_average_humidity
+  - type: glance
+    entities:
+      - entity: binary_sensor.honeywell_smoke_sensor
+        name: Задымление
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: entities
+        entities:
+          - entity: fan.humidifier_2
+            name: Увлажнитель
+          - entity: sensor.radiator_2_temp
+            name: Радиатор (температура)
+          - entity: lock.moes_radiator_actuator_2_child_lock
+            name: Радиатор (блокировка)
+          - entity: sensor.moes_radiator_actuator_2_position
+            name: Радиатор (положение)
+      - type: thermostat
+        entity: climate.moes_radiator_actuator_2_climate
