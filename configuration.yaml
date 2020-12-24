@@ -55,9 +55,6 @@ recorder:
       # Illumination
       - sensor.illumination_7811dcb2404d
       # Radiator
-      - sensor.radiator_1_position
-      - sensor.radiator_2_position
-      - sensor.radiator_3_position
       - sensor.moes_radiator_actuator_1_position
       - sensor.moes_radiator_actuator_2_position
       - sensor.moes_radiator_actuator_3_position
@@ -68,12 +65,8 @@ recorder:
       - sensor.drink_water_drink_filter
       - sensor.raw_water_drink_filter
       # Temporary
-      - sensor.cabinet_desk_lamp_brightness
-      - sensor.cabinet_desk_lamp_adaptive_brightness
       - sensor.cabinet_desk_lamp_color_temp
       - sensor.cabinet_desk_lamp_adaptive_color_temp
-      - sensor.cabinet_desk_lamp_sun
-      - sensor.cabinet_desk_lamp_adaptive_sun
 
 lovelace:
   mode: yaml
@@ -189,36 +182,18 @@ switch:
 sensor:
   - platform: template
     sensors:
-      radiator_1_position:
-        unique_id: radiator_1_position
-        friendly_name: "Radiator Actuator #1 Position"
-        unit_of_measurement: '%'
-        value_template: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'position') }}"
-        availability_template: "{{ not is_state('climate.moes_radiator_actuator_1_climate', 'unavailable') }}"
       radiator_1_temp:
         unique_id: radiator_1_current_temperature
         friendly_name: "Radiator Actuator #1 Current Temperature"
         unit_of_measurement: '°C'
         value_template: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') }}"
         availability_template: "{{ not is_state('climate.moes_radiator_actuator_1_climate', 'unavailable') }}"
-      radiator_2_position:
-        unique_id: radiator_2_position
-        friendly_name: "Radiator Actuator #2 Position"
-        unit_of_measurement: '%'
-        value_template: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'position') }}"
-        availability_template: "{{ not is_state('climate.moes_radiator_actuator_2_climate', 'unavailable') }}"
       radiator_2_temp:
         unique_id: radiator_2_current_temperature
         friendly_name: "Radiator Actuator #2 Current Temperature"
         unit_of_measurement: '°C'
         value_template: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'current_temperature') }}"
         availability_template: "{{ not is_state('climate.moes_radiator_actuator_2_climate', 'unavailable') }}"
-      radiator_3_position:
-        unique_id: radiator_3_position
-        friendly_name: "Radiator Actuator #3 Position"
-        unit_of_measurement: '%'
-        value_template: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'position') }}"
-        availability_template: "{{ not is_state('climate.moes_radiator_actuator_3_climate', 'unavailable') }}"
       radiator_3_temp:
         unique_id: radiator_3_current_temperature
         friendly_name: "Radiator Actuator #3 Current Temperature"
@@ -249,42 +224,18 @@ sensor:
         unit_of_measurement: '%'
         value_template: "{{ state_attr('fan.humidifier_2', 'humidity') }}"
         availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
-      cabinet_desk_lamp_brightness:
-        unique_id: cabinet_desk_lamp_brightness
-        friendly_name: "Cabinet Desk Lamp Brightness"
-        unit_of_measurement: '%'
-        value_template: "{{ (state_attr('light.cabinet_desk_lamp', 'brightness') * 100 / 255) | int }}"
-        availability_template: "{{ not is_state('light.cabinet_desk_lamp', 'unavailable') }}"
       cabinet_desk_lamp_color_temp:
         unique_id: cabinet_desk_lamp_color_temp
         friendly_name: "Cabinet Desk Lamp Color Temp"
         unit_of_measurement: '°'
         value_template: "{{ state_attr('light.cabinet_desk_lamp', 'color_temp') }}"
         availability_template: "{{ not is_state('light.cabinet_desk_lamp', 'unavailable') }}"
-      cabinet_desk_lamp_adaptive_brightness:
-        unique_id: cabinet_desk_lamp_adaptive_brightness
-        friendly_name: "Cabinet Desk Lamp [adaptive] Brightness"
-        unit_of_measurement: '%'
-        value_template: "{{ state_attr('switch.adaptive_lighting_cabinet_desk_lamp', 'brightness_pct') }}"
-        availability_template: "{{ not is_state('switch.adaptive_lighting_cabinet_desk_lamp', 'unavailable') }}"
       cabinet_desk_lamp_adaptive_color_temp:
         unique_id: cabinet_desk_lamp_adaptive_color_temp
         friendly_name: "Cabinet Desk Lamp [adaptive] Color Temp"
         unit_of_measurement: '°'
         value_template: "{{ state_attr('switch.adaptive_lighting_cabinet_desk_lamp', 'color_temp_mired') }}"
         availability_template: "{{ not is_state('switch.adaptive_lighting_cabinet_desk_lamp', 'unavailable') }}"
-      cabinet_desk_lamp_adaptive_sun:
-        unique_id: cabinet_desk_lamp_adaptive_sun
-        friendly_name: "Cabinet Desk Lamp [adaptive] Sun"
-        unit_of_measurement: 'sun'
-        value_template: "{{ state_attr('switch.adaptive_lighting_cabinet_desk_lamp', 'sun_position') }}"
-        availability_template: "{{ not is_state('switch.adaptive_lighting_cabinet_desk_lamp', 'unavailable') }}"
-      cabinet_desk_lamp_sun:
-        unique_id: cabinet_desk_lamp_sun
-        friendly_name: "Cabinet Desk Lamp Sun"
-        unit_of_measurement: 'sun'
-        value_template: "{{ state_attr('sun.sun', 'elevation') }}"
-        availability_template: "{{ not is_state('sun.sun', 'unavailable') }}"
   - platform: average
     name: 'Hall Average Temperature'
     precision: 1
