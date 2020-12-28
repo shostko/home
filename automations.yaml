@@ -1,5 +1,5 @@
 
-# Bedroom Mirror
+# Bedroom
 
 - alias: Toggle Bedroom Mirror with Switch
   trigger:
@@ -13,7 +13,19 @@
       to: 'on'
   action:
     - service: switch.toggle
-      entity_id: switch.blitzwolf_plug_switch
+      entity_id: switch.xiaomi_socket_1
+
+- alias: Bedroom Switch Both
+  trigger:
+    - platform: state
+      entity_id: sensor.bedroom_wall_switch_action
+      to: 'single_both'
+    - platform: state
+      entity_id: sensor.bedroom_wall_switch_action
+      to: 'single_right'
+  action:
+    - service: switch.toggle
+      entity_id: switch.xiaomi_power_plug_1_switch
 
 ########################################################################
 
@@ -243,17 +255,6 @@
     - service: notify.family
       data:
         message: "Протечка на кухне устранена..."
-
-########################################################################
-
-- alias: Toggle Bed with Wall Switch Right
-  trigger:
-    - platform: state
-      entity_id: sensor.bedroom_wall_switch_action
-      to: 'single_right'
-  action:
-    - service: switch.toggle
-      entity_id: switch.xiaomi_power_plug_1_switch
 
 ########################################################################
 

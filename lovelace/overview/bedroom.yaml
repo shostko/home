@@ -16,7 +16,7 @@ cards:
             name: Кровать
             icon: mdi:bed-king-outline
           - type: button
-            entity: switch.blitzwolf_plug_switch
+            entity: switch.xiaomi_socket_1
             name: Зеркало
             icon: mdi:account-circle-outline
       - type: light
