@@ -66,6 +66,8 @@ recorder:
       - sensor.drink_water_drink_filter
       - sensor.raw_water_drink_filter
       # Temporary
+      - binary_sensor.bedroom_mirror_switch_contact
+      - automation.toggle_bedroom_mirror_with_switch
       - sensor.cabinet_desk_lamp_color_temp
       - sensor.cabinet_desk_lamp_adaptive_color_temp
 
