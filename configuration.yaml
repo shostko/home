@@ -115,6 +115,23 @@ light:
     host: 192.168.1.44
     token: !secret xiaomi_bulb1_token
     model: philips.light.bulb
+  - platform: mqtt
+    name: "ShellyDimmerWN0"
+    command_topic: "ShellyDimmerWN0/cmnd/POWER"
+    state_topic: "ShellyDimmerWN0/tele/STATE"
+    state_value_template: "{{ value_json.POWER }}"
+    availability_topic: "ShellyDimmerWN0/tele/LWT"
+    brightness_command_topic: "ShellyDimmerWN0/cmnd/Dimmer"
+    brightness_state_topic: "ShellyDimmerWN0/tele/STATE"
+    brightness_scale: 100
+    on_command_type: "brightness"
+    brightness_value_template: "{{ value_json.Dimmer }}"
+    payload_on: "ON"
+    payload_off: "OFF"
+    payload_available: "Online"
+    payload_not_available: "Offline"
+    qos: 1
+    retain: false
   - platform: switch
     name: Kitchen 2 Relay L1
     entity_id: switch.kitchen_2_relay_l1
@@ -318,7 +335,7 @@ yandex_smart_home:
       - switch.cupboard_relay
       - switch.hall_wall_switch_left
       - switch.hall_wall_switch_right
-      - switch.bra2_relay
+      - light.shellydimmerwn0
       - switch.bedroom_wall_switch_left
       - switch.xiaomi_power_plug_1_switch
       - switch.xiaomi_socket_1
@@ -348,7 +365,7 @@ yandex_smart_home:
       type: devices.types.light
       name: 'Люстра 3'
       room: 'Зал'
-    switch.bra2_relay:
+    light.shellydimmerwn0:
       type: devices.types.light
       name: 'Бра 2'
       room: 'Зал'

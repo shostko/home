@@ -58,3 +58,6 @@ cards:
       - entity: switch.useelink_multiprise_switch_l5
         name: USB
         icon: mdi:usb-port
+      - entity: switch.blinds_0
+        name: Жалюзи
+
