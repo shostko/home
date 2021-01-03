@@ -1,0 +1,71 @@
+esphome:
+  name: blinds_0
+  platform: ESP8266
+  board: d1_mini
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pwd
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Blinds-0 Fallback Hotspot"
+    password: !secret esphome_pwd
+
+captive_portal:
+
+web_server:
+  port: 80
+  auth:
+    username: admin
+    password: !secret esphome_pwd
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: !secret esphome_pwd
+  services:
+    - service: control_servo
+      variables:
+        level: float
+      then:
+        - servo.write:
+            id: real_servo
+            level: !lambda 'return level / 100.0;'
+
+ota:
+  password: !secret esphome_pwd
+
+servo:
+  - id: real_servo
+    output: pwm_output
+    min_level: 1%
+    idle_level: 7.5%
+    max_level: 15%
+
+output:
+  - platform: esp8266_pwm
+    id: pwm_output
+    pin: D1
+    frequency: 50 Hz
+
+switch:
+  - platform: template
+    name: "Blinds #0"
+    id: blinds_0
+    turn_on_action:
+      - servo.write:
+          id: real_servo
+          level: 1
+      - switch.template.publish:
+          id: blinds_0
+          state: ON
+    turn_off_action:
+      - servo.write:
+          id: real_servo
+          level: -1
+      - switch.template.publish:
+          id: blinds_0
+          state: OFF
