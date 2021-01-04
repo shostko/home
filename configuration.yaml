@@ -61,7 +61,9 @@ recorder:
       - sensor.moes_radiator_actuator_3_position
       # Humidifier
       - fan.humidifier_1
+      - sensor.humidifier_1_water
       - fan.humidifier_2
+      - sensor.humidifier_2_water
       # Filter
       - sensor.drink_water_drink_filter
       - sensor.raw_water_drink_filter
@@ -240,6 +242,12 @@ sensor:
         unit_of_measurement: '%'
         value_template: "{{ state_attr('fan.humidifier_1', 'humidity') }}"
         availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
+      humidifier_1_water:
+        unique_id: humidifier_1_water
+        friendly_name: "Humidifier #1 Water Level"
+        unit_of_measurement: 'w-lvl'
+        value_template: "{{ state_attr('fan.humidifier_1', 'depth') }}"
+        availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
       humidifier_2_temp:
         unique_id: humidifier_2_temp
         friendly_name: "Humidifier #2 Temperature"
@@ -251,6 +259,12 @@ sensor:
         friendly_name: "Humidifier #2 Humidity"
         unit_of_measurement: '%'
         value_template: "{{ state_attr('fan.humidifier_2', 'humidity') }}"
+        availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
+      humidifier_2_water:
+        unique_id: humidifier_2_water
+        friendly_name: "Humidifier #2 Water Level"
+        unit_of_measurement: 'w-lvl'
+        value_template: "{{ state_attr('fan.humidifier_2', 'depth') }}"
         availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
       cabinet_desk_lamp_color_temp:
         unique_id: cabinet_desk_lamp_color_temp
