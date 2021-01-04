@@ -365,7 +365,10 @@ yandex_smart_home:
       - light.cabinet_desk_lamp
       - light.xiaomi_gateway_light
       - media_player.tv
-      - sensor.bedroom_average_temperature_floating
+      - sensor.bedroom_average_temperature
+      - sensor.hall_average_temperature
+      - sensor.xiaomi_mijia_cb15_temperature
+      - sensor.mh_z19_1_temperature
   entity_config:
     switch.cupboard_relay:
       type: devices.types.light
@@ -443,11 +446,38 @@ yandex_smart_home:
       type: devices.types.media_device.tv
       name: 'Телевизор'
       room: 'Зал'
-    sensor.bedroom_average_temperature_floating:
+    sensor.bedroom_average_temperature:
       type: devices.types.sensor
-      name: 'Температура'
+      name: 'Воздух'
       room: 'Спальня'
-      
+      properties:
+        - type: humidity
+          entity: sensor.bedroom_average_humidity
+    sensor.hall_average_temperature:
+      type: devices.types.sensor
+      name: 'Воздух'
+      room: 'Зал'
+      properties:
+        - type: humidity
+          entity: sensor.hall_average_humidity
+    sensor.xiaomi_mijia_cb15_temperature:
+      type: devices.types.sensor
+      name: 'Воздух'
+      room: 'Кухня'
+      properties:
+        - type: temperature
+          entity: sensor.xiaomi_mijia_cb15_temperature
+        - type: humidity
+          entity: sensor.xiaomi_mijia_cb15_humidity
+    sensor.mh_z19_1_temperature:
+      type: devices.types.sensor
+      name: 'Воздух'
+      room: 'Кабинет'
+      properties:
+        - type: temperature
+          entity: sensor.mh_z19_1_temperature
+        - type: co2_level
+          entity: sensor.mh_z19_1_co2
 
 notify:
   - name: sergey
