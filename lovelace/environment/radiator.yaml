@@ -1,0 +1,40 @@
+title: Радиаторы
+id: radiator
+path: radiator
+icon: mdi:radiator
+panel: true
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: history-graph
+        title: Температура
+        hours_to_show: 24
+        entities:
+          - entity: sensor.radiator_1_temp
+            name: Зал
+          - entity: sensor.radiator_2_temp
+            name: Спальня
+          - entity: sensor.radiator_3_temp
+            name: Кухня
+      - type: history-graph
+        title: Положение
+        hours_to_show: 24
+        entities:
+          - entity: sensor.moes_radiator_actuator_1_position
+            name: Зал
+          - entity: sensor.moes_radiator_actuator_2_position
+            name: Спальня
+          - entity: sensor.moes_radiator_actuator_3_position
+            name: Кухня
+      - type: horizontal-stack
+        title: Управление
+        cards:
+          - type: thermostat
+            name: Зал
+            entity: climate.moes_radiator_actuator_1_climate
+          - type: thermostat
+            name: Спальня
+            entity: climate.moes_radiator_actuator_2_climate
+          - type: thermostat
+            name: Кухня
+            entity: climate.moes_radiator_actuator_3_climate

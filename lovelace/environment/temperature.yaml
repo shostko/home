@@ -1,0 +1,54 @@
+title: Температура
+id: temperature
+path: temperature
+icon: mdi:thermometer-lines
+panel: true
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: history-graph
+        title: Зал
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_mijia_d107_temperature
+            name: Датчик
+          - entity: sensor.humidifier_1_temp
+            name: Увлажнитель
+          - entity: sensor.radiator_1_temp
+            name: Радиатор
+          - entity: sensor.hall_average_temperature
+            name: Среднее
+          - entity: sensor.hall_average_temperature_floating
+            name: Плавающее среднее
+      - type: history-graph
+        title: Спальня
+        hours_to_show: 24
+        entities:
+          - entity: sensor.bedroom_temp_and_hum_temperature
+            name: Датчик
+          - entity: sensor.humidifier_2_temp
+            name: Увлажнитель
+          - entity: sensor.radiator_2_temp
+            name: Радиатор
+          - entity: sensor.bedroom_average_temperature
+            name: Среднее
+          - entity: sensor.bedroom_average_temperature_floating
+            name: Плавающее среднее
+      - type: history-graph
+        title: Кухня
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_mijia_cb15_temperature
+            name: Датчик
+          - entity: sensor.radiator_3_temp
+            name: Радиатор
+          - entity: sensor.kitchen_average_temperature
+            name: Среднее
+          - entity: sensor.kitchen_average_temperature_floating
+            name: Плавающее среднее
+      - type: history-graph
+        title: Кабинет
+        hours_to_show: 24
+        entities:
+          - entity: sensor.mh_z19_1_temperature
+            name: Датчик

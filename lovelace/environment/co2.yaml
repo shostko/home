@@ -1,0 +1,11 @@
+title: CO2
+id: co2
+path: c02
+icon: mdi:molecule-co2
+panel: true
+cards:
+  - type: history-graph
+    hours_to_show: 24
+    entities:
+      - entity: sensor.mh_z19_1_co2
+        name: Кабинет

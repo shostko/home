@@ -1,0 +1,38 @@
+title: Влажность
+id: humidity
+path: humidity
+icon: mdi:water-percent
+panel: true
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: history-graph
+        title: Зал
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_mijia_d107_humidity
+            name: Датчик
+          - entity: sensor.humidifier_1_hum
+            name: Увлажнитель
+          - entity: sensor.hall_average_humidity
+            name: Среднее
+          - entity: sensor.hall_average_humidity_floating
+            name: Плавающее среднее
+      - type: history-graph
+        title: Спальня
+        hours_to_show: 24
+        entities:
+          - entity: sensor.bedroom_temp_and_hum_humidity
+            name: Датчик
+          - entity: sensor.humidifier_2_hum
+            name: Увлажнитель
+          - entity: sensor.bedroom_average_humidity
+            name: Среднее
+          - entity: sensor.bedroom_average_humidity_floating
+            name: Плавающее среднее
+      - type: history-graph
+        title: Кухня
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_mijia_cb15_humidity
+            name: Датчик
