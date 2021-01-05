@@ -68,11 +68,14 @@ async def async_setup_entry(hass, entry, async_add_entities):
     for speaker in await quasar.load_speakers():
         speaker['entity'] = entity = (
             YandexStationHDMI(quasar, speaker)
-            if speaker['quasar_info']['platform'] == 'yandexstation'
+            if speaker['quasar_info']['platform'] in
+               ('yandexstation', 'yandexstation_2')
             else YandexStation(quasar, speaker)
         )
         entities.append(entity)
     async_add_entities(entities)
+
+    async_add_entities([YandexIntents(entry.unique_id)])
 
     # add TVs
     if CONF_INCLUDE not in hass.data[DOMAIN][DATA_CONFIG]:
@@ -453,6 +456,30 @@ class YandexStation(MediaPlayerEntity):
                 'request_id': self.requests.pop(request_id)
             })
 
+    async def _set_brightness(self, value: str):
+        if self.device_platform != 'yandexstation_2':
+            _LOGGER.warning("Поддерживается только Яндекс.Станция Макс")
+            return
+
+        device_config = await self.quasar.get_device_config(self.device)
+        if not device_config:
+            _LOGGER.warning("Не получается получить настройки станции")
+            return
+
+        try:
+            value = float(value)
+        except:
+            _LOGGER.exception(f"Недопустимое значение яркости: {value}")
+            return
+
+        if 0 <= value <= 1:
+            device_config['led']['brightness']['auto'] = False
+            device_config['led']['brightness']['value'] = value
+        else:
+            device_config['led']['brightness']['auto'] = True
+
+        await self.quasar.set_device_config(self.device, device_config)
+
     async def async_play_media(self, media_type: str, media_id: str, **kwargs):
         if '/api/tts_proxy/' in media_id:
             session = async_get_clientsession(self.hass)
@@ -504,6 +531,10 @@ class YandexStation(MediaPlayerEntity):
                 payload = {'command': 'playMusic', 'id': media_id,
                            'type': media_type}
 
+            elif media_type == 'brightness':
+                await self._set_brightness(media_id)
+                return
+
             elif media_type.startswith('question'):
                 request_id = str(uuid.uuid4())
                 self.requests[request_id] = (media_type.split(':', 1)[1]
@@ -526,6 +557,10 @@ class YandexStation(MediaPlayerEntity):
             elif media_type == 'command':
                 media_id = utils.fix_cloud_text(media_id)
                 await self.quasar.send(self.device, media_id)
+
+            elif media_type == 'brightness':
+                await self._set_brightness(media_id)
+                return
 
             else:
                 _LOGGER.warning(f"Unsupported media: {media_type}")
@@ -584,25 +619,37 @@ class YandexStationHDMI(YandexStation):
 
     @property
     def supported_features(self):
-        return super().supported_features | SUPPORT_SELECT_SOURCE
+        features = super().supported_features
+        if self.device_config:
+            features |= SUPPORT_SELECT_SOURCE
+        return features
 
     @property
     def source(self):
-        hdmi = self.device_config and self.device_config.get('hdmiAudio')
-        return SOURCE_HDMI if hdmi else SOURCE_STATION
+        if self.device_config:
+            hdmi = self.device_config.get('hdmiAudio')
+            return SOURCE_HDMI if hdmi else SOURCE_STATION
+        return None
 
     @property
     def source_list(self):
         return [SOURCE_STATION, SOURCE_HDMI]
 
     async def async_select_source(self, source):
+        # update config to actual state
+        device_config = await self.quasar.get_device_config(self.device)
+        if not device_config:
+            _LOGGER.warning("Не получается получить настройки станции")
+            return
+
         if source == SOURCE_STATION:
-            self.device_config.pop('hdmiAudio', None)
+            device_config.pop('hdmiAudio', None)
         else:
-            self.device_config['hdmiAudio'] = True
+            device_config['hdmiAudio'] = True
 
-        await self.quasar.set_device_config(self.device, self.device_config)
+        await self.quasar.set_device_config(self.device, device_config)
 
+        self.device_config = device_config
         self.async_schedule_update_ha_state()
 
 
