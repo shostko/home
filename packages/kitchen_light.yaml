@@ -108,8 +108,10 @@ kitchen_light:
                   00:02:00
                 {% elif minutes < 10 %}
                   00:05:00
-                {%- else -%}
+                {% elif minutes < 1400 %}
                   00:10:00
+                {%- else -%}
+                  00:30:00
                 {% endif %}
     
       - alias: Kitchen light timer cancel
@@ -136,6 +138,7 @@ kitchen_light:
             state: 'off'
         action:
           # Включить свет
+          # TODO вынести в скрипт
           - service: light.turn_on
             data_template:
               entity_id: >
@@ -268,11 +271,84 @@ kitchen_light:
           - condition: template
             value_template: '{{ as_timestamp(states("input_datetime.kitchen_light_started_at")) | timestamp_custom("%Y",true) == "1970" }}'
         action:
-          # Записать дату и время
+          # Записать текущую дату и время
           - service: input_datetime.set_datetime
             data:
               entity_id: input_datetime.kitchen_light_started_at
               timestamp: "{{ now().timestamp() }}"
+
+      - alias: Kitchen light started hardcoded (when lights OFF)
+        trigger:
+          # Беспроводная кнопка (двойной клик)
+          - platform: state
+            entity_id: sensor.xiaomi_wireless_button_1_action
+            to: 'double'
+        condition:
+          # Весь свет выключен
+          - condition: state
+            entity_id: group.kitchen_lights
+            state: 'off'
+        action:
+          # Деактивировать запись текущего времени
+          - service: automation.turn_off
+            data:
+              entity_id: automation.kitchen_light_started_recording
+          # Включить свет 
+          # TODO вынести в скрипт
+          - service: light.turn_on
+            data_template:
+              entity_id: >
+                {% if is_state('input_select.kitchen_light_mode', 'Full') %}
+                  light.kitchen_ceiling
+                {% elif is_state('input_select.kitchen_light_mode', 'Moon') %}
+                  light.kitchen_ceiling_nightlight
+                {% elif is_state('input_select.kitchen_light_mode', 'Work') %}
+                  light.kitchen_2_relay_l2
+                {% elif is_state('input_select.kitchen_light_mode', 'Full+Moon') %}
+                  {% if is_state('binary_sensor.tod_day', 'on') %}
+                    light.kitchen_ceiling
+                  {% elif is_state('binary_sensor.tod_night', 'on') %}
+                    light.kitchen_ceiling_nightlight
+                  {% endif %}
+                {% elif is_state('input_select.kitchen_light_mode', 'Full+Work') %}
+                  {% if is_state('binary_sensor.tod_day', 'on') %}
+                    light.kitchen_ceiling
+                  {% elif is_state('binary_sensor.tod_night', 'on') %}
+                    light.kitchen_2_relay_l2
+                  {% endif %}
+                {% endif %}
+          # Записать вчерашнюю дату и время
+          - service: input_datetime.set_datetime
+            data:
+              entity_id: input_datetime.kitchen_light_started_at
+              timestamp: "{{ (now() - timedelta( days = 1 )).timestamp() }}"
+          # Активировать запись текущего времени
+          - service: automation.turn_on
+            data:
+              entity_id: automation.kitchen_light_started_recording
+
+      - alias: Kitchen light started hardcoded (when lights ON)
+        trigger:
+          # Беспроводная кнопка (двойной клик)
+          - platform: state
+            entity_id: sensor.xiaomi_wireless_button_1_action
+            to: 'double'
+        condition:
+          # Любой свет включен
+          - condition: state
+            entity_id: group.kitchen_lights
+            state: 'on'
+        action:
+          # Записать вчерашнюю дату и время
+          - service: input_datetime.set_datetime
+            data:
+              entity_id: input_datetime.kitchen_light_started_at
+              timestamp: "{{ (now() - timedelta( days = 1 )).timestamp() }}"
+          # Перезапустить таймер
+          - service: timer.start
+            entity_id: timer.kitchen_light
+            data:
+              duration: 00:30:00
 
       - alias: Kitchen light stopped recording
         trigger:
@@ -322,6 +398,10 @@ kitchen_light:
           - platform: state
             entity_id: sensor.kitchen_wireless_switch_action
             to: 'hold'
+          # Беспроводная кнопка (удержание)
+          - platform: state
+            entity_id: sensor.xiaomi_wireless_button_1_action
+            to: 'hold'
         action:
           # Включить луну или свет
           - service: light.turn_on
@@ -332,3 +412,15 @@ kitchen_light:
                 {% elif is_state('light.kitchen_ceiling', 'off') %}
                   light.kitchen_ceiling
                 {% endif %}
+
+      - alias: Kitchen Work ON (via button)
+        trigger:
+          # Беспроводная кнопка (одинарный клик)
+          - platform: state
+            entity_id: sensor.xiaomi_wireless_button_1_action
+            to: 'single'
+        action:
+          # Включить/выключить рабочую подсветку
+          - service: light.toggle
+            data_template:
+              entity_id: light.kitchen_2_relay_l2
