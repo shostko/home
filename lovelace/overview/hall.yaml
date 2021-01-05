@@ -41,6 +41,8 @@ cards:
         entities:
           - entity: sensor.xiaomi_mijia_d107_temperature
             name: Датчик
+          - entity: sensor.xiaomi_thp_1_temperature
+            name: Столик
           - entity: sensor.humidifier_1_temp
             name: Увлажнитель
       - type: entities
@@ -58,6 +60,8 @@ cards:
         entities:
           - entity: sensor.xiaomi_mijia_d107_humidity
             name: Датчик
+          - entity: sensor.xiaomi_thp_1_humidity
+            name: Столик
           - entity: sensor.humidifier_1_hum
             name: Увлажнитель
       - type: entities
@@ -65,6 +69,10 @@ cards:
         footer:
             type: graph
             entity: sensor.hall_average_humidity
+  - type: sensor
+    name: Давление
+    graph: line
+    entity: sensor.xiaomi_thp_1_pressure_mmhg
   - type: custom:vertical-stack-in-card
     cards:
       - type: entities
