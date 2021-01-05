@@ -92,6 +92,10 @@ cards:
       - type: horizontal-stack
         cards:
           - type: button
+            entity: switch.cabinet_wall_switch_left
+            name: Люстра
+            icon: mdi:ceiling-light
+          - type: button
             entity: switch.cupboard_relay
             name: Шкаф
             icon: mdi:cupboard

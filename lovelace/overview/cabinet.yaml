@@ -8,6 +8,10 @@ cards:
       - type: horizontal-stack
         cards:
           - type: button
+            entity: switch.cabinet_wall_switch_left
+            name: Люстра
+            icon: mdi:ceiling-light
+          - type: button
             entity: switch.cupboard_relay
             name: Шкаф
             icon: mdi:cupboard
@@ -15,6 +19,11 @@ cards:
             entity: light.cabinet_desk_lamp
             name: Настольная лампа
             icon: mdi:desk-lamp
+      - type: entities
+        entities:
+          - type: section
+          - entity: input_select.cabinet_wall_switch_right_mode
+            name: Правая кнопка
   - type: sensor
     name: Температура
     graph: line

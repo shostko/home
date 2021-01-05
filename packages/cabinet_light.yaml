@@ -1,0 +1,98 @@
+cabinet_light:
+
+    input_select:
+
+      cabinet_wall_switch_right_mode:
+        name: Cabinet Wall Switch Right Mode
+        options:
+          - 'Desk'
+          - 'Cupboard'
+        icon: mdi:theme-light-dark
+
+    group:
+    
+      cabinet_lights:
+        name: Cabinet Lights
+        entities:
+          - light.cabinet_wall_switch_left
+          - light.cupboard_relay
+          - light.cabinet_desk_lamp
+    
+    automation:
+    
+      - alias: Cabinet Lights OFF (via button)
+        trigger:
+          # Выключатель на входе (правая кнопка)
+          - platform: state
+            entity_id: switch.cabinet_wall_switch_right
+            from: 'on'
+            to: 'off'
+        condition:
+          # Любой свет включен
+          - condition: state
+            entity_id: group.cabinet_lights
+            state: 'on'
+        action:
+          # Выключить весь свет
+          - service: homeassistant.turn_off
+            entity_id:
+              - group.cabinet_lights
+    
+      - alias: Cabinet Lights OFF (separately)
+        trigger:
+          # Выключился весь свет в группе
+          - platform: state
+            entity_id: group.cabinet_lights
+            from: 'on'
+            to: 'off'
+        condition:
+          # Реле-кнопка включена
+          - condition: state
+            entity_id: switch.cabinet_wall_switch_right
+            state: 'on'
+        action:
+          # Выключить реле-кнопку
+          - service: switch.turn_off
+            entity_id:
+              - switch.cabinet_wall_switch_right
+    
+      - alias: Cabinet Lights ON (via button)
+        trigger:
+          # Выключатель на входе (правая кнопка)
+          - platform: state
+            entity_id: switch.cabinet_wall_switch_right
+            from: 'off'
+            to: 'on'
+        condition:
+          # Весь свет выключен
+          - condition: state
+            entity_id: group.cabinet_lights
+            state: 'off'
+        action:
+          # Включить свет
+          - service: light.turn_on
+            data_template:
+              entity_id: >
+                {% if is_state('input_select.cabinet_wall_switch_right_mode', 'Desk') %}
+                  light.cabinet_desk_lamp
+                {% elif is_state('input_select.cabinet_wall_switch_right_mode', 'Cupboard') %}
+                  light.cupboard_relay
+                {% endif %}
+    
+      - alias: Cabinet Lights ON (separately)
+        trigger:
+          # Включился любой свет в группе
+          - platform: state
+            entity_id: group.cabinet_lights
+            from: 'off'
+            to: 'on'
+        condition:
+          # Реле-кнопка выключена
+          - condition: state
+            entity_id: switch.cabinet_wall_switch_right
+            state: 'off'
+        action:
+          # Включить реле-кнопку
+          - service: switch.turn_on
+            entity_id:
+              - switch.cabinet_wall_switch_right
