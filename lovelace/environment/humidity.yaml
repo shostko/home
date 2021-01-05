@@ -14,6 +14,8 @@ cards:
             name: Датчик
           - entity: sensor.humidifier_1_hum
             name: Увлажнитель
+          - entity: sensor.xiaomi_thp_1_humidity
+            name: Столик
           - entity: sensor.hall_average_humidity
             name: Среднее
           - entity: sensor.hall_average_humidity_floating
@@ -35,4 +37,10 @@ cards:
         hours_to_show: 24
         entities:
           - entity: sensor.xiaomi_mijia_cb15_humidity
+            name: Датчик
+      - type: history-graph
+        title: Балкон
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_thp_2_humidity
             name: Датчик

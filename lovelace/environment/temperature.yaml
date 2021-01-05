@@ -14,6 +14,8 @@ cards:
             name: Датчик
           - entity: sensor.humidifier_1_temp
             name: Увлажнитель
+          - entity: sensor.xiaomi_thp_1_temperature
+            name: Столик
           - entity: sensor.radiator_1_temp
             name: Радиатор
           - entity: sensor.hall_average_temperature
@@ -51,4 +53,10 @@ cards:
         hours_to_show: 24
         entities:
           - entity: sensor.mh_z19_1_temperature
+            name: Датчик
+      - type: history-graph
+        title: Балкон
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_thp_2_temperature
             name: Датчик

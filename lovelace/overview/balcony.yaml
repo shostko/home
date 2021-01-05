@@ -8,3 +8,15 @@ cards:
       - entity: script.balcony_panel_manual
       - entity: script.balcony_panel_auto
       - entity: input_select.balcony_panel_effect
+  - type: sensor
+    name: Температура
+    graph: line
+    entity: sensor.xiaomi_thp_2_temperature
+  - type: sensor
+    name: Влажность
+    graph: line
+    entity: sensor.xiaomi_thp_2_humidity
+  - type: sensor
+    name: Давление
+    graph: line
+    entity: sensor.xiaomi_thp_2_pressure_mmhg

@@ -1,0 +1,20 @@
+title: Давление
+id: pressure
+path: pressure
+icon: mdi:gauge-full
+panel: true
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: history-graph
+        title: Зал
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_thp_1_pressure_mmhg
+            name: Датчик
+      - type: history-graph
+        title: Балкон
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_thp_2_pressure_mmhg
+            name: Датчик

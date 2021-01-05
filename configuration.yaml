@@ -33,6 +33,7 @@ recorder:
       - sensor.*_temp
       - sensor.*_temperature
       - sensor.*_temperature_floating
+      - sensor.*_pressure_mmhg
       - sensor.*_co2
       - sensor.*_co2_floating
       - sensor.*_power
@@ -328,6 +329,40 @@ sensor:
         unit_of_measurement: '°'
         value_template: "{{ state_attr('switch.adaptive_lighting_cabinet_desk_lamp', 'color_temp_mired') }}"
         availability_template: "{{ not is_state('switch.adaptive_lighting_cabinet_desk_lamp', 'unavailable') }}"
+      xiaomi_thp_1_pressure_mmhg:
+        unique_id: xiaomi_thp_1_pressure_mmhg
+        friendly_name: "Xiaomi THP #1 Pressure mmHg"
+        unit_of_measurement: 'mmHg'
+        value_template: "{{ (states('sensor.xiaomi_thp_1_pressure') | int * 0.75006156) | int }}"
+        availability_template: "{{ not is_state('sensor.xiaomi_thp_1_pressure', 'unavailable') }}"
+        icon_template: >-
+          {% set state = states('sensor.xiaomi_thp_1_pressure_mmhg') | int %}
+          {% if state > 820 %}
+            mdi:gauge-full
+          {% elif state > 760 %}
+            mdi:gauge
+          {% elif state > 700 %}
+            mdi:gauge-low
+          {% else %}
+            mdi:gauge-empty
+          {% endif %}
+      xiaomi_thp_2_pressure_mmhg:
+        unique_id: xiaomi_thp_2_pressure_mmhg
+        friendly_name: "Xiaomi THP #2 Pressure mmHg"
+        unit_of_measurement: 'mmHg'
+        value_template: "{{ (states('sensor.xiaomi_thp_2_pressure') | int * 0.75006156) | int }}"
+        availability_template: "{{ not is_state('sensor.xiaomi_thp_2_pressure', 'unavailable') }}"
+        icon_template: >-
+          {% set state = states('sensor.xiaomi_thp_2_pressure_mmhg') | int %}
+          {% if state > 820 %}
+            mdi:gauge-full
+          {% elif state > 760 %}
+            mdi:gauge
+          {% elif state > 700 %}
+            mdi:gauge-low
+          {% else %}
+            mdi:gauge-empty
+          {% endif %}
   - platform: average
     name: 'Hall Average Temperature'
     precision: 1
@@ -336,6 +371,7 @@ sensor:
     entities:
       - sensor.xiaomi_mijia_d107_temperature
       - sensor.humidifier_1_temp
+      - sensor.xiaomi_thp_1_temperature
   - platform: average
     name: 'Hall Average Humidity'
     precision: 1
@@ -344,6 +380,7 @@ sensor:
     entities:
       - sensor.xiaomi_mijia_d107_humidity
       - sensor.humidifier_1_hum
+      - sensor.xiaomi_thp_1_humidity
   - platform: average
     name: 'Bedroom Average Temperature'
     precision: 1

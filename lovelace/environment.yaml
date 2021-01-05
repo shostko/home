@@ -3,6 +3,7 @@ views:
   - !include environment/temperature.yaml
   - !include environment/humidity.yaml
   - !include environment/co2.yaml
+  - !include environment/pressure.yaml
   - !include environment/radiator.yaml
   - !include environment/humidifier.yaml
   - !include environment/lights.yaml
