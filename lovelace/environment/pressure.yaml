@@ -11,10 +11,14 @@ cards:
         hours_to_show: 24
         entities:
           - entity: sensor.xiaomi_thp_1_pressure_mmhg
-            name: Датчик
+            name: mmHg
+          - entity: sensor.xiaomi_thp_1_pressure
+            name: hPa
       - type: history-graph
         title: Балкон
         hours_to_show: 24
         entities:
           - entity: sensor.xiaomi_thp_2_pressure_mmhg
-            name: Датчик
+            name: mmHg
+          - entity: sensor.xiaomi_thp_2_pressure
+            name: hPa
