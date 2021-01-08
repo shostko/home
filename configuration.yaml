@@ -472,6 +472,8 @@ yandex_smart_home:
       - sensor.bedroom_average_temperature
       - sensor.hall_average_temperature
       - sensor.xiaomi_mijia_cb15_temperature
+      - fan.humidifier_1
+      - fan.humidifier_2
   entity_config:
     switch.cupboard_relay:
       type: devices.types.light
@@ -578,6 +580,20 @@ yandex_smart_home:
           entity: sensor.xiaomi_mijia_cb15_temperature
         - type: humidity
           entity: sensor.xiaomi_mijia_cb15_humidity
+    fan.humidifier_1:
+      type: devices.types.humidifier
+      name: 'Увлажнитель'
+      room: 'Зал'
+      properties:
+        - type: water_level
+          entity: sensor.humidifier_1_water
+    fan.humidifier_2:
+      type: devices.types.humidifier
+      name: 'Увлажнитель'
+      room: 'Спальня'
+      properties:
+        - type: water_level
+          entity: sensor.humidifier_2_water
 
 notify:
   - name: sergey
