@@ -9,14 +9,22 @@ humidifier:
           entity_id: sensor.humidifier_1_water
           below: 4
           for: "00:00:10"
+      condition:
+        - condition: template
+          value_template: >
+            {{
+              is_state(trigger.from_state.state, 'on')
+            and
+              trigger.from_state.state | int > trigger.to_state.state | int
+            }}
       action:
         # Выключить увлажнитель
         - service: fan.turn_off
           entity_id: fan.humidifier_1
         # Сообщение в LOG
         - service: notify.log
-          data:
-            message: "Увлажнитель в зале выключен"
+          data_template:
+            message: "Увлажнитель в зале: no {{ trigger.from_state.state }} -> {{ trigger.to_state.state }}"
     
     - alias: Humidifier 1 water low
       trigger:
@@ -26,6 +34,10 @@ humidifier:
           above: 3
           below: 30
           for: "00:00:10"
+      condition:
+        - condition: template
+          value_template: >
+            {{ not is_state(trigger.from_state.state, 'unavailable') }}
       action:
         # Установить режим low
         - service: fan.set_speed
@@ -34,8 +46,8 @@ humidifier:
             speed: silent
         # Сообщение в LOG
         - service: notify.log
-          data:
-            message: "Увлажнитель в зале переведён в тихий режим"
+          data_template:
+            message: "Увлажнитель в зале: low {{ trigger.from_state.state }} -> {{ trigger.to_state.state }}"
     
     - alias: Humidifier 1 water enough
       trigger:
@@ -44,6 +56,14 @@ humidifier:
           entity_id: sensor.humidifier_1_water
           above: 30
           for: "00:00:10"
+      condition:
+        - condition: template
+          value_template: >
+            {{
+              not is_state(trigger.from_state.state, 'unavailable')
+            and
+              trigger.from_state.state | int < trigger.to_state.state | int
+            }}
       action:
         # Установить режим high
         - service: fan.set_speed
@@ -52,8 +72,8 @@ humidifier:
             speed: high
         # Сообщение в LOG
         - service: notify.log
-          data:
-            message: "Увлажнитель в зале переведён в обычный режим"
+          data_template:
+            message: "Увлажнитель в зале: enough {{ trigger.from_state.state }} -> {{ trigger.to_state.state }}"
 
     - alias: Humidifier 2 no water
       trigger:
@@ -62,14 +82,22 @@ humidifier:
           entity_id: sensor.humidifier_2_water
           below: 4
           for: "00:00:10"
+      condition:
+        - condition: template
+          value_template: >
+            {{
+              is_state(trigger.from_state.state, 'on')
+            and
+              trigger.from_state.state | int > trigger.to_state.state | int
+            }}
       action:
         # Выключить увлажнитель
         - service: fan.turn_off
           entity_id: fan.humidifier_2
         # Сообщение в LOG
         - service: notify.log
-          data:
-            message: "Увлажнитель в спальне выключен"
+          data_template:
+            message: "Увлажнитель в спальне: no {{ trigger.from_state.state }} -> {{ trigger.to_state.state }}"
     
     - alias: Humidifier 2 water low
       trigger:
@@ -79,6 +107,10 @@ humidifier:
           above: 3
           below: 30
           for: "00:00:10"
+      condition:
+        - condition: template
+          value_template: >
+            {{ not is_state(trigger.from_state.state, 'unavailable') }}
       action:
         # Установить режим low
         - service: fan.set_speed
@@ -87,8 +119,8 @@ humidifier:
             speed: silent
         # Сообщение в LOG
         - service: notify.log
-          data:
-            message: "Увлажнитель в спальне переведён в тихий режим"
+          data_template:
+            message: "Увлажнитель в спальне: low {{ trigger.from_state.state }} -> {{ trigger.to_state.state }}"
     
     - alias: Humidifier 2 water enough
       trigger:
@@ -97,6 +129,14 @@ humidifier:
           entity_id: sensor.humidifier_2_water
           above: 30
           for: "00:00:10"
+      condition:
+        - condition: template
+          value_template: >
+            {{
+              not is_state(trigger.from_state.state, 'unavailable')
+            and
+              trigger.from_state.state | int < trigger.to_state.state | int
+            }}
       action:
         # Установить режим high
         - service: fan.set_speed
@@ -105,5 +145,5 @@ humidifier:
             speed: high
         # Сообщение в LOG
         - service: notify.log
-          data:
-            message: "Увлажнитель в спальне переведён в обычный режим"
+          data_template:
+            message: "Увлажнитель в спальне: enough {{ trigger.from_state.state }} -> {{ trigger.to_state.state }}"
