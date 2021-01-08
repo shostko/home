@@ -458,7 +458,6 @@ yandex_smart_home:
       - sensor.bedroom_average_temperature
       - sensor.hall_average_temperature
       - sensor.xiaomi_mijia_cb15_temperature
-      - sensor.mh_z19_1_temperature
   entity_config:
     switch.cupboard_relay:
       type: devices.types.light
@@ -547,6 +546,8 @@ yandex_smart_home:
       properties:
         - type: humidity
           entity: sensor.bedroom_average_humidity
+        - type: co2_level
+          entity: sensor.mh_z19_1_co2
     sensor.hall_average_temperature:
       type: devices.types.sensor
       name: 'Воздух'
@@ -563,15 +564,6 @@ yandex_smart_home:
           entity: sensor.xiaomi_mijia_cb15_temperature
         - type: humidity
           entity: sensor.xiaomi_mijia_cb15_humidity
-    sensor.mh_z19_1_temperature:
-      type: devices.types.sensor
-      name: 'Воздух'
-      room: 'Кабинет'
-      properties:
-        - type: temperature
-          entity: sensor.mh_z19_1_temperature
-        - type: co2_level
-          entity: sensor.mh_z19_1_co2
 
 notify:
   - name: sergey

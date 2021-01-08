@@ -32,6 +32,8 @@ cards:
             name: Увлажнитель
           - entity: sensor.radiator_2_temp
             name: Радиатор
+          - entity: sensor.mh_z19_1_temperature
+            name: MH-Z19
           - entity: sensor.bedroom_average_temperature
             name: Среднее
           - entity: sensor.bedroom_average_temperature_floating
@@ -48,12 +50,6 @@ cards:
             name: Среднее
           - entity: sensor.kitchen_average_temperature_floating
             name: Плавающее среднее
-      - type: history-graph
-        title: Кабинет
-        hours_to_show: 24
-        entities:
-          - entity: sensor.mh_z19_1_temperature
-            name: Датчик
       - type: history-graph
         title: Балкон
         hours_to_show: 24

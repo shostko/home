@@ -24,14 +24,6 @@ cards:
           - type: section
           - entity: input_select.cabinet_wall_switch_right_mode
             name: Правая кнопка
-  - type: sensor
-    name: Температура
-    graph: line
-    entity: sensor.mh_z19_1_temperature
-  - type: sensor
-    name: CO2
-    graph: line
-    entity: sensor.mh_z19_1_co2
   - type: custom:vertical-stack-in-card
     title: Мониторы
     cards:

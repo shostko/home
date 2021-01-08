@@ -8,4 +8,4 @@ cards:
     hours_to_show: 24
     entities:
       - entity: sensor.mh_z19_1_co2
-        name: Кабинет
+        name: Спальня

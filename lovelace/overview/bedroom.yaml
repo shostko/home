@@ -59,6 +59,10 @@ cards:
         footer:
             type: graph
             entity: sensor.bedroom_average_humidity
+  - type: sensor
+    name: CO2
+    graph: line
+    entity: sensor.mh_z19_1_co2
   - type: glance
     entities:
       - entity: binary_sensor.honeywell_smoke_sensor
