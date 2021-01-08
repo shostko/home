@@ -63,8 +63,10 @@ recorder:
       # Humidifier
       - fan.humidifier_1
       - sensor.humidifier_1_water
+      - sensor.humidifier_1_depth
       - fan.humidifier_2
       - sensor.humidifier_2_water
+      - sensor.humidifier_2_depth
       # Filter
       - sensor.drink_water_drink_filter
       - sensor.raw_water_drink_filter
@@ -251,18 +253,24 @@ sensor:
         unit_of_measurement: '%'
         value_template: "{{ state_attr('fan.humidifier_1', 'humidity') }}"
         availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
+      humidifier_1_depth:
+        unique_id: humidifier_1_depth
+        friendly_name: "Humidifier #1 Depth"
+        unit_of_measurement: '%'
+        value_template: "{{ state_attr('fan.humidifier_1', 'depth') }}"
+        availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
       humidifier_1_water:
         unique_id: humidifier_1_water
         friendly_name: "Humidifier #1 Water Level"
         unit_of_measurement: '%'
         value_template: >
           {% set depth = state_attr('fan.humidifier_1', 'depth') %}
-          {%- if depth > 120 -%}
+          {%- if depth > 125 -%}
             100
           {%- elif depth < 71 -%}
             0
           {%- else -%}
-            {{ ((depth - 70) / 50 * 100) | int }}
+            {{ ((depth - 70) / 55 * 100) | int }}
           {% endif %}
         availability_template: "{{ 
             not is_state('fan.humidifier_1', 'unavailable') 
@@ -291,18 +299,24 @@ sensor:
         unit_of_measurement: '%'
         value_template: "{{ state_attr('fan.humidifier_2', 'humidity') }}"
         availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
+      humidifier_2_depth:
+        unique_id: humidifier_2_depth
+        friendly_name: "Humidifier #2 Depth"
+        unit_of_measurement: '%'
+        value_template: "{{ state_attr('fan.humidifier_2', 'depth') }}"
+        availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
       humidifier_2_water:
         unique_id: humidifier_2_water
         friendly_name: "Humidifier #2 Water Level"
         unit_of_measurement: '%'
         value_template: >
           {% set depth = state_attr('fan.humidifier_2', 'depth') %}
-          {%- if depth > 120 -%}
+          {%- if depth > 125 -%}
             100
           {%- elif depth < 11 -%}
             0
           {%- else -%}
-            {{ ((depth - 10) / 110 * 100) | int }}
+            {{ ((depth - 10) / 115 * 100) | int }}
           {% endif %}
         availability_template: "{{ 
             not is_state('fan.humidifier_2', 'unavailable') 

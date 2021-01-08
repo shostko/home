@@ -1,0 +1,109 @@
+humidifier:
+
+  automation:
+    
+    - alias: Humidifier 1 no water
+      trigger:
+        # Воды почти нету
+        - platform: numeric_state
+          entity_id: sensor.humidifier_1_water
+          below: 4
+          for: "00:00:10"
+      action:
+        # Выключить увлажнитель
+        - service: fan.turn_off
+          entity_id: fan.humidifier_1
+        # Сообщение в LOG
+        - service: notify.log
+          data:
+            message: "Увлажнитель в зале выключен"
+    
+    - alias: Humidifier 1 water low
+      trigger:
+        # Уровень воды ниже порога (но вода есть)
+        - platform: numeric_state
+          entity_id: sensor.humidifier_1_water
+          above: 3
+          below: 30
+          for: "00:00:10"
+      action:
+        # Установить режим low
+        - service: fan.set_speed
+          entity_id: fan.humidifier_1
+          data:
+            speed: silent
+        # Сообщение в LOG
+        - service: notify.log
+          data:
+            message: "Увлажнитель в зале переведён в тихий режим"
+    
+    - alias: Humidifier 1 water enough
+      trigger:
+        # Уровень воды выше порога
+        - platform: numeric_state
+          entity_id: sensor.humidifier_1_water
+          above: 30
+          for: "00:00:10"
+      action:
+        # Установить режим high
+        - service: fan.set_speed
+          entity_id: fan.humidifier_1
+          data:
+            speed: high
+        # Сообщение в LOG
+        - service: notify.log
+          data:
+            message: "Увлажнитель в зале переведён в обычный режим"
+
+    - alias: Humidifier 2 no water
+      trigger:
+        # Воды почти нету
+        - platform: numeric_state
+          entity_id: sensor.humidifier_2_water
+          below: 4
+          for: "00:00:10"
+      action:
+        # Выключить увлажнитель
+        - service: fan.turn_off
+          entity_id: fan.humidifier_2
+        # Сообщение в LOG
+        - service: notify.log
+          data:
+            message: "Увлажнитель в спальне выключен"
+    
+    - alias: Humidifier 2 water low
+      trigger:
+        # Уровень воды ниже порога (но вода есть)
+        - platform: numeric_state
+          entity_id: sensor.humidifier_2_water
+          above: 3
+          below: 30
+          for: "00:00:10"
+      action:
+        # Установить режим low
+        - service: fan.set_speed
+          entity_id: fan.humidifier_2
+          data:
+            speed: silent
+        # Сообщение в LOG
+        - service: notify.log
+          data:
+            message: "Увлажнитель в спальне переведён в тихий режим"
+    
+    - alias: Humidifier 2 water enough
+      trigger:
+        # Уровень воды выше порога
+        - platform: numeric_state
+          entity_id: sensor.humidifier_2_water
+          above: 30
+          for: "00:00:10"
+      action:
+        # Установить режим high
+        - service: fan.set_speed
+          entity_id: fan.humidifier_2
+          data:
+            speed: high
+        # Сообщение в LOG
+        - service: notify.log
+          data:
+            message: "Увлажнитель в спальне переведён в обычный режим"
