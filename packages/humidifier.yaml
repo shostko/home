@@ -1,6 +1,115 @@
 humidifier:
 
+  fan:
+    - platform: xiaomi_miio
+      host: 192.168.1.104
+      model: zhimi.humidifier.ca1
+      name: "Humidifier #1"
+      token: !secret xiaomi_humidifier1_token
+    - platform: xiaomi_miio
+      host: 192.168.1.203
+      model: zhimi.humidifier.ca1
+      name: "Humidifier #2"
+      token: !secret xiaomi_humidifier2_token
+
+  sensor:
+    - platform: template
+      sensors:
+        humidifier_1_temp:
+          unique_id: humidifier_1_temp
+          friendly_name: "Humidifier #1 Temperature"
+          unit_of_measurement: '°C'
+          value_template: "{{ state_attr('fan.humidifier_1', 'temperature') }}"
+          availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
+        humidifier_1_hum:
+          unique_id: humidifier_1_hum
+          friendly_name: "Humidifier #1 Humidity"
+          unit_of_measurement: '%'
+          value_template: "{{ state_attr('fan.humidifier_1', 'humidity') }}"
+          availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
+        humidifier_1_depth:
+          unique_id: humidifier_1_depth
+          friendly_name: "Humidifier #1 Depth"
+          unit_of_measurement: '%'
+          value_template: "{{ state_attr('fan.humidifier_1', 'depth') }}"
+          availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
+        humidifier_1_water:
+          unique_id: humidifier_1_water
+          friendly_name: "Humidifier #1 Water Level"
+          unit_of_measurement: '%'
+          value_template: >
+            {% set depth = state_attr('fan.humidifier_1', 'depth') | int %}
+            {%- if depth > 125 -%}
+              detached
+            {%- elif depth < 71 -%}
+              0
+            {%- else -%}
+              {{ ((depth - 70) / 55 * 100) | int }}
+            {% endif %}
+          availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
+          icon_template: >-
+            {% if states('sensor.humidifier_1_water') | int > 30 %}
+              mdi:waves
+            {% else %}
+              mdi:wave
+            {% endif %}
+        humidifier_2_temp:
+          unique_id: humidifier_2_temp
+          friendly_name: "Humidifier #2 Temperature"
+          unit_of_measurement: '°C'
+          value_template: "{{ state_attr('fan.humidifier_2', 'temperature') }}"
+          availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
+        humidifier_2_hum:
+          unique_id: humidifier_2_hum
+          friendly_name: "Humidifier #2 Humidity"
+          unit_of_measurement: '%'
+          value_template: "{{ state_attr('fan.humidifier_2', 'humidity') }}"
+          availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
+        humidifier_2_depth:
+          unique_id: humidifier_2_depth
+          friendly_name: "Humidifier #2 Depth"
+          unit_of_measurement: '%'
+          value_template: "{{ state_attr('fan.humidifier_2', 'depth') }}"
+          availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
+        humidifier_2_water:
+          unique_id: humidifier_2_water
+          friendly_name: "Humidifier #2 Water Level"
+          unit_of_measurement: '%'
+          value_template: >
+            {% set depth = state_attr('fan.humidifier_2', 'depth') | int %}
+            {%- if depth > 125 -%}
+              detached
+            {%- elif depth < 11 -%}
+              0
+            {%- else -%}
+              {{ ((depth - 10) / 115 * 100) | int }}
+            {% endif %}
+          availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
+          icon_template: >-
+            {% if states('sensor.humidifier_2_water') | int > 30 %}
+              mdi:waves
+            {% else %}
+              mdi:wave
+            {% endif %}
+    
   automation:
+    
+    - alias: Humidifier 1 is off
+      trigger:
+        # Увлажнитель выключен
+        - platform: state
+          entity_id: fan.humidifier_1
+          to: 'off'
+          for: "00:01:00"
+      condition:
+        - condition: numeric_state
+          entity_id: sensor.humidifier_1_water
+          above: 3
+      action:
+        # Сообщение
+        - service: notify.sergey
+          data_template:
+            message: "Увлажнитель в зале выключен, хотя уровень воды {{ states('sensor.humidifier_1_water') }}%"
     
     - alias: Humidifier 1 no water
       trigger:
@@ -10,13 +119,9 @@ humidifier:
           below: 4
           for: "00:00:10"
       condition:
-        - condition: template
-          value_template: >
-            {{
-              is_state(trigger.from_state.state, 'on')
-            and
-              trigger.from_state.state | int > trigger.to_state.state | int
-            }}
+        - condition: state
+          entity_id: sensor.humidifier_1
+          state: 'on'
       action:
         # Выключить увлажнитель
         - service: fan.turn_off
@@ -36,8 +141,7 @@ humidifier:
           for: "00:00:10"
       condition:
         - condition: template
-          value_template: >
-            {{ not is_state(trigger.from_state.state, 'unavailable') }}
+          value_template: "{{ trigger.from_state.state != 'unavailable' }}"
       action:
         # Установить режим low
         - service: fan.set_speed
@@ -60,9 +164,13 @@ humidifier:
         - condition: template
           value_template: >
             {{
-              not is_state(trigger.from_state.state, 'unavailable')
-            and
+              trigger.from_state.state != 'unavailable'
+            and 
+            (
+              trigger.from_state.state == 'detached'
+            or
               trigger.from_state.state | int < trigger.to_state.state | int
+            )
             }}
       action:
         # Установить режим high
@@ -74,6 +182,23 @@ humidifier:
         - service: notify.log
           data_template:
             message: "Увлажнитель в зале: enough {{ trigger.from_state.state }} -> {{ trigger.to_state.state }}"
+    
+    - alias: Humidifier 2 is off
+      trigger:
+        # Увлажнитель выключен
+        - platform: state
+          entity_id: fan.humidifier_2
+          to: 'off'
+          for: "00:01:00"
+      condition:
+        - condition: numeric_state
+          entity_id: sensor.humidifier_2_water
+          above: 3
+      action:
+        # Сообщение
+        - service: notify.sergey
+          data_template:
+            message: "Увлажнитель в спальне выключен, хотя уровень воды {{ states('sensor.humidifier_1_water') }}%"
 
     - alias: Humidifier 2 no water
       trigger:
@@ -83,13 +208,9 @@ humidifier:
           below: 4
           for: "00:00:10"
       condition:
-        - condition: template
-          value_template: >
-            {{
-              is_state(trigger.from_state.state, 'on')
-            and
-              trigger.from_state.state | int > trigger.to_state.state | int
-            }}
+        - condition: state
+          entity_id: sensor.humidifier_2
+          state: 'on'
       action:
         # Выключить увлажнитель
         - service: fan.turn_off
@@ -109,8 +230,7 @@ humidifier:
           for: "00:00:10"
       condition:
         - condition: template
-          value_template: >
-            {{ not is_state(trigger.from_state.state, 'unavailable') }}
+          value_template: "{{ trigger.from_state.state != 'unavailable' }}"
       action:
         # Установить режим low
         - service: fan.set_speed
@@ -133,9 +253,13 @@ humidifier:
         - condition: template
           value_template: >
             {{
-              not is_state(trigger.from_state.state, 'unavailable')
-            and
+              trigger.from_state.state != 'unavailable'
+            and 
+            (
+              trigger.from_state.state == 'detached'
+            or
               trigger.from_state.state | int < trigger.to_state.state | int
+            )
             }}
       action:
         # Установить режим high
