@@ -31,7 +31,7 @@ kitchen_light:
             value_template: >-
               {{ 
                 is_state('binary_sensor.rf_motion_0', 'on')
-              and
+              or
                 is_state('binary_sensor.rf_motion_1', 'on')
               }}
             availability_template: >-
@@ -84,7 +84,29 @@ kitchen_light:
         duration: '00:05:00'
     
     automation:
-    
+
+      - alias: 'Log: Kitchen motion started'
+        trigger:
+          - platform: state
+            entity_id: binary_sensor.kitchen_motion
+            from: 'off'
+            to: 'on'
+        action:
+          - service: notify.log
+            data:
+              message: "Кухня: обнаружено движение"
+
+      - alias: 'Log: Kitchen motion stopped'
+        trigger:
+          - platform: state
+            entity_id: binary_sensor.kitchen_motion
+            from: 'on'
+            to: 'off'
+        action:
+          - service: notify.log
+            data:
+              message: "Кухня: движение завершено"
+
       - alias: Kitchen light timer reload
         trigger:
           # Таймер должен быть включен
@@ -124,6 +146,10 @@ kitchen_light:
           # Выключить таймер
           - service: timer.cancel
             entity_id: timer.kitchen_light
+          # Сообщение в LOG
+          - service: notify.log
+            data:
+              message: "Кухня: выключить таймер"
     
       - alias: Kitchen light ON (via sensors)
         trigger:
@@ -161,6 +187,10 @@ kitchen_light:
                     light.kitchen_2_relay_l2
                   {% endif %}
                 {% endif %}
+          # Сообщение в LOG
+          - service: notify.log
+            data:
+              message: "Кухня: включить свет по сенсору"
     
       - alias: Kitchen light ON (manualy)
         trigger:
@@ -214,6 +244,10 @@ kitchen_light:
           - service: homeassistant.turn_off
             entity_id:
               - group.kitchen_lights
+          # Сообщение в LOG
+          - service: notify.log
+            data:
+              message: "Кухня: выключить свет по таймеру"
     
       - alias: Kitchen light OFF (manualy)
         mode: restart
