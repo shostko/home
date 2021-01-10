@@ -61,8 +61,8 @@ binary_sensor:
 remote_receiver:
   pin: 4
   dump: rc_switch
-  #filter: 4us
-  #idle: 4ms
+  filter: 4us
+  idle: 4ms
 
 remote_transmitter:
   pin: 5
