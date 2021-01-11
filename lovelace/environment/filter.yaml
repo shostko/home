@@ -1,0 +1,68 @@
+title: Фильтры
+id: filter
+path: filter
+icon: mdi:cup-water
+panel: true
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: entities
+            title: Питьевая
+            entities:
+              - entity: binary_sensor.kitchen_filter_drink_flows
+                name: Кран
+              - entity: sensor.kitchen_filter_drink_sum
+                name: С датчика
+              - entity: sensor.kitchen_filter_drink_daily
+                name: Счётчик
+          - type: entities
+            title: Сырая
+            entities:
+              - entity: binary_sensor.kitchen_filter_raw_flows
+                name: Кран
+              - entity: sensor.kitchen_filter_raw_sum
+                name: С датчика
+              - entity: sensor.kitchen_filter_raw_daily
+                name: Счётчик
+      - type: history-graph
+        title: Краны
+        hours_to_show: 1
+        entities:
+          - entity: binary_sensor.kitchen_filter_drink_flows
+            name: питьевая
+          - entity: binary_sensor.kitchen_filter_raw_flows
+            name: сырая
+      - type: history-graph
+        title: Питьевая
+        hours_to_show: 1
+        entities:
+          - entity: sensor.kitchen_filter_drink_pulses
+            name: литров за 5 секунд
+      - type: history-graph
+        hours_to_show: 1
+        entities:
+          - entity: sensor.kitchen_filter_drink_sum
+            name: литров с начала дня (или старта датчика)
+      - type: history-graph
+        hours_to_show: 1
+        entities:
+          - entity: sensor.kitchen_filter_drink_daily
+            name: потребление сегодня
+      - type: history-graph
+        title: Сырая
+        hours_to_show: 1
+        entities:
+          - entity: sensor.kitchen_filter_raw_pulses
+            name: литров за 5 секунд
+      - type: history-graph
+        hours_to_show: 1
+        entities:
+          - entity: sensor.kitchen_filter_raw_sum
+            name: литров с начала дня (или старта датчика)
+      - type: history-graph
+        hours_to_show: 1
+        entities:
+          - entity: sensor.kitchen_filter_raw_daily
+            name: потребление сегодня

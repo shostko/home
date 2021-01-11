@@ -1,0 +1,100 @@
+esphome:
+  name: drink_filter
+  platform: ESP8266
+  board: esp01_1m
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pwd
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "DrinkFilter Fallback Hotspot"
+    password: !secret esphome_pwd
+
+captive_portal:
+
+web_server:
+  port: 80
+  auth:
+    username: admin
+    password: !secret esphome_pwd
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: !secret esphome_pwd
+
+ota:
+  password: !secret esphome_pwd
+
+time: # Время берем из Home Assistant
+  - platform: homeassistant
+    id: homeassistant_time
+    on_time:
+      - hours: 0
+        minutes: 0
+        seconds: 0
+        then:
+          - sensor.integration.reset:  kitchen_filter_drink_sum
+          - sensor.integration.reset:  kitchen_filter_raw_sum
+
+sensor:
+
+  - platform: pulse_counter
+    id: kitchen_filter_drink_pulses
+    name: "Kitchen Filter Drink Pulses"
+    pin: 14
+    update_interval: 5s
+    unit_of_measurement: л
+    filters:
+      - multiply: 0.000038473 # = (1 / 2166) / 12 
+                              # 2166 - кол-во импульсов на 1 литр воды
+                              # т.к. обновление 12 раз в минуту
+
+  - platform: integration
+    id: kitchen_filter_drink_sum
+    name: "Kitchen Filter Drink Sum"
+    sensor: kitchen_filter_drink_pulses
+    time_unit: min
+    unit_of_measurement: л
+    filters:
+      - multiply: 12 # т.к. обновление 12 раз в минуту
+
+  - platform: pulse_counter
+    id: kitchen_filter_raw_pulses
+    name: "Kitchen Filter Raw Pulses"
+    pin: 4
+    update_interval: 5s
+    unit_of_measurement: л
+    filters:
+      - multiply: 0.000038473 # = (1 / 2166) / 12 
+                              # 2166 - кол-во импульсов на 1 литр воды
+                              # т.к. обновление 12 раз в минуту
+
+  - platform: integration
+    id: kitchen_filter_raw_sum
+    name: "Kitchen Filter Raw Sum"
+    sensor: kitchen_filter_raw_pulses
+    time_unit: min
+    unit_of_measurement: л
+    filters:
+      - multiply: 12 # т.к. обновление 12 раз в минуту
+
+binary_sensor:
+
+  - platform: template
+    device_class: moisture
+    id: kitchen_filter_drink_flows
+    name: "Kitchen Filter Drink Flows"
+    lambda: |-
+      return id(kitchen_filter_drink_pulses).state > 0;
+
+  - platform: template
+    device_class: moisture
+    id: kitchen_filter_raw_flows
+    name: "Kitchen Filter Raw Flows"
+    lambda: |-
+      return id(kitchen_filter_raw_pulses).state > 0;

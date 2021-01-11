@@ -71,8 +71,10 @@ cards:
   - type: entities
     title: Фильтры
     entities:
-      - sensor.drink_water_drink_filter
-      - sensor.raw_water_drink_filter
+      - entity: sensor.kitchen_filter_drink_daily
+        name: Питьевая сегодня
+      - entity: sensor.kitchen_filter_raw_daily
+        name: Сырая сегодня
   - type: glance
     title: Доп.датчик
     entities:

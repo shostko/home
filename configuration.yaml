@@ -67,9 +67,16 @@ recorder:
       - fan.humidifier_2
       - sensor.humidifier_2_water
       - sensor.humidifier_2_depth
-      # Filter
-      - sensor.drink_water_drink_filter
-      - sensor.raw_water_drink_filter
+      # Filter drink
+      - sensor.kitchen_filter_drink_pulses
+      - sensor.kitchen_filter_drink_sum
+      - binary_sensor.kitchen_filter_drink_flows
+      - sensor.kitchen_filter_drink_daily
+      # Filter raw
+      - sensor.kitchen_filter_raw_pulses
+      - sensor.kitchen_filter_raw_sum
+      - binary_sensor.kitchen_filter_raw_flows
+      - sensor.kitchen_filter_raw_daily
       # Temporary
       - binary_sensor.bedroom_mirror_switch_contact
       - automation.toggle_bedroom_mirror_with_switch

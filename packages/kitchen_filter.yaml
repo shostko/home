@@ -1,0 +1,13 @@
+kitchen_filter:
+
+  utility_meter:
+
+    # Дневное потребление питьевой воды
+    kitchen_filter_drink_daily: 
+      source: sensor.kitchen_filter_drink_sum
+      cycle: daily
+    
+    # Дневное потребление сырой воды
+    kitchen_filter_raw_daily: 
+      source: sensor.kitchen_filter_raw_sum
+      cycle: daily
