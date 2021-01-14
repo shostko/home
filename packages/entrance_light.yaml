@@ -18,8 +18,9 @@ entrance_light:
             {{ 
               is_state('group.entrance_lights', 'on')
             and
-              is_state('binary_sensor.entrance_motion_sensor_occupancy', 'off')
+              is_state('binary_sensor.rf_motion_1', 'off')
             }}
+          # binary_sensor.entrance_motion_sensor_occupancy
           icon_template: >-
             {% if is_state("binary_sensor.entrance_light_timer_required", "on") %}
               mdi:timer
@@ -78,7 +79,7 @@ entrance_light:
       trigger:
         # Появилось движение
         - platform: state
-          entity_id: binary_sensor.entrance_motion_sensor_occupancy
+          entity_id: binary_sensor.rf_motion_1
           from: 'off'
           to: 'on'
       condition:
@@ -111,7 +112,7 @@ entrance_light:
           state: 'off'
         # Давно не было движения
         - condition: state
-          entity_id: binary_sensor.entrance_motion_sensor_occupancy
+          entity_id: binary_sensor.rf_motion_1
           state: 'off'
           for: 
             minutes: 1

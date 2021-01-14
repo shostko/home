@@ -1,0 +1,24 @@
+title: Motion
+id: motion
+path: motion
+icon: mdi:motion-sensor
+panel: true
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: history-graph
+        title: Кухня
+        hours_to_show: 2
+        entities:
+          - entity: binary_sensor.kitchen_motion
+            name: общий
+          - entity: binary_sensor.entrance_motion_sensor_occupancy
+            name: zigbee
+          - entity: binary_sensor.rf_motion_0
+            name: rf433
+      - type: history-graph
+        title: Прихожая
+        hours_to_show: 2
+        entities:
+          - entity: binary_sensor.rf_motion_1
+            name: rf433
