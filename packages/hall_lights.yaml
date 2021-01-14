@@ -1,0 +1,87 @@
+hall_lights:
+
+  group:
+  
+    hall_ceiling_lights:
+      name: Hall Ceiling Lights
+      entities:
+        - light.hall_wall_switch_left
+        - light.hall_wall_switch_right
+  
+    hall_lights:
+      name: Hall Lights
+      entities:
+        - light.hall_wall_switch_left
+        - light.hall_wall_switch_right
+        - light.xiaomi_philips_light
+        - light.shellydimmerwn0
+
+  automation:
+
+    - alias: Hall Full Ceiling Light OFF
+      trigger:
+        # Правая кнопка выключателя (одинарный клик)
+        - platform: state
+          entity_id: sensor.hall_wall_switch_action
+          to: 'single_right'
+      condition:
+        # Любой свет на люстре включен
+        - condition: state
+          entity_id: group.hall_ceiling_lights
+          state: 'on'
+      action:
+        # Выключить всю люстру
+        - service: homeassistant.turn_off
+          data_template:
+            entity_id: group.hall_ceiling_lights
+
+    - alias: Hall Full Ceiling Light ON
+      trigger:
+        # Правая кнопка выключателя (одинарный клик)
+        - platform: state
+          entity_id: sensor.hall_wall_switch_action
+          to: 'single_right'
+      condition:
+        # Весь свет на люстре выключен
+        - condition: state
+          entity_id: group.hall_ceiling_lights
+          state: 'off'
+      action:
+        # Включить всю люстру
+        - service: homeassistant.turn_on
+          data_template:
+            entity_id: group.hall_ceiling_lights
+
+    - alias: Hall All Lights OFF
+      trigger:
+        # Обе кнопки выключателя (одинарный клик)
+        - platform: state
+          entity_id: sensor.hall_wall_switch_action
+          to: 'single_both'
+      condition:
+        # Любой свет на люстре включен
+        - condition: state
+          entity_id: group.hall_lights
+          state: 'on'
+      action:
+        # Выключить всю люстру
+        - service: homeassistant.turn_off
+          data_template:
+            entity_id: group.hall_lights
+
+    - alias: Hall All Lights ON
+      trigger:
+        # Обе кнопки выключателя (одинарный клик)
+        - platform: state
+          entity_id: sensor.hall_wall_switch_action
+          to: 'single_both'
+      condition:
+        # Весь свет на люстре выключен
+        - condition: state
+          entity_id: group.hall_lights
+          state: 'off'
+      action:
+        # Включить всю люстру
+        - service: homeassistant.turn_on
+          data_template:
+            entity_id: group.hall_lights

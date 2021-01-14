@@ -164,6 +164,12 @@ light:
   - platform: switch
     name: Cupboard Relay
     entity_id: switch.cupboard_relay
+  - platform: switch
+    name: Hall Wall Switch Left
+    entity_id: switch.hall_wall_switch_left
+  - platform: switch
+    name: Hall Wall Switch Right
+    entity_id: switch.hall_wall_switch_right
 
 adaptive_lighting:
   - name: "Cabinet Desk Lamp"
