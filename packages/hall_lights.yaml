@@ -52,6 +52,18 @@ hall_lights:
           data_template:
             entity_id: group.hall_ceiling_lights
 
+    - alias: Hall Small Ceiling Light OFF
+      trigger:
+        # Левая кнопка выключателя (одинарный клик)
+        - platform: state
+          entity_id: sensor.hall_wall_switch_action
+          to: 'single_left'
+      action:
+        # Переключить меньшую часть на люстре
+        - service: light.toggle
+          data_template:
+            entity_id: light.hall_wall_switch_left
+
     - alias: Hall All Lights OFF
       trigger:
         # Обе кнопки выключателя (одинарный клик)
