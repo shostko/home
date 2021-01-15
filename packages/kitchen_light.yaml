@@ -38,7 +38,7 @@ kitchen_light:
             availability_template: >-
               {{ 
                 not is_state('binary_sensor.rf_motion_0', 'unavailable')
-              and
+              or
                 not is_state('binary_sensor.entrance_motion_sensor_occupancy', 'unavailable')
               }}
           kitchen_light_timer_required:
