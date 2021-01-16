@@ -15,10 +15,16 @@ cards:
             entity: switch.entrance_wall_switch_left
             name: Корридор
             icon: mdi:coach-lamp
+      - type: horizontal-stack
+        cards:
           - type: button
             entity: light.xiaomi_gateway_light
             name: Ночник
             icon: mdi:circle-slice-8
+          - type: button
+            entity: light.entrance_door
+            name: Между дверьми
+            icon: mdi:spotlight
       - type: entities
         entities:
           - type: conditional

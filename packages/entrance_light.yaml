@@ -8,6 +8,7 @@ entrance_light:
         - light.entrance_wall_switch_right
         - light.entrance_wall_switch_left
         - light.xiaomi_gateway_light
+        - light.entrance_door
 
   binary_sensor:
   
@@ -126,3 +127,27 @@ entrance_light:
               {% elif is_state('binary_sensor.tod_night', 'on') %}
                 light.entrance_wall_switch_left
               {% endif %}
+
+    - alias: Entrance Door light ON (via door)
+      trigger:
+        # Открылась дверь
+        - platform: state
+          entity_id: binary_sensor.door_window_sensor_158d0001fa3431
+          from: 'off'
+          to: 'on'
+      action:
+        # Включить свет между дверьми
+        - service: light.turn_on
+          entity_id: light.entrance_door
+
+    - alias: Entrance Door light OFF (via door)
+      trigger:
+        # Закрылась дверь
+        - platform: state
+          entity_id: binary_sensor.door_window_sensor_158d0001fa3431
+          from: 'on'
+          to: 'off'
+      action:
+        # Выключить свет между дверьми
+        - service: light.turn_off
+          entity_id: light.entrance_door

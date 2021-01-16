@@ -1,5 +1,5 @@
 esphome:
-  name: bra2
+  name: entance_door_light
   platform: ESP8266
   board: esp01_1m
 
@@ -9,7 +9,7 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Bra2 Fallback Hotspot"
+    ssid: "Entance Door Fallback Hotspot"
     password: !secret esphome_pwd
 
 captive_portal:
@@ -34,13 +34,13 @@ binary_sensor:
   - platform: gpio
     pin:
       number: GPIO5
-    name: "Bra2 Button"
+    name: "Entance Door Light Button"
     on_state:
       - switch.toggle: fakebutton
 
 switch:
   - platform: template
-    name: "Bra2 Relay"
+    name: "Entance Door Light"
     optimistic: true
     id: fakebutton
     turn_on_action:
