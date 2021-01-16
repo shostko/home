@@ -170,6 +170,15 @@ light:
   - platform: switch
     name: Hall Wall Switch Right
     entity_id: switch.hall_wall_switch_right
+  - platform: switch
+    name: Bedroom Wall Switch Left
+    entity_id: switch.bedroom_wall_switch_left
+  - platform: switch
+    name: Bedroom Bed
+    entity_id: switch.xiaomi_power_plug_1_switch
+  - platform: switch
+    name: Bedroom Mirror
+    entity_id: switch.xiaomi_socket_1
 
 adaptive_lighting:
   - name: "Cabinet Desk Lamp"
@@ -383,6 +392,11 @@ yandex_smart_home:
       - sensor.xiaomi_mijia_cb15_temperature
       - fan.humidifier_1
       - fan.humidifier_2
+      - script.good_night
+      - script.at_bedroom
+      - script.at_hall
+      - script.at_cabinet
+      - script.at_kitchen
   entity_config:
     switch.cupboard_relay:
       type: devices.types.light
@@ -503,6 +517,22 @@ yandex_smart_home:
       properties:
         - type: water_level
           entity: sensor.humidifier_2_water
+    # Скрипты
+    script.good_night:
+      name: 'Спокойной ночи'
+      room: 'Скрипты'
+    script.at_bedroom:
+      name: 'Мы в спальне'
+      room: 'Скрипты'
+    script.at_hall:
+      name: 'Мы в зале'
+      room: 'Скрипты'
+    script.at_cabinet:
+      name: 'Мы в кабинете'
+      room: 'Скрипты'
+    script.at_kitchen:
+      name: 'Мы на кухне'
+      room: 'Скрипты'
 
 notify:
   - name: sergey

@@ -1,0 +1,102 @@
+good_night:
+  sequence:
+    # Выключить весь свет в спальне
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.bedroom_lights
+    # Выключить весь свет в зале
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.hall_lights
+    # Выключить весь свет в кабинете
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.cabinet_lights
+    # Выключить весь свет в прихожей
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.entrance_lights
+    # Выключить весь свет на кухне
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.kitchen_lights
+
+at_bedroom:
+  sequence:
+    # В спальне свет не выключаем
+    # Выключить весь свет в зале
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.hall_lights
+    # Выключить весь свет в кабинете
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.cabinet_lights
+    # Выключить весь свет в прихожей
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.entrance_lights
+    # Выключить весь свет на кухне
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.kitchen_lights 
+
+at_hall:
+  sequence:
+    # Выключить весь свет в спальне
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.bedroom_lights
+    # В зале свет не выключаем
+    # Выключить весь свет в кабинете
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.cabinet_lights
+    # Выключить весь свет в прихожей
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.entrance_lights
+    # Выключить весь свет на кухне
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.kitchen_lights
+
+at_cabinet:
+  sequence:
+    # Выключить весь свет в спальне
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.bedroom_lights
+    # Выключить весь свет в зале
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.hall_lights
+    # В кабинете свет не выключаем
+    # Выключить весь свет в прихожей
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.entrance_lights
+    # Выключить весь свет на кухне
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.kitchen_lights
+
+at_kitchen:
+  sequence:
+    # Выключить весь свет в спальне
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.bedroom_lights
+    # Выключить весь свет в зале
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.hall_lights
+    # Выключить весь свет в кабинете
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.cabinet_lights
+    # Выключить весь свет в прихожей
+    - service: homeassistant.turn_off
+      data_template:
+        entity_id: group.entrance_lights
+    # На кухне свет не выключаем

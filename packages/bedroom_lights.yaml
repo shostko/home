@@ -1,0 +1,10 @@
+bedroom_light:
+
+  group:
+  
+    bedroom_lights:
+      name: Bedroom Lights
+      entities:
+        - light.bedroom_wall_switch_left
+        - light.bedroom_bed
+        - light.bedroom_mirror
