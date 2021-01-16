@@ -99,10 +99,8 @@ lovelace:
       show_in_sidebar: true
       require_admin: false
 
-group: !include groups.yaml
 automation: !include automations.yaml
 script: !include scripts.yaml
-scene: !include scenes.yaml
 
 mqtt:
   broker: core-mosquitto  # Локальный брокер
