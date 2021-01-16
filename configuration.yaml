@@ -390,6 +390,7 @@ yandex_smart_home:
       - sensor.bedroom_average_temperature
       - sensor.hall_average_temperature
       - sensor.xiaomi_mijia_cb15_temperature
+      - sensor.xiaomi_thp_2_temperature
       - fan.humidifier_1
       - fan.humidifier_2
       - script.good_night
@@ -552,6 +553,13 @@ yandex_smart_home:
       properties:
         - type: water_level
           entity: sensor.humidifier_2_water
+    sensor.xiaomi_thp_2_temperature:
+      type: devices.types.sensor
+      name: 'Воздух'
+      room: 'Балкон'
+      properties:
+        - type: humidity
+          entity: sensor.xiaomi_thp_2_humidity
     # Скрипты
     script.good_night:
       name: 'Спокойной ночи'
