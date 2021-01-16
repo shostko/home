@@ -397,6 +397,13 @@ yandex_smart_home:
       - script.at_hall
       - script.at_cabinet
       - script.at_kitchen
+      - group.hall_lights
+      - group.hall_ceiling_lights
+      - group.hall_bra_lights
+      - group.bedroom_lights
+      - group.cabinet_lights
+      - group.entrance_lights
+      - group.kitchen_lights
   entity_config:
     switch.cupboard_relay:
       type: devices.types.light
@@ -478,6 +485,34 @@ yandex_smart_home:
       type: devices.types.media_device.tv
       name: 'Телевизор'
       room: 'Зал'
+    group.hall_lights:
+      type: devices.types.light
+      name: 'Всё'
+      room: 'Зал'
+    group.hall_ceiling_lights:
+      type: devices.types.light
+      name: 'Свет'
+      room: 'Зал'
+    group.hall_bra_lights:
+      type: devices.types.light
+      name: 'Бра'
+      room: 'Зал'
+    group.bedroom_lights:
+      type: devices.types.light
+      name: 'Всё'
+      room: 'Спальня'
+    group.cabinet_lights:
+      type: devices.types.light
+      name: 'Всё'
+      room: 'Кабинет'
+    group.entrance_lights:
+      type: devices.types.light
+      name: 'Всё'
+      room: 'Прихожая'
+    group.kitchen_lights:
+      type: devices.types.light
+      name: 'Всё'
+      room: 'Кухня'
     sensor.bedroom_average_temperature:
       type: devices.types.sensor
       name: 'Воздух'
