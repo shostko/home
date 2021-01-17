@@ -215,21 +215,6 @@
       data:
         message: "Входная дверь закрыта"
 
-- alias: 'Log: Corridor motion in the night'
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.entrance_motion_sensor_occupancy
-      from: 'off'
-      to: 'on'
-  condition:
-    - condition: state
-      entity_id: binary_sensor.tod_night
-      state: 'on'
-  action:
-    - service: notify.log
-      data:
-        message: "Движение в корридоре!"
-
 ########################################################################
 
 # Kitchen Water Leak Sensor
