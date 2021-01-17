@@ -116,7 +116,13 @@ cards:
             entity: switch.entrance_wall_switch_left
             name: Корридор
             icon: mdi:coach-lamp
+      - type: horizontal-stack
+        cards:
           - type: button
             entity: light.xiaomi_gateway_light
-            name: Ночник
+            name: Шайба
             icon: mdi:circle-slice-8
+          - type: button
+            entity: light.entrance_door
+            name: Вход
+            icon: mdi:spotlight
