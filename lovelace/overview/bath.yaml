@@ -1,0 +1,17 @@
+title: Санузел
+id: bath
+path: bath
+icon: mdi:water-pump
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: light
+            entity: light.bath_lights
+            name: Ванна
+            icon: mdi:lightbulb-multiple
+          - type: light
+            entity: light.toilet_lights
+            name: Туалет
+            icon: mdi:lightbulb

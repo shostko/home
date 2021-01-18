@@ -87,6 +87,19 @@ cards:
             name: Подсветка
             icon: mdi:led-strip-variant
   - type: custom:vertical-stack-in-card
+    title: Санузел
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: light
+            entity: light.bath_lights
+            name: Ванна
+            icon: mdi:lightbulb-multiple
+          - type: light
+            entity: light.toilet_lights
+            name: Туалет
+            icon: mdi:lightbulb
+  - type: custom:vertical-stack-in-card
     title: Кабинет
     cards:
       - type: horizontal-stack

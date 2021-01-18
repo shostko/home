@@ -4,6 +4,7 @@ views:
   - !include lovelace/overview/hall.yaml
   - !include lovelace/overview/bedroom.yaml
   - !include lovelace/overview/kitchen.yaml
+  - !include lovelace/overview/bath.yaml
   - !include lovelace/overview/cabinet.yaml
   - !include lovelace/overview/entrance.yaml
   - !include lovelace/overview/balcony.yaml
