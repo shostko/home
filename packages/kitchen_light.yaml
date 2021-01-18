@@ -165,15 +165,6 @@ kitchen_light:
     
       - alias: Kitchen light ON (manualy)
         trigger:
-          # Выключатель в корридоре
-          - platform: state
-            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
-            from: 'off'
-            to: 'on'
-          - platform: state
-            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
-            from: 'on'
-            to: 'off'
           # Выключатель на входе
           - platform: state
             entity_id: sensor.kitchen_wireless_switch_action
@@ -219,15 +210,6 @@ kitchen_light:
       - alias: Kitchen light OFF (manualy)
         mode: restart
         trigger:
-          # Выключатель в корридоре
-          - platform: state
-            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
-            from: 'off'
-            to: 'on'
-          - platform: state
-            entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
-            from: 'on'
-            to: 'off'
           # Выключатель на входе
           - platform: state
             entity_id: sensor.kitchen_wireless_switch_action
