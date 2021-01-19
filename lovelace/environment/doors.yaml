@@ -1,0 +1,16 @@
+title: Doors
+id: doors
+path: doors
+icon: mdi:door
+panel: true
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: history-graph
+        title: Прихожая
+        hours_to_show: 24
+        entities:
+          - entity: binary_sensor.entance_door_button
+            name: кнопка
+          - entity: binary_sensor.door_window_sensor_158d0001fa3431
+            name: zigbee

@@ -52,8 +52,9 @@ recorder:
       # Smoke detection
       - binary_sensor.rf_smoke_0
       - binary_sensor.honeywell_smoke_sensor
-      # Reed switch
+      # Doors
       - binary_sensor.door_window_sensor_158d0001fa3431
+      - binary_sensor.entance_door_button
       # Illumination
       - sensor.illumination_7811dcb2404d
       # Radiator
