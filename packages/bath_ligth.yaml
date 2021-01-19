@@ -1,18 +1,5 @@
 bath_ligth:
 
-  group:
-  
-    bath_lights:
-      name: Bath Lights
-      entities:
-        - light.gledopto_1
-        - light.gledopto_2
-  
-    toilet_lights:
-      name: Toilet Lights
-      entities:
-        - light.gledopto_3
-
   light:
     - platform: group
       name: Bath Lights
@@ -26,27 +13,6 @@ bath_ligth:
 
   automation:
 
-    - alias: Bath lights OFF (via button)
-      trigger:
-        # Левая кнопка выключателя (одинарный клик)
-        - platform: state
-          entity_id: sensor.bath_and_toilet_wireless_switch_action
-          to: 'single_left'
-        # Обе кнопки выключателя (одинарный клик)
-        - platform: state
-          entity_id: sensor.bath_and_toilet_wireless_switch_action
-          to: 'single_both'
-      condition:
-        # Любой свет в ванной включен
-        - condition: state
-          entity_id: group.bath_lights
-          state: 'on'
-      action:
-        # Выключить весь свет
-        - service: homeassistant.turn_off
-          data_template:
-            entity_id: group.bath_lights
-
     - alias: Bath lights ON (via button)
       trigger:
         # Левая кнопка выключателя (одинарный клик)
@@ -57,42 +23,29 @@ bath_ligth:
         - platform: state
           entity_id: sensor.bath_and_toilet_wireless_switch_action
           to: 'single_both'
-      condition:
-        # Весь свет в ванной выключен
-        - condition: state
-          entity_id: group.bath_lights
-          state: 'off'
       action:
-        # Включить весь свет днём или один светильник ночью
-        - service: light.turn_on
-          data_template:
-            entity_id: >-
-              {%- if is_state('binary_sensor.tod_night', 'on') -%}
-                light.gledopto_1
-              {%- else -%}
-                light.bath_lights
-              {%- endif -%}
-
-    - alias: Toilet lights OFF (via button)
-      trigger:
-        # Правая кнопка выключателя (одинарный клик)
-        - platform: state
-          entity_id: sensor.bath_and_toilet_wireless_switch_action
-          to: 'single_right'
-        # Обе кнопки выключателя (одинарный клик)
-        - platform: state
-          entity_id: sensor.bath_and_toilet_wireless_switch_action
-          to: 'single_both'
-      condition:
-        # Свет в туалете включен
-        - condition: state
-          entity_id: group.toilet_lights
-          state: 'on'
-      action:
-        # Выключить свет
-        - service: homeassistant.turn_off
-          data_template:
-            entity_id: group.toilet_lights
+        - choose:
+            # Весь свет в ванной выключен
+            - conditions:
+                - condition: state
+                  entity_id: light.bath_lights
+                  state: 'off'
+              sequence:
+                # Включить весь свет днём или один светильник ночью
+                - service: light.turn_on
+                  data_template:
+                    entity_id: >-
+                      {%- if is_state('binary_sensor.tod_night', 'on') -%}
+                        light.gledopto_1
+                      {%- else -%}
+                        light.bath_lights
+                      {%- endif -%}
+          # Любой свет в ванной включен
+          default:
+            # Выключить весь свет
+            - service: light.turn_off
+              data_template:
+                entity_id: light.bath_lights
 
     - alias: Toilet lights ON (via button)
       trigger:
@@ -104,13 +57,21 @@ bath_ligth:
         - platform: state
           entity_id: sensor.bath_and_toilet_wireless_switch_action
           to: 'single_both'
-      condition:
-        # Свет в туалете выключен
-        - condition: state
-          entity_id: group.toilet_lights
-          state: 'off'
       action:
-        # Включить свет
-        - service: homeassistant.turn_on
-          data_template:
-            entity_id: group.toilet_lights
+        - choose:
+            # Свет в туалете выключен
+            - conditions:
+                - condition: state
+                  entity_id: light.toilet_lights
+                  state: 'off'
+              sequence:
+                # Включить свет
+                - service: light.turn_on
+                  data_template:
+                    entity_id: light.toilet_lights
+          # Свет в туалете включен
+          default:
+            # Выключить свет
+            - service: light.turn_off
+              data_template:
+                entity_id: light.toilet_lights
