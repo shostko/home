@@ -63,10 +63,17 @@ bath_ligth:
           entity_id: group.bath_lights
           state: 'off'
       action:
-        # Включить весь свет
-        - service: homeassistant.turn_on
+        # Включить весь свет днём или один светильник ночью
+        - service: light.turn_on
           data_template:
-            entity_id: group.bath_lights
+            # transition: 1
+            # brightness_pct: 100
+            entity_id: >-
+              {%- if is_state('binary_sensor.tod_night', 'on') -%}
+                light.gledopto_1
+              {%- else -%}
+                light.bath_lights
+              {%- endif -%}
 
     - alias: Toilet lights OFF (via button)
       trigger:
