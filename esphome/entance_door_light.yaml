@@ -32,21 +32,47 @@ ota:
 
 binary_sensor:
   - platform: gpio
+    id: button
+    device_class: door
     pin:
       number: GPIO5
-    name: "Entance Door Light Button"
-    on_state:
-      - switch.toggle: fakebutton
+    name: "Entance Door Button"
+    on_press:
+      then:
+        - switch.turn_on: relay
+        - switch.template.publish:
+            id: fake
+            state: ON
+    on_release:
+      then:
+        - switch.turn_off: relay
+        - switch.template.publish:
+            id: fake
+            state: OFF
 
 switch:
   - platform: template
     name: "Entance Door Light"
-    optimistic: true
-    id: fakebutton
+    optimistic: false
+    id: fake
     turn_on_action:
-    - switch.turn_on: relay
+      - switch.turn_on: relay
+      - switch.template.publish:
+          id: fake
+          state: ON
     turn_off_action:
-    - switch.turn_off: relay
+      if:
+        condition:
+          binary_sensor.is_off: button
+        then:
+          - switch.turn_off: relay
+          - switch.template.publish:
+              id: fake
+              state: OFF
+        else:
+          - switch.template.publish:
+              id: fake
+              state: ON
   - platform: gpio
     id: relay
     pin: GPIO4
