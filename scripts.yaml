@@ -20,6 +20,14 @@ good_night:
     - service: homeassistant.turn_off
       data_template:
         entity_id: group.kitchen_lights
+    # Выключить свет в ванной
+    - service: light.turn_off
+      data_template:
+        entity_id: light.bath_lights
+    # Выключить свет в туалете
+    - service: light.turn_off
+      data_template:
+        entity_id: light.toilet_lights
 
 at_bedroom:
   sequence:
@@ -40,6 +48,14 @@ at_bedroom:
     - service: homeassistant.turn_off
       data_template:
         entity_id: group.kitchen_lights 
+    # Выключить свет в ванной
+    - service: light.turn_off
+      data_template:
+        entity_id: light.bath_lights
+    # Выключить свет в туалете
+    - service: light.turn_off
+      data_template:
+        entity_id: light.toilet_lights
 
 at_hall:
   sequence:
@@ -60,6 +76,14 @@ at_hall:
     - service: homeassistant.turn_off
       data_template:
         entity_id: group.kitchen_lights
+    # Выключить свет в ванной
+    - service: light.turn_off
+      data_template:
+        entity_id: light.bath_lights
+    # Выключить свет в туалете
+    - service: light.turn_off
+      data_template:
+        entity_id: light.toilet_lights
 
 at_cabinet:
   sequence:
@@ -80,6 +104,14 @@ at_cabinet:
     - service: homeassistant.turn_off
       data_template:
         entity_id: group.kitchen_lights
+    # Выключить свет в ванной
+    - service: light.turn_off
+      data_template:
+        entity_id: light.bath_lights
+    # Выключить свет в туалете
+    - service: light.turn_off
+      data_template:
+        entity_id: light.toilet_lights
 
 at_kitchen:
   sequence:
@@ -100,3 +132,11 @@ at_kitchen:
       data_template:
         entity_id: group.entrance_lights
     # На кухне свет не выключаем
+    # Выключить свет в ванной
+    - service: light.turn_off
+      data_template:
+        entity_id: light.bath_lights
+    # Выключить свет в туалете
+    - service: light.turn_off
+      data_template:
+        entity_id: light.toilet_lights

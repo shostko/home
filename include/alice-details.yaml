@@ -116,6 +116,15 @@ switch.kitchen_2_relay_l2:
   type: devices.types.light
   name: 'Подсветка'
   room: 'Кухня'
+# Санузлы
+light.bath_lights:
+  type: devices.types.light
+  name: 'Свет'
+  room: 'Ванна'
+light.toilet_lights:
+  type: devices.types.light
+  name: 'Свет'
+  room: 'Туалет'
 # Кабинет
 group.cabinet_lights:
   type: devices.types.light

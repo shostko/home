@@ -25,6 +25,9 @@
 - light.kitchen_ceiling_nightlight
 - switch.kitchen_2_relay_l1
 - switch.kitchen_2_relay_l2
+# Санузлы
+- light.bath_lights
+- light.toilet_lights
 # Кабинет
 - group.cabinet_lights
 - switch.cabinet_wall_switch_left
