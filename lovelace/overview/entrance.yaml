@@ -46,7 +46,7 @@ cards:
       - entity: binary_sensor.entance_door_button
         name: Входная дверь (кнопка)
         show_last_changed: true
-      - entity: binary_sensor.entrance_motion_sensor_occupancy
+      - entity: binary_sensor.rf_motion_1
         name: Движение
         show_last_changed: true
   - type: picture-entity
