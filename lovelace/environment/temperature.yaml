@@ -20,8 +20,10 @@ cards:
             name: Радиатор
           - entity: sensor.hall_average_temperature
             name: Среднее
-          - entity: sensor.hall_average_temperature_floating
-            name: Плавающее среднее
+          - entity: sensor.hall_average_test_temp
+            name: Среднее тест
+          - entity: sensor.hall_average_test_filtered_temp
+            name: Среднее тест фильтр
       - type: history-graph
         title: Спальня
         hours_to_show: 24
@@ -36,8 +38,6 @@ cards:
             name: MH-Z19
           - entity: sensor.bedroom_average_temperature
             name: Среднее
-          - entity: sensor.bedroom_average_temperature_floating
-            name: Плавающее среднее
       - type: history-graph
         title: Кухня
         hours_to_show: 24
@@ -48,8 +48,6 @@ cards:
             name: Радиатор
           - entity: sensor.kitchen_average_temperature
             name: Среднее
-          - entity: sensor.kitchen_average_temperature_floating
-            name: Плавающее среднее
       - type: history-graph
         title: Балкон
         hours_to_show: 24

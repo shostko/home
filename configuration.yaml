@@ -298,11 +298,51 @@ sensor:
           {% else %}
             mdi:gauge-empty
           {% endif %}
+      hall_average_test_temp:
+        unique_id: hall_average_test_temp
+        friendly_name: "Hall Average Test Temperature"
+        unit_of_measurement: '°C'
+        value_template: >-
+          {% set arr =
+            ([
+              states('sensor.xiaomi_mijia_d107_temperature'),
+              states('sensor.humidifier_1_temp'),
+              states('sensor.xiaomi_thp_1_temperature')
+            ]) | map('float', -1000) | select('gt', -1000) | list
+          %}
+          {% set count = arr | count %}
+          {% if count == 0 %}
+            'error'
+          {% else %}
+            {% set sum = arr | sum %}
+            {{ (sum / count) | round(1) }}
+          {% endif %}
+        availability_template: >-
+          {{
+            not is_state('sensor.xiaomi_mijia_d107_temperature', 'unavailable')
+          or
+            not is_state('sensor.humidifier_1_temp', 'unavailable')
+          or
+            not is_state('sensor.xiaomi_thp_1_temperature', 'unavailable')
+          }}
+  - platform: filter
+    name: "Hall Average Test Filtered Temp"
+    entity_id: sensor.hall_average_test_temp
+    filters:
+      - filter: outlier
+        window_size: 5
+        radius: 10.0
+      - filter: lowpass
+        time_constant: 5
+        precision: 1
+      - filter: time_simple_moving_average
+        window_size: 00:01
+        precision: 1
   - platform: average
     name: 'Hall Average Temperature'
     precision: 1
     duration:
-      minutes: 5
+      minutes: 1
     entities:
       - sensor.xiaomi_mijia_d107_temperature
       - sensor.humidifier_1_temp
