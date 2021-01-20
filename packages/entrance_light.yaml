@@ -17,10 +17,11 @@ entrance_light:
         entrance_light_timer_required:
           value_template: >-
             {{ 
-              is_state('group.entrance_lights', 'on')
+              is_state('light.xiaomi_gateway_light', 'on')
             and
               is_state('binary_sensor.rf_motion_1', 'off')
             }}
+          # is_state('group.entrance_lights', 'on')
           # binary_sensor.entrance_motion_sensor_occupancy
           icon_template: >-
             {% if is_state("binary_sensor.entrance_light_timer_required", "on") %}
@@ -72,9 +73,12 @@ entrance_light:
           state: 'on'
       action:
         # Выключить весь свет
-        - service: homeassistant.turn_off
-          entity_id:
-            - group.entrance_lights
+        # - service: homeassistant.turn_off
+        #   entity_id:
+        #     - group.entrance_lights
+        # Выключить шайбуы
+        - service: light.turn_off
+          entity_id: light.xiaomi_gateway_light
 
     - alias: Entrance puck ON (via sensor)
       trigger:
