@@ -38,6 +38,7 @@ recorder:
       - sensor.*_co2_floating
       - sensor.*_power
       - sensor.*_action
+      - sensor.energy_meter_*
     entities:
       # Person
       - person.sergey

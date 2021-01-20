@@ -1,0 +1,72 @@
+title: Электроэнергия
+id: energy
+path: energy
+icon: mdi:transmission-tower
+panel: true
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: horizontal-stack
+        cards:
+          - type: entities
+            title: Счётчик
+            entities:
+              - entity: sensor.energy_meter_total
+                name: Счётчик
+              - entity: sensor.energy_meter_since
+                name: Без перебоев с
+              - entity: sensor.energy_meter_sum
+                name: С последнего отключения
+              - entity: sensor.energy_meter_daily
+                name: Сегодня
+              - entity: sensor.energy_meter_yesterday
+                name: Вчера
+              - entity: sensor.energy_meter_monthly
+                name: Текущий месяц
+              - entity: sensor.energy_meter_prev_month
+                name: Прошлый месяц
+          - type: entities
+            title: Счётчик
+            entities:
+              - entity: sensor.energy_meter_voltage
+                name: Напряжение
+              - entity: sensor.energy_meter_current
+                name: Сила тока
+              - entity: sensor.energy_meter_power
+                name: Мощность
+              - entity: sensor.energy_meter_power_apparent
+                name: Мощность активная
+              - entity: sensor.energy_meter_power_reactive
+                name: Мощность реактивная
+              - entity: sensor.energy_meter_factor
+                name: Фактор мощности
+      - type: history-graph
+        title: Энергия
+        hours_to_show: 24
+        entities:
+          - entity: sensor.energy_meter_sum
+            name: С датчика
+          - entity: sensor.energy_meter_daily
+            name: Счётчик (сегодня)
+          - entity: sensor.energy_meter_yesterday
+            name: Счётчик (вчера)
+          - entity: sensor.energy_meter_monthly
+            name: Счётчик (текущий месяц)
+          - entity: sensor.energy_meter_prev_month
+            name: Счётчик (прошлый месяц)
+      - type: history-graph
+        title: Показатели
+        hours_to_show: 24
+        entities:
+          - entity: sensor.energy_meter_voltage
+            name: Напряжение
+          - entity: sensor.energy_meter_current
+            name: Сила тока
+          - entity: sensor.energy_meter_power
+            name: Мощность
+          - entity: sensor.energy_meter_power_apparent
+            name: Мощность активная
+          - entity: sensor.energy_meter_power_reactive
+            name: Мощность реактивная
+          - entity: sensor.energy_meter_factor
+            name: Фактор мощности

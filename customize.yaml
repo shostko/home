@@ -43,3 +43,26 @@ sensor.cabinet_average_co2_floating:
 
 binary_sensor.door_window_sensor_158d0001fa3431:
   device_class: door
+
+sensor.energy_meter_since:
+  icon: mdi:calendar-clock
+sensor.energy_meter_daily:
+  device_class: energy
+  friendly_name: 'Energy Meter: Daily'
+sensor.energy_meter_monthly:
+  device_class: energy
+  friendly_name: 'Energy Meter: Monthly'
+sensor.energy_meter_sum:
+  device_class: energy
+sensor.energy_meter_voltage:
+  device_class: voltage
+sensor.energy_meter_current:
+  device_class: current
+sensor.energy_meter_power:
+  device_class: power
+sensor.energy_meter_power_apparent:
+  icon: mdi:alpha-a-circle-outline
+sensor.energy_meter_power_reactive:
+  icon: mdi:alpha-r-circle-outline
+sensor.energy_meter_factor:
+  icon: mdi:alpha-f-circle-outline

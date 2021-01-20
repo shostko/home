@@ -1,0 +1,105 @@
+energy_meter:
+
+  sensor:
+    # Время включения
+    - platform: mqtt
+      name: 'Energy Meter: Since'
+      state_topic: 'energy-meter/tele/STATE'
+      value_template: '{{ (as_timestamp(value_json.Time) - value_json.UptimeSec) | timestamp_custom("%d.%m.%Y %H:%M",true) }}'
+      availability_topic: "energy-meter/tele/LWT"
+      payload_available: "Online"
+      payload_not_available: "Offline"
+    # Энергия (с датчика)
+    - platform: mqtt
+      name: 'Energy Meter: Sum'
+      unit_of_measurement: 'kWh'
+      state_topic: 'energy-meter/tele/SENSOR'
+      value_template: '{{ value_json.ENERGY.Total }}'
+      availability_topic: "energy-meter/tele/LWT"
+      payload_available: "Online"
+      payload_not_available: "Offline"
+    # Напряжение
+    - platform: mqtt
+      name: 'Energy Meter: Voltage'
+      unit_of_measurement: 'V'
+      state_topic: 'energy-meter/tele/SENSOR'
+      value_template: '{{ value_json.ENERGY.Voltage }}'
+      availability_topic: "energy-meter/tele/LWT"
+      payload_available: "Online"
+      payload_not_available: "Offline"
+    # Сила тока
+    - platform: mqtt
+      name: 'Energy Meter: Current'
+      unit_of_measurement: 'A'
+      state_topic: 'energy-meter/tele/SENSOR'
+      value_template: '{{ value_json.ENERGY.Current }}'
+      availability_topic: "energy-meter/tele/LWT"
+      payload_available: "Online"
+      payload_not_available: "Offline"
+    # Мощность
+    - platform: mqtt
+      name: 'Energy Meter: Power'
+      unit_of_measurement: 'W'
+      state_topic: 'energy-meter/tele/SENSOR'
+      value_template: '{{ value_json.ENERGY.Power }}'
+      availability_topic: "energy-meter/tele/LWT"
+      payload_available: "Online"
+      payload_not_available: "Offline"
+    # Мощность Активная
+    - platform: mqtt
+      name: 'Energy Meter: Power Apparent'
+      unit_of_measurement: 'VA'
+      state_topic: 'energy-meter/tele/SENSOR'
+      value_template: '{{ value_json.ENERGY.ApparentPower }}'
+      availability_topic: "energy-meter/tele/LWT"
+      payload_available: "Online"
+      payload_not_available: "Offline"
+    # Мощность Реактивная
+    - platform: mqtt
+      name: 'Energy Meter: Power Reactive'
+      unit_of_measurement: 'VAr'
+      state_topic: 'energy-meter/tele/SENSOR'
+      value_template: '{{ value_json.ENERGY.ReactivePower }}'
+      availability_topic: "energy-meter/tele/LWT"
+      payload_available: "Online"
+      payload_not_available: "Offline"
+    # Фактор мощности
+    - platform: mqtt
+      name: 'Energy Meter: Factor'
+      unit_of_measurement: 'Cos φ'
+      state_topic: 'energy-meter/tele/SENSOR'
+      value_template: '{{ value_json.ENERGY.Factor }}'
+      availability_topic: "energy-meter/tele/LWT"
+      payload_available: "Online"
+      payload_not_available: "Offline"
+    - platform: template
+      sensors:
+        # Энергия за вчера (счётчик)
+        energy_meter_yesterday:
+          device_class: energy
+          friendly_name: 'Energy Meter: Yesterday'
+          unit_of_measurement: 'kWh'
+          value_template: "{{ state_attr('sensor.energy_meter_daily', 'last_period') | float }}"
+        # Энергия за прошлый месяц (счётчик)
+        energy_meter_prev_month:
+          device_class: energy
+          friendly_name: 'Energy Meter: Prev Month'
+          unit_of_measurement: 'kWh'
+          value_template: "{{ state_attr('sensor.energy_meter_monthly', 'last_period') | float }}"    
+    - platform: integration
+      source: sensor.energy_meter_power
+      name: 'Energy Meter: Total'
+      unit_prefix: k
+      round: 4
+
+  utility_meter:
+
+    # Энергия за день (счётчик)
+    energy_meter_daily:
+      source: sensor.energy_meter_sum
+      cycle: daily
+    
+    # Энергия за месяц (счётчик)
+    energy_meter_monthly: 
+      source: sensor.energy_meter_sum
+      cycle: monthly
