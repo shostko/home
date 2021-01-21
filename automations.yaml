@@ -63,32 +63,10 @@
 
 # Log
 
-- alias: 'Log: ToD.Night'
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.tod_night
-      from: 'off'
-      to: 'on'
-  action:
-    - service: notify.log
-      data:
-        message: "Началась ночь"
-
-- alias: 'Log: ToD.Day'
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.tod_day
-      from: 'off'
-      to: 'on'
-  action:
-    - service: notify.log
-      data:
-        message: "Начался день"
-
 - alias: 'Log: Entrance door opened'
   trigger:
     - platform: state
-      entity_id: binary_sensor.door_window_sensor_158d0001fa3431
+      entity_id: binary_sensor.entance_door_button
       from: 'off'
       to: 'on'
   action:
@@ -98,14 +76,22 @@
     - service: notify.tv
       data:
         message: "Входная дверь открыта"
-      
-- alias: 'Log: Entrance door closed'
+
+- alias: 'Log: Entrance door opened to long'
   trigger:
     - platform: state
-      entity_id: binary_sensor.door_window_sensor_158d0001fa3431
-      from: 'on'
-      to: 'off'
+      entity_id: binary_sensor.entance_door_button
+      from: 'off'
+      to: 'on'
+      for: '01:00'
   action:
+    - service: notify.sergey
+      data:
+        message: "Входная дверь открыта дольше минуты"
+    - wait_for_trigger:
+        - platform: state
+          entity_id: binary_sensor.entance_door_button
+          to: 'off'
     - service: notify.log
       data:
         message: "Входная дверь закрыта"
