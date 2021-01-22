@@ -64,6 +64,8 @@
 # Log
 
 - alias: 'Log: Entrance door opened'
+  mode: single
+  max_exceeded: silent
   trigger:
     - platform: state
       entity_id: binary_sensor.entance_door_button
@@ -76,6 +78,8 @@
     - service: notify.tv
       data:
         message: "Входная дверь открыта"
+    # Подождать 5 секунд (throttle из-за mode = single + silent)
+    - delay: 5
 
 - alias: 'Log: Entrance door opened to long'
   trigger:

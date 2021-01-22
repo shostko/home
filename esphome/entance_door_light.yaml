@@ -37,6 +37,8 @@ binary_sensor:
     pin:
       number: GPIO5
     name: "Entance Door Button"
+    filters:
+      - delayed_off: 3s
     on_press:
       then:
         - switch.turn_on: relay
