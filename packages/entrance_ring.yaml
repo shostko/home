@@ -1,6 +1,7 @@
 entrance_ring:
 
   switch:
+
     - platform: template
       switches:
         entrance_ring_sound:
@@ -17,3 +18,23 @@ entrance_ring:
           turn_off:
             service: switch.turn_on
             entity_id: switch.entrance_ring_mute
+
+  automation:
+
+    - alias: Entrance Ring Button Clicked
+      mode: single
+      max_exceeded: silent
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.entrance_ring_button
+          from: 'off'
+          to: 'on'
+      action:
+        - service: notify.log
+          data:
+            message: "Звонок в дверь"
+        - service: notify.tv
+          data:
+            message: "Звонок в дверь"
+        # Подождать 10 секунд (throttle из-за mode = single + silent)
+        - delay: 10
