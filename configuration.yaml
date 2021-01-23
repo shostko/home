@@ -62,6 +62,8 @@ recorder:
       - sensor.moes_radiator_actuator_1_position
       - sensor.moes_radiator_actuator_2_position
       - sensor.moes_radiator_actuator_3_position
+      # Entrance Ring
+      - binary_sensor.entrance_ring_button
       # Humidifier
       - fan.humidifier_1
       - sensor.humidifier_1_water
