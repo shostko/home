@@ -85,9 +85,9 @@
   trigger:
     - platform: state
       entity_id: binary_sensor.entance_door_button
-      from: 'off'
       to: 'on'
-      for: '01:00'
+      for:
+        minutes: 1
   action:
     - service: notify.sergey
       data:
@@ -96,7 +96,7 @@
         - platform: state
           entity_id: binary_sensor.entance_door_button
           to: 'off'
-    - service: notify.log
+    - service: notify.sergey
       data:
         message: "Входная дверь закрыта"
 
