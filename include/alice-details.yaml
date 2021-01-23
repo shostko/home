@@ -143,6 +143,10 @@ switch.cupboard_relay:
   name: 'Шкаф'
   room: 'Кабинет'
 # Прихожая
+switch.entrance_ring_sound:
+  type: devices.types.other
+  name: 'Звонок'
+  room: 'Прихожая'
 group.entrance_lights:
   type: devices.types.light
   name: 'Всё'

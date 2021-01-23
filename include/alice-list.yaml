@@ -34,6 +34,7 @@
 - light.cabinet_desk_lamp
 - switch.cupboard_relay
 # Прихожая
+- switch.entrance_ring_sound
 - group.entrance_lights
 - switch.entrance_wall_switch_right
 - switch.entrance_wall_switch_left

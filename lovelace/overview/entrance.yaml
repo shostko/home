@@ -34,10 +34,6 @@ cards:
             row:
               entity: timer.entrance_light
               name: Свет выключится через
-  - type: sensor
-    name: Освещенность
-    graph: line
-    entity: sensor.illumination_7811dcb2404d
   - type: glance
     entities:
       - entity: binary_sensor.door_window_sensor_158d0001fa3431
@@ -49,5 +45,20 @@ cards:
       - entity: binary_sensor.rf_motion_1
         name: Движение
         show_last_changed: true
+  - type: entities
+    title: Звонок
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.entrance_ring_button
+        name: Кнопка
+        icon: mdi:gesture-tap-button
+      - entity: switch.entrance_ring_mute
+        name: Режим "Без Звука"
+      - entity: switch.entrance_ring_impulse
+        name: Режим "Импульс"
+  - type: sensor
+    name: Освещенность
+    graph: line
+    entity: sensor.illumination_7811dcb2404d
   - type: picture-entity
     entity: camera.sonoff_camera_1

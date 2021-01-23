@@ -1,0 +1,126 @@
+esphome:
+  name: entrance_ring
+  platform: ESP8266
+  board: esp01_1m
+  esp8266_restore_from_flash: true
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_pwd
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Entrance Ring Fallback"
+    password: !secret esphome_pwd
+
+captive_portal:
+
+web_server:
+  port: 80
+  auth:
+    username: admin
+    password: !secret esphome_pwd
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  password: !secret esphome_pwd
+
+ota:
+  password: !secret esphome_pwd
+
+binary_sensor:
+  - platform: gpio
+    id: button
+    pin:
+      number: GPIO0
+      mode: INPUT_PULLUP
+      inverted: True
+    name: "Entrance Ring Button"
+    filters:
+      - delayed_off: 1s
+    on_press:
+      - light.turn_on: led
+      - switch.turn_on: logicrelay
+    on_release:
+      - light.turn_off: led
+      - switch.turn_off: logicrelay
+
+switch:
+  - platform: template
+    name: "Entrance Ring Mute"
+    optimistic: true
+    restore_state: yes
+    id: mute
+    icon: mdi:volume-mute
+    turn_on_action:
+      if:
+        condition:
+          switch.is_on: logicrelay
+        then:
+          - switch.turn_off: logicrelay
+  - platform: template
+    name: "Entrance Ring Impulse"
+    optimistic: true
+    restore_state: yes
+    id: impulse
+    icon: mdi:pulse
+    turn_on_action:
+      if:
+        condition:
+          switch.is_on: logicrelay
+        then:
+          - switch.turn_off: logicrelay
+  - platform: template
+    optimistic: false
+    restore_state: no
+    id: logicrelay
+    turn_on_action:
+      if:
+        condition:
+          switch.is_off: mute
+        then:
+          - switch.turn_on: relay
+          - switch.template.publish:
+              id: logicrelay
+              state: ON
+          - if:
+              condition:
+                switch.is_on: impulse
+              then:
+                - delay: 1s
+                - switch.turn_off: relay
+                - switch.template.publish:
+                    id: logicrelay
+                    state: OFF
+        else:
+          - switch.template.publish:
+              id: logicrelay
+              state: OFF
+    turn_off_action:
+      - switch.turn_off: relay
+      - switch.template.publish:
+          id: logicrelay
+          state: OFF
+  - platform: gpio
+    name: "Entrance Ring Relay"
+    icon: mdi:bell-ring-outline
+    id: relay
+    pin: GPIO12
+    restore_mode: ALWAYS_OFF
+
+output:
+  - platform: esp8266_pwm
+    id: basic_green_led
+    pin:
+      number: GPIO13
+      inverted: True
+
+light:
+  - platform: monochromatic
+    name: "Entrance Ring LED"
+    output: basic_green_led
+    restore_mode: ALWAYS_OFF
+    id: led
