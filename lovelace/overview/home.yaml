@@ -18,10 +18,10 @@ cards:
   - type: custom:vertical-stack-in-card
     title: Зал
     cards:
-      - type: light
-        entity: light.wled_tree
-        name: Ёлка
-        icon: mdi:pine-tree
+      # - type: light
+      #   entity: light.wled_tree
+      #   name: Ёлка
+      #   icon: mdi:pine-tree
       - type: horizontal-stack
         cards:
           - type: button
