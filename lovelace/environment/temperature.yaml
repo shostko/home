@@ -16,14 +16,8 @@ cards:
             name: Увлажнитель
           - entity: sensor.xiaomi_thp_1_temperature
             name: Столик
-          - entity: sensor.radiator_1_temp
-            name: Радиатор
-          - entity: sensor.hall_average_temperature
+          - entity: sensor.hall_temperature
             name: Среднее
-          - entity: sensor.hall_average_test_temp
-            name: Среднее тест
-          - entity: sensor.hall_average_test_filtered_temp
-            name: Среднее тест фильтр
       - type: history-graph
         title: Спальня
         hours_to_show: 24
@@ -32,11 +26,7 @@ cards:
             name: Датчик
           - entity: sensor.humidifier_2_temp
             name: Увлажнитель
-          - entity: sensor.radiator_2_temp
-            name: Радиатор
-          - entity: sensor.mh_z19_1_temperature
-            name: MH-Z19
-          - entity: sensor.bedroom_average_temperature
+          - entity: sensor.bedroom_temperature
             name: Среднее
       - type: history-graph
         title: Кухня
@@ -44,10 +34,6 @@ cards:
         entities:
           - entity: sensor.xiaomi_mijia_cb15_temperature
             name: Датчик
-          - entity: sensor.radiator_3_temp
-            name: Радиатор
-          - entity: sensor.kitchen_average_temperature
-            name: Среднее
       - type: history-graph
         title: Балкон
         hours_to_show: 24

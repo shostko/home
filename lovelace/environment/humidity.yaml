@@ -16,10 +16,8 @@ cards:
             name: Увлажнитель
           - entity: sensor.xiaomi_thp_1_humidity
             name: Столик
-          - entity: sensor.hall_average_humidity
+          - entity: sensor.hall_humidity
             name: Среднее
-          - entity: sensor.hall_average_humidity_floating
-            name: Плавающее среднее
       - type: history-graph
         title: Спальня
         hours_to_show: 24
@@ -28,10 +26,8 @@ cards:
             name: Датчик
           - entity: sensor.humidifier_2_hum
             name: Увлажнитель
-          - entity: sensor.bedroom_average_humidity
+          - entity: sensor.bedroom_humidity
             name: Среднее
-          - entity: sensor.bedroom_average_humidity_floating
-            name: Плавающее среднее
       - type: history-graph
         title: Кухня
         hours_to_show: 24

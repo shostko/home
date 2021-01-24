@@ -35,7 +35,7 @@ cards:
     cards:
       - type: sensor
         name: Температура
-        entity: sensor.hall_average_temperature
+        entity: sensor.hall_temperature
       - type: glance
         show_icon: false
         entities:
@@ -49,12 +49,12 @@ cards:
         entities: []
         footer:
             type: graph
-            entity: sensor.hall_average_temperature
+            entity: sensor.hall_temperature
   - type: custom:vertical-stack-in-card
     cards:
       - type: sensor
         name: Влажность
-        entity: sensor.hall_average_humidity
+        entity: sensor.hall_humidity
       - type: glance
         show_icon: false
         entities:
@@ -68,7 +68,7 @@ cards:
         entities: []
         footer:
             type: graph
-            entity: sensor.hall_average_humidity
+            entity: sensor.hall_humidity
   - type: sensor
     name: Давление
     graph: line

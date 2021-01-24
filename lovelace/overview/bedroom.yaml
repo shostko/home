@@ -29,7 +29,7 @@ cards:
     cards:
       - type: sensor
         name: Температура
-        entity: sensor.bedroom_average_temperature
+        entity: sensor.bedroom_temperature
       - type: glance
         show_icon: false
         entities:
@@ -41,12 +41,12 @@ cards:
         entities: []
         footer:
             type: graph
-            entity: sensor.bedroom_average_temperature
+            entity: sensor.bedroom_temperature
   - type: custom:vertical-stack-in-card
     cards:
       - type: sensor
         name: Влажность
-        entity: sensor.bedroom_average_humidity
+        entity: sensor.bedroom_humidity
       - type: glance
         show_icon: false
         entities:
@@ -58,7 +58,7 @@ cards:
         entities: []
         footer:
             type: graph
-            entity: sensor.bedroom_average_humidity
+            entity: sensor.bedroom_humidity
   - type: sensor
     name: CO2
     graph: line
