@@ -10,4 +10,3 @@ views:
   - !include environment/humidifier.yaml
   - !include environment/filter.yaml
   - !include environment/energy.yaml
-  - !include environment/lights.yaml

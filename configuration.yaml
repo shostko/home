@@ -85,10 +85,6 @@ recorder:
       - binary_sensor.kitchen_filter_raw_flows
       - sensor.kitchen_filter_raw_daily
       # Temporary
-      - binary_sensor.bedroom_mirror_switch_contact
-      - automation.toggle_bedroom_mirror_with_switch
-      - sensor.cabinet_desk_lamp_color_temp
-      - sensor.cabinet_desk_lamp_adaptive_color_temp
       - sensor.xiaomi_thp_1_pressure
       - sensor.xiaomi_thp_2_pressure
 
@@ -285,18 +281,6 @@ sensor:
         unit_of_measurement: '°C'
         value_template: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'current_temperature') }}"
         availability_template: "{{ not is_state('climate.moes_radiator_actuator_3_climate', 'unavailable') }}"
-      cabinet_desk_lamp_color_temp:
-        unique_id: cabinet_desk_lamp_color_temp
-        friendly_name: "Cabinet Desk Lamp Color Temp"
-        unit_of_measurement: '°'
-        value_template: "{{ state_attr('light.cabinet_desk_lamp', 'color_temp') }}"
-        availability_template: "{{ not is_state('light.cabinet_desk_lamp', 'unavailable') }}"
-      cabinet_desk_lamp_adaptive_color_temp:
-        unique_id: cabinet_desk_lamp_adaptive_color_temp
-        friendly_name: "Cabinet Desk Lamp [adaptive] Color Temp"
-        unit_of_measurement: '°'
-        value_template: "{{ state_attr('switch.adaptive_lighting_cabinet_desk_lamp', 'color_temp_mired') }}"
-        availability_template: "{{ not is_state('switch.adaptive_lighting_cabinet_desk_lamp', 'unavailable') }}"
       xiaomi_thp_1_pressure_mmhg:
         unique_id: xiaomi_thp_1_pressure_mmhg
         friendly_name: "Xiaomi THP #1 Pressure mmHg"
