@@ -185,51 +185,7 @@ light:
     entity_id: switch.entance_door_light
 
 adaptive_lighting:
-  - name: "Cabinet Desk Lamp"
-    lights: 
-      - light.cabinet_desk_lamp
-    transition: 60
-    initial_transition: 0
-    interval: 300
-    min_brightness: 1
-    max_brightness: 65
-    min_color_temp: 2710
-    max_color_temp: 4950
-    sleep_brightness: 1
-    sleep_color_temp: 2710
-    detect_non_ha_changes: true
-    sunrise_time: "08:00:00"
-    sunset_time: "23:00:00"
-  - name: "Toilet Lights"
-    lights: 
-      - light.toilet_lights
-    transition: 60
-    initial_transition: 0
-    interval: 300
-    min_brightness: 1
-    max_brightness: 100
-    min_color_temp: 2000 # 500 mireds
-    max_color_temp: 6535 # 153 mireds
-    sleep_brightness: 1
-    sleep_color_temp: 2000
-    detect_non_ha_changes: false
-    sunrise_time: "08:00:00"
-    sunset_time: "23:00:00"
-  - name: "Bath Lights"
-    lights: 
-      - light.bath_lights
-    transition: 60
-    initial_transition: 0
-    interval: 300
-    min_brightness: 1
-    max_brightness: 100
-    min_color_temp: 2000 # 500 mireds
-    max_color_temp: 6535 # 153 mireds
-    sleep_brightness: 1
-    sleep_color_temp: 2000
-    detect_non_ha_changes: false
-    sunrise_time: "08:00:00"
-    sunset_time: "23:00:00"
+  !include include/adaptive-lighting.yaml
 
 binary_sensor:
   - platform: tod
