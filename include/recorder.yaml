@@ -1,0 +1,68 @@
+auto_purge: true
+purge_keep_days: 1
+commit_interval: 30
+include:
+  domains:
+    - light
+    - switch
+  entity_globs:
+    - sensor.*_hum
+    - sensor.*_humidity
+    - sensor.*_humidity_floating
+    - sensor.*_temp
+    - sensor.*_temperature
+    - sensor.*_temperature_floating
+    - sensor.*_pressure_mmhg
+    - sensor.*_co2
+    - sensor.*_co2_floating
+    - sensor.*_power
+    - sensor.*_action
+  entities:
+    # Person
+    - person.sergey
+    - person.alexa
+    # Motion
+    - binary_sensor.entrance_motion_sensor_occupancy
+    - binary_sensor.rf_motion_0
+    - binary_sensor.rf_motion_1
+    - binary_sensor.kitchen_motion
+    # Water leak
+    - binary_sensor.kitchen_water_leak
+    # Smoke detection
+    - binary_sensor.rf_smoke_0
+    - binary_sensor.honeywell_smoke_sensor
+    # Doors
+    - binary_sensor.door_window_sensor_158d0001fa3431
+    - binary_sensor.entance_door_button
+    # Illumination
+    - sensor.illumination_7811dcb2404d
+    # Radiator
+    - sensor.moes_radiator_actuator_1_position
+    - sensor.moes_radiator_actuator_2_position
+    - sensor.moes_radiator_actuator_3_position
+    # Entrance Ring
+    - binary_sensor.entrance_ring_button
+    # Energy Meter
+    - sensor.energy_meter_total
+    - sensor.energy_meter_since
+    - sensor.energy_meter_daily
+    - sensor.energy_meter_voltage
+    - sensor.energy_meter_power
+    # Humidifier
+    - fan.humidifier_1
+    - sensor.humidifier_1_water
+    - fan.humidifier_2
+    - sensor.humidifier_2_water
+    # Filter drink
+    - sensor.kitchen_filter_drink_pulses
+    - sensor.kitchen_filter_drink_sum
+    - binary_sensor.kitchen_filter_drink_flows
+    - sensor.kitchen_filter_drink_daily
+    # Filter raw
+    - sensor.kitchen_filter_raw_pulses
+    - sensor.kitchen_filter_raw_sum
+    - binary_sensor.kitchen_filter_raw_flows
+    - sensor.kitchen_filter_raw_daily
+    # Temporary
+    - sensor.xiaomi_thp_1_pressure
+    - sensor.xiaomi_thp_2_pressure
