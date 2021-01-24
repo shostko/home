@@ -20,19 +20,13 @@ humidifier:
           friendly_name: "Humidifier #1 Temperature"
           unit_of_measurement: '°C'
           value_template: "{{ state_attr('fan.humidifier_1', 'temperature') }}"
-          availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
+          availability_template: "{{ is_state('fan.humidifier_1', 'on') }}"
         humidifier_1_hum:
           unique_id: humidifier_1_hum
           friendly_name: "Humidifier #1 Humidity"
           unit_of_measurement: '%'
           value_template: "{{ state_attr('fan.humidifier_1', 'humidity') }}"
-          availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
-        humidifier_1_depth:
-          unique_id: humidifier_1_depth
-          friendly_name: "Humidifier #1 Depth"
-          unit_of_measurement: '%'
-          value_template: "{{ state_attr('fan.humidifier_1', 'depth') }}"
-          availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
+          availability_template: "{{ is_state('fan.humidifier_1', 'on') }}"
         humidifier_1_water:
           unique_id: humidifier_1_water
           friendly_name: "Humidifier #1 Water Level"
@@ -58,19 +52,13 @@ humidifier:
           friendly_name: "Humidifier #2 Temperature"
           unit_of_measurement: '°C'
           value_template: "{{ state_attr('fan.humidifier_2', 'temperature') }}"
-          availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
+          availability_template: "{{ is_state('fan.humidifier_2', 'on') }}"
         humidifier_2_hum:
           unique_id: humidifier_2_hum
           friendly_name: "Humidifier #2 Humidity"
           unit_of_measurement: '%'
           value_template: "{{ state_attr('fan.humidifier_2', 'humidity') }}"
-          availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
-        humidifier_2_depth:
-          unique_id: humidifier_2_depth
-          friendly_name: "Humidifier #2 Depth"
-          unit_of_measurement: '%'
-          value_template: "{{ state_attr('fan.humidifier_2', 'depth') }}"
-          availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
+          availability_template: "{{ is_state('fan.humidifier_2', 'on') }}"
         humidifier_2_water:
           unique_id: humidifier_2_water
           friendly_name: "Humidifier #2 Water Level"

@@ -14,10 +14,6 @@ cards:
             name: Зал %
           - entity: sensor.humidifier_2_water
             name: Спальня %
-          - entity: sensor.humidifier_1_depth
-            name: Зал depth
-          - entity: sensor.humidifier_2_depth
-            name: Спальня depth
       - type: history-graph
         title: Температура
         hours_to_show: 24
