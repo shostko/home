@@ -38,7 +38,6 @@ recorder:
       - sensor.*_co2_floating
       - sensor.*_power
       - sensor.*_action
-      - sensor.energy_meter_*
     entities:
       # Person
       - person.sergey
@@ -64,13 +63,17 @@ recorder:
       - sensor.moes_radiator_actuator_3_position
       # Entrance Ring
       - binary_sensor.entrance_ring_button
+      # Energy Meter
+      - sensor.energy_meter_total
+      - sensor.energy_meter_since
+      - sensor.energy_meter_daily
+      - sensor.energy_meter_voltage
+      - sensor.energy_meter_power
       # Humidifier
       - fan.humidifier_1
       - sensor.humidifier_1_water
-      - sensor.humidifier_1_depth
       - fan.humidifier_2
       - sensor.humidifier_2_water
-      - sensor.humidifier_2_depth
       # Filter drink
       - sensor.kitchen_filter_drink_pulses
       - sensor.kitchen_filter_drink_sum
