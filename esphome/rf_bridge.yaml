@@ -42,13 +42,87 @@ binary_sensor:
       code: '111110100111111110111110'
       protocol: 4
   - platform: remote_receiver
-    name: "RF Motion #1"
+    name: "RF Motion #1a"
+    id: rf_motion_1a
+    internal: true
     device_class: motion
     filters:
-      delayed_off: 150000ms
+      delayed_off: 10000ms
     rc_switch_raw:
-      code: '000101010101000100101100'
+      code: '000101010101000100101'
+      protocol: 1
+    on_press:
+      then:
+        - binary_sensor.template.publish:
+            id: rf_motion_1
+            state: ON
+    on_release:
+      if:
+        condition:
+          and:
+            - binary_sensor.is_off: rf_motion_1a
+            - binary_sensor.is_off: rf_motion_1b
+            - binary_sensor.is_off: rf_motion_1c
+        then:
+          - binary_sensor.template.publish:
+              id: rf_motion_1
+              state: OFF
+  - platform: remote_receiver
+    name: "RF Motion #1b"
+    id: rf_motion_1b
+    internal: true
+    device_class: motion
+    filters:
+      delayed_off: 10000ms
+    rc_switch_raw:
+      code: '000101010101000100101'
       protocol: 4
+    on_press:
+      then:
+        - binary_sensor.template.publish:
+            id: rf_motion_1
+            state: ON
+    on_release:
+      if:
+        condition:
+          and:
+            - binary_sensor.is_off: rf_motion_1a
+            - binary_sensor.is_off: rf_motion_1b
+            - binary_sensor.is_off: rf_motion_1c
+        then:
+          - binary_sensor.template.publish:
+              id: rf_motion_1
+              state: OFF
+  - platform: remote_receiver
+    name: "RF Motion #1c"
+    id: rf_motion_1c
+    internal: true
+    device_class: motion
+    filters:
+      delayed_off: 10000ms
+    rc_switch_raw:
+      code: '000101010101000100101'
+      protocol: 5
+    on_press:
+      then:
+        - binary_sensor.template.publish:
+            id: rf_motion_1
+            state: ON
+    on_release:
+      if:
+        condition:
+          and:
+            - binary_sensor.is_off: rf_motion_1a
+            - binary_sensor.is_off: rf_motion_1b
+            - binary_sensor.is_off: rf_motion_1c
+        then:
+          - binary_sensor.template.publish:
+              id: rf_motion_1
+              state: OFF
+  - platform: template
+    name: "RF Motion #1"
+    id: rf_motion_1
+    device_class: motion
   - platform: remote_receiver
     name: "RF Smoke #0"
     device_class: smoke
@@ -61,8 +135,9 @@ binary_sensor:
 remote_receiver:
   pin: 4
   dump: rc_switch
-  filter: 4us
-  idle: 4ms
+  # filter: 4us # more stable detection with default value
+  # idle: 4ms # more stable detection with default value
+  # tolerance: 50% # default value should be enough
 
 remote_transmitter:
   pin: 5
