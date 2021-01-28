@@ -158,24 +158,6 @@ switch:
 sensor:
   - platform: template
     sensors:
-      radiator_1_temp:
-        unique_id: radiator_1_current_temperature
-        friendly_name: "Radiator Actuator #1 Current Temperature"
-        unit_of_measurement: '°C'
-        value_template: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') }}"
-        availability_template: "{{ not is_state('climate.moes_radiator_actuator_1_climate', 'unavailable') }}"
-      radiator_2_temp:
-        unique_id: radiator_2_current_temperature
-        friendly_name: "Radiator Actuator #2 Current Temperature"
-        unit_of_measurement: '°C'
-        value_template: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'current_temperature') }}"
-        availability_template: "{{ not is_state('climate.moes_radiator_actuator_2_climate', 'unavailable') }}"
-      radiator_3_temp:
-        unique_id: radiator_3_current_temperature
-        friendly_name: "Radiator Actuator #3 Current Temperature"
-        unit_of_measurement: '°C'
-        value_template: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'current_temperature') }}"
-        availability_template: "{{ not is_state('climate.moes_radiator_actuator_3_climate', 'unavailable') }}"
       xiaomi_thp_1_pressure_mmhg:
         unique_id: xiaomi_thp_1_pressure_mmhg
         friendly_name: "Xiaomi THP #1 Pressure mmHg"

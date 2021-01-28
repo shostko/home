@@ -27,6 +27,53 @@ cards:
           - entity: sensor.moes_radiator_actuator_3_position
             name: Кухня
       - type: horizontal-stack
+        cards:
+          - type: entities
+            title: Зал
+            entities:
+              - entity: sensor.hall_temperature
+                name: Сенсор
+              - entity: input_number.hall_target_temperature
+                name: Целевая
+              - entity: sensor.radiator_1_temp
+                name: Радиатор
+                icon: mdi:radiator
+              - entity: climate.moes_radiator_actuator_1_climate
+                type: attribute
+                attribute: temperature
+                name: Эмуляция
+                icon: mdi:virtual-reality
+          - type: entities
+            title: Спальня
+            entities:
+              - entity: sensor.bedroom_temperature
+                name: Сенсор
+              - entity: input_number.bedroom_target_temperature
+                name: Целевая
+              - entity: sensor.radiator_2_temp
+                name: Радиатор
+                icon: mdi:radiator
+              - entity: climate.moes_radiator_actuator_2_climate
+                type: attribute
+                attribute: temperature
+                name: Эмуляция
+                icon: mdi:virtual-reality
+          - type: entities
+            title: Кухня
+            entities:
+              - entity: sensor.xiaomi_mijia_cb15_temperature
+                name: Сенсор
+              - entity: input_number.kitchen_target_temperature
+                name: Целевая
+              - entity: sensor.radiator_3_temp
+                name: Радиатор
+                icon: mdi:radiator
+              - entity: climate.moes_radiator_actuator_3_climate
+                type: attribute
+                attribute: temperature
+                name: Эмуляция
+                icon: mdi:virtual-reality
+      - type: horizontal-stack
         title: Управление
         cards:
           - type: thermostat
