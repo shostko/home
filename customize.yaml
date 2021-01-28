@@ -66,3 +66,6 @@ sensor.energy_meter_power_reactive:
   icon: mdi:alpha-r-circle-outline
 sensor.energy_meter_factor:
   icon: mdi:alpha-f-circle-outline
+
+binary_sensor.entrance_lock_bottom:
+  device_class: lock

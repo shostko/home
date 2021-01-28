@@ -42,6 +42,9 @@ cards:
       - entity: binary_sensor.entance_door_button
         name: Входная дверь (кнопка)
         show_last_changed: true
+      - entity: binary_sensor.entrance_lock_bottom
+        name: Замок
+        show_last_changed: true
       - entity: binary_sensor.rf_motion_1
         name: Движение
         show_last_changed: true
