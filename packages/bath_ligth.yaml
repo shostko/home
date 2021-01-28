@@ -47,6 +47,29 @@ bath_ligth:
               data_template:
                 entity_id: light.bath_lights
 
+    - alias: Bath lights ON (via door)
+      trigger:
+        # Дверь в ванную открылась
+        - platform: state
+          entity_id: binary_sensor.bath_door
+          from: 'off'
+          to: 'on'
+      condition:
+        # Весь свет в ванной выключен
+        - condition: state
+          entity_id: light.bath_lights
+          state: 'off'
+      action:
+        # Включить весь свет днём или один светильник ночью
+        - service: light.turn_on
+          data_template:
+            entity_id: >-
+              {%- if is_state('binary_sensor.tod_night', 'on') -%}
+                light.gledopto_1
+              {%- else -%}
+                light.bath_lights
+              {%- endif -%}
+
     - alias: Toilet lights ON (via button)
       trigger:
         # Правая кнопка выключателя (одинарный клик)
@@ -75,3 +98,21 @@ bath_ligth:
             - service: light.turn_off
               data_template:
                 entity_id: light.toilet_lights
+
+    - alias: Toilet lights ON (via door)
+      trigger:
+        # Дверь в теалет открылась
+        - platform: state
+          entity_id: binary_sensor.toilet_door
+          from: 'off'
+          to: 'on'
+      condition:
+        # Свет в туалете выключен
+        - condition: state
+          entity_id: light.toilet_lights
+          state: 'off'
+      action:
+        # Включить свет
+        - service: light.turn_on
+          data_template:
+            entity_id: light.toilet_lights

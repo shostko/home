@@ -3,15 +3,21 @@ id: bath
 path: bath
 icon: mdi:water-pump
 cards:
-  - type: custom:vertical-stack-in-card
+  - type: horizontal-stack
     cards:
-      - type: horizontal-stack
-        cards:
-          - type: light
-            entity: light.bath_lights
-            name: Ванна
-            icon: mdi:lightbulb-multiple
-          - type: light
-            entity: light.toilet_lights
-            name: Туалет
-            icon: mdi:lightbulb
+      - type: light
+        entity: light.bath_lights
+        name: Ванна
+        icon: mdi:lightbulb-multiple
+      - type: light
+        entity: light.toilet_lights
+        name: Туалет
+        icon: mdi:lightbulb
+  - type: glance
+    entities:
+      - entity: binary_sensor.bath_door
+        name: Ванна дверь
+        show_last_changed: true
+      - entity: binary_sensor.toilet_door
+        name: Туалет дверь
+        show_last_changed: true
