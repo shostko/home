@@ -30,7 +30,7 @@ entrance_ring:
           from: 'off'
           to: 'on'
       action:
-        - service: notify.log
+        - service: notify.family
           data:
             message: "Звонок в дверь"
         - service: notify.tv
