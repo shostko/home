@@ -69,3 +69,15 @@ include:
     # Temporary
     - sensor.xiaomi_thp_1_pressure
     - sensor.xiaomi_thp_2_pressure
+    # Adaptive Lights
+    - sensor.sun_elevation
+    - sensor.cabinet_desk_lamp_adaptive_color_temp
+    - sensor.bath_lights_adaptive_color_temp
+    - sensor.toilet_lights_adaptive_color_temp
+    - sensor.hall_bra_1_adaptive_color_temp
+    - sensor.hall_bra_2_adaptive_color_temp
+    - sensor.cabinet_desk_lamp_adaptive_brightness
+    - sensor.bath_lights_adaptive_brightness
+    - sensor.toilet_lights_adaptive_brightness
+    - sensor.hall_bra_1_adaptive_brightness
+    - sensor.hall_bra_2_adaptive_brightness
