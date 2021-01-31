@@ -70,7 +70,6 @@ include:
     - sensor.xiaomi_thp_1_pressure
     - sensor.xiaomi_thp_2_pressure
     # Adaptive Lights
-    - sensor.sun_elevation
     - sensor.cabinet_desk_lamp_adaptive_color_temp
     - sensor.bath_lights_adaptive_color_temp
     - sensor.toilet_lights_adaptive_color_temp
@@ -81,3 +80,5 @@ include:
     - sensor.toilet_lights_adaptive_brightness
     - sensor.hall_bra_1_adaptive_brightness
     - sensor.hall_bra_2_adaptive_brightness
+    - sensor.kitchen_ceiling_adaptive_color_temp
+    - sensor.kitchen_ceiling_adaptive_brightness

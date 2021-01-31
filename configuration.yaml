@@ -158,12 +158,6 @@ switch:
 sensor:
   - platform: template
     sensors:
-      sun_elevation:
-        unique_id: sun_elevation
-        friendly_name: "Sun Elevation"
-        unit_of_measurement: '%'
-        value_template: "{{ state_attr('sun.sun', 'elevation') }}"
-        availability_template: "{{ not is_state('sun.sun', 'unavailable') }}"
       cabinet_desk_lamp_adaptive_color_temp:
         unique_id: cabinet_desk_lamp_adaptive_color_temp
         friendly_name: "Cabinet Desk Lamp [adaptive] Color Temp"
@@ -212,18 +206,24 @@ sensor:
         unit_of_measurement: '%'
         value_template: "{{ state_attr('switch.adaptive_lighting_hall_bra_1', 'brightness_pct') }}"
         availability_template: "{{ not is_state('switch.adaptive_lighting_hall_bra_1', 'unavailable') }}"
-      hall_bra_2_adaptive_color_temp:
-        unique_id: hall_bra_2_adaptive_color_temp
-        friendly_name: "Hall Bra 2 [adaptive] Color Temp"
-        unit_of_measurement: '°'
-        value_template: "{{ state_attr('switch.adaptive_lighting_hall_bra_2', 'color_temp_kelvin') }}"
-        availability_template: "{{ not is_state('switch.adaptive_lighting_hall_bra_2', 'unavailable') }}"
       hall_bra_2_adaptive_brightness:
         unique_id: hall_bra_2_adaptive_brightness
         friendly_name: "Hall Bra 2 [adaptive] Brightness"
         unit_of_measurement: '%'
         value_template: "{{ state_attr('switch.adaptive_lighting_hall_bra_2', 'brightness_pct') }}"
         availability_template: "{{ not is_state('switch.adaptive_lighting_hall_bra_2', 'unavailable') }}"
+      kitchen_ceiling_adaptive_color_temp:
+        unique_id: kitchen_ceiling_adaptive_color_temp
+        friendly_name: "Kitchen Ceiling [adaptive] Color Temp"
+        unit_of_measurement: '°'
+        value_template: "{{ state_attr('switch.adaptive_lighting_kitchen_ceiling', 'color_temp_kelvin') }}"
+        availability_template: "{{ not is_state('switch.adaptive_lighting_kitchen_ceiling', 'unavailable') }}"
+      kitchen_ceiling_adaptive_brightness:
+        unique_id: kitchen_ceiling_adaptive_brightness
+        friendly_name: "Kitchen Ceiling [adaptive] Brightness"
+        unit_of_measurement: '%'
+        value_template: "{{ state_attr('switch.adaptive_lighting_kitchen_ceiling', 'brightness_pct') }}"
+        availability_template: "{{ not is_state('switch.adaptive_lighting_kitchen_ceiling', 'unavailable') }}"
       xiaomi_thp_1_pressure_mmhg:
         unique_id: xiaomi_thp_1_pressure_mmhg
         friendly_name: "Xiaomi THP #1 Pressure mmHg"
