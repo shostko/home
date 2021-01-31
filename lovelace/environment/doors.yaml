@@ -14,3 +14,11 @@ cards:
             name: кнопка
           - entity: binary_sensor.door_window_sensor_158d0001fa3431
             name: zigbee
+      - type: history-graph
+        title: Сан.узел
+        hours_to_show: 24
+        entities:
+          - entity: binary_sensor.bath_door
+            name: Ванна
+          - entity: binary_sensor.toilet_door
+            name: Туалет
