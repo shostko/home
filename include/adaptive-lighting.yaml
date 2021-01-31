@@ -56,3 +56,18 @@
   detect_non_ha_changes: true
   sunrise_time: "08:00:00"
   sunset_time: "20:00:00"
+- name: "Kitchen Ceiling"
+  lights: 
+    - light.kitchen_ceiling
+  transition: 60
+  initial_transition: 0
+  interval: 300
+  min_brightness: 1
+  max_brightness: 100
+  min_color_temp: 2705 # 370 mireds
+  max_color_temp: 6535 # 153 mireds
+  sleep_brightness: 1
+  sleep_color_temp: 2705
+  detect_non_ha_changes: false
+  sunrise_time: "08:00:00"
+  sunset_time: "20:00:00"
