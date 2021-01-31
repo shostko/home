@@ -5,14 +5,14 @@
   initial_transition: 0
   interval: 300
   min_brightness: 1
-  max_brightness: 65
+  max_brightness: 50
   min_color_temp: 2710
   max_color_temp: 4950
   sleep_brightness: 1
   sleep_color_temp: 2710
   detect_non_ha_changes: true
   sunrise_time: "08:00:00"
-  sunset_time: "22:00:00"
+  sunset_time: "20:00:00"
 - name: "Bath Lights"
   lights: 
     - light.bath_lights
@@ -28,7 +28,7 @@
   sleep_color_temp: 2000
   detect_non_ha_changes: false
   sunrise_time: "08:00:00"
-  sunset_time: "21:00:00"
+  sunset_time: "20:00:00"
 - name: "Hall Bra 1"
   lights: 
     - light.xiaomi_philips_light
