@@ -35,10 +35,10 @@ humidifier:
             {% set depth = state_attr('fan.humidifier_1', 'depth') | int %}
             {%- if depth > 125 -%}
               detached
-            {%- elif depth < 71 -%}
+            {%- elif depth < 11 -%}
               0
             {%- else -%}
-              {{ ((depth - 70) / 55 * 100) | int }}
+              {{ ((depth - 10) / 115 * 100) | int }}
             {% endif %}
           availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
           icon_template: >-
