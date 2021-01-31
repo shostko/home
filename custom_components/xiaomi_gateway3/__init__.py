@@ -19,7 +19,7 @@ from .core.xiaomi_cloud import MiCloud
 _LOGGER = logging.getLogger(__name__)
 
 DOMAINS = ['binary_sensor', 'climate', 'cover', 'light', 'remote', 'sensor',
-           'switch']
+           'switch', 'alarm_control_panel']
 
 CONF_DEVICES = 'devices'
 CONF_DEBUG = 'debug'
@@ -97,6 +97,10 @@ async def async_update_options(hass: HomeAssistant, entry: ConfigEntry):
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
+    # check unload cloud integration
+    if entry.entry_id not in hass.data[DOMAIN]:
+        return
+
     # remove all stats entities if disable stats
     if not entry.options.get('stats'):
         suffix = ('_gateway', '_zigbee')
@@ -189,19 +193,20 @@ async def _handle_device_remove(hass: HomeAssistant):
         if not hass_device or not hass_device.identifiers:
             return
 
-        domain, mac = next(iter(hass_device.identifiers))
+        identifier = next(iter(hass_device.identifiers))
+
         # handle only our devices
-        if domain != DOMAIN or hass_device.name_by_user != 'delete':
+        if identifier[0] != DOMAIN or hass_device.name_by_user != 'delete':
             return
 
         # remove from Mi Home
         for gw in hass.data[DOMAIN].values():
             if not isinstance(gw, Gateway3):
                 continue
-            gw_device = gw.get_device(mac)
+            gw_device = gw.get_device(identifier[1])
             if not gw_device:
                 continue
-            _LOGGER.debug(f"{gw.host} | Remove device: {gw_device['did']}")
+            gw.debug(f"Remove device: {gw_device['did']}")
             gw.miio.send('remove_device', [gw_device['did']])
             break
 
@@ -250,7 +255,7 @@ class Gateway3Device(Entity):
         self.entity_id = f"{DOMAIN}.{self._unique_id}"
 
     def debug(self, message: str):
-        _LOGGER.debug(f"{self.entity_id} | {message}")
+        self.gw.debug(f"{self.entity_id} | {message}")
 
     async def async_added_to_hass(self):
         """Also run when rename entity_id"""
