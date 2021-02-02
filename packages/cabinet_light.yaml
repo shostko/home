@@ -17,6 +17,7 @@ cabinet_light:
           - light.cabinet_wall_switch_left
           - light.cupboard_relay
           - light.cabinet_desk_lamp
+          - light.midesklamp1s_9133
     
     automation:
     
@@ -74,7 +75,7 @@ cabinet_light:
             data_template:
               entity_id: >
                 {% if is_state('input_select.cabinet_wall_switch_right_mode', 'Desk') %}
-                  light.cabinet_desk_lamp
+                  light.midesklamp1s_9133
                 {% elif is_state('input_select.cabinet_wall_switch_right_mode', 'Cupboard') %}
                   light.cupboard_relay
                 {% endif %}

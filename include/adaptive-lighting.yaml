@@ -1,6 +1,7 @@
 - name: "Cabinet Desk Lamp"
   lights: 
     - light.cabinet_desk_lamp
+    - light.midesklamp1s_9133
   transition: 60
   initial_transition: 0
   interval: 300
