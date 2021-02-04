@@ -8,13 +8,12 @@ include:
   entity_globs:
     - sensor.*_hum
     - sensor.*_humidity
-    - sensor.*_humidity_floating
+    - sensor.*_humidity_2
     - sensor.*_temp
     - sensor.*_temperature
-    - sensor.*_temperature_floating
+    - sensor.*_temperature_2
     - sensor.*_pressure_mmhg
     - sensor.*_co2
-    - sensor.*_co2_floating
     - sensor.*_power
     - sensor.*_action
   entities:

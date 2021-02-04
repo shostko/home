@@ -53,3 +53,39 @@ sensor:
       name: "Xiaomi MiJia D107 Humidity"
     battery_level:
       name: "Xiaomi MiJia D107 Battery Level"
+  - platform: xiaomi_lywsd03mmc
+    mac_address: "A4:C1:38:48:8E:CF"
+    bindkey: "37d352a5b30c9001bd2e897452e06dff"   
+    temperature:
+      name: "Xiaomi MiJia 8ECF Temperature"
+    humidity:
+      name: "Xiaomi MiJia 8ECF Humidity"
+    battery_level:
+      name: "Xiaomi MiJia 8ECF Battery Level"
+  - platform: xiaomi_lywsd03mmc
+    mac_address: "A4:C1:38:D6:4A:07"
+    bindkey: "01bbf4c74fa5df89c33dacb6fab0100f"   
+    temperature:
+      name: "Xiaomi MiJia 4A07 Temperature"
+    humidity:
+      name: "Xiaomi MiJia 4A07 Humidity"
+    battery_level:
+      name: "Xiaomi MiJia 4A07 Battery Level"
+  - platform: xiaomi_lywsd03mmc
+    mac_address: "A4:C1:38:9A:A8:10"
+    bindkey: "448c7f8981c96c9d4c9c73e373d256fe"   
+    temperature:
+      name: "Xiaomi MiJia A810 Temperature"
+    humidity:
+      name: "Xiaomi MiJia A810 Humidity"
+    battery_level:
+      name: "Xiaomi MiJia A810 Battery Level"
+  - platform: xiaomi_lywsd03mmc
+    mac_address: "A4:C1:38:96:A4:DB"
+    bindkey: "3876d722b1081528617c025c760023b3"   
+    temperature:
+      name: "Xiaomi MiJia A4DB Temperature"
+    humidity:
+      name: "Xiaomi MiJia A4DB Humidity"
+    battery_level:
+      name: "Xiaomi MiJia A4DB Battery Level"

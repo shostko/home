@@ -60,6 +60,14 @@ cards:
       - entity: switch.entrance_ring_impulse
         name: Режим "Импульс"
   - type: sensor
+    name: Температура
+    graph: line
+    entity: sensor.xiaomi_mijia_8ecf_temperature
+  - type: sensor
+    name: Влажность
+    graph: line
+    entity: sensor.xiaomi_mijia_8ecf_humidity
+  - type: sensor
     name: Освещенность
     graph: line
     entity: sensor.illumination_7811dcb2404d

@@ -21,3 +21,11 @@ cards:
       - entity: binary_sensor.toilet_door
         name: Туалет дверь
         show_last_changed: true
+  - type: sensor
+    name: Температура (ванна)
+    graph: line
+    entity: sensor.xiaomi_mijia_4a07_temperature_2
+  - type: sensor
+    name: Влажность (ванна)
+    graph: line
+    entity: sensor.xiaomi_mijia_4a07_humidity_2

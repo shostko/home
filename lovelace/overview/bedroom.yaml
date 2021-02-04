@@ -34,7 +34,9 @@ cards:
         show_icon: false
         entities:
           - entity: sensor.bedroom_temp_and_hum_temperature
-            name: Датчик
+            name: Кроватка
+          - entity: sensor.xiaomi_mijia_a4db_temperature
+            name: Зеркало
           - entity: sensor.humidifier_2_temp
             name: Увлажнитель
       - type: entities
@@ -51,7 +53,9 @@ cards:
         show_icon: false
         entities:
           - entity: sensor.bedroom_temp_and_hum_humidity
-            name: Датчик
+            name: Кроватка
+          - entity: sensor.xiaomi_mijia_a4db_humidity
+            name: Зеркало
           - entity: sensor.humidifier_2_hum
             name: Увлажнитель
       - type: entities
