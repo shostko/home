@@ -26,6 +26,8 @@ cards:
             name: Датчик
           - entity: sensor.humidifier_2_hum
             name: Увлажнитель
+          - entity: sensor.xiaomi_mijia_a4db_humidity_2
+            name: Зеркало
           - entity: sensor.bedroom_humidity
             name: Среднее
       - type: history-graph
@@ -33,6 +35,22 @@ cards:
         hours_to_show: 24
         entities:
           - entity: sensor.xiaomi_mijia_cb15_humidity
+            name: Датчик
+          - entity: sensor.xiaomi_mijia_a810_humidity
+            name: Стол
+          - entity: sensor.kitchen_humidity
+            name: Среднее
+      - type: history-graph
+        title: Ванна
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_mijia_4a07_humidity_2
+            name: Датчик
+      - type: history-graph
+        title: Прихожая
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_mijia_8ecf_humidity
             name: Датчик
       - type: history-graph
         title: Балкон

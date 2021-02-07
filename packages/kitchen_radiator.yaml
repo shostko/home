@@ -28,12 +28,12 @@ kitchen_radiator:
         - platform: state
           entity_id: input_number.kitchen_target_temperature
         - platform: state
-          entity_id: sensor.xiaomi_mijia_cb15_temperature
+          entity_id: sensor.kitchen_temperature
         - platform: state
           entity_id: sensor.radiator_3_temp
       condition: 
         - "{{ states('input_number.kitchen_target_temperature') | float(-1000) > -1000 }}"
-        - "{{ states('sensor.xiaomi_mijia_cb15_temperature') | float(-1000) > -1000 }}"
+        - "{{ states('sensor.kitchen_temperature') | float(-1000) > -1000 }}"
         - "{{ states('sensor.radiator_3_temp') | float(-1000) > -1000 }}"
         - "{{ not is_state('climate.moes_radiator_actuator_3_climate', 'unavailable') }}"
       action:
@@ -42,6 +42,6 @@ kitchen_radiator:
             entity_id: climate.moes_radiator_actuator_3_climate
             temperature: >-
               {% set target = states('input_number.kitchen_target_temperature') | float %}
-              {% set sensor = states('sensor.xiaomi_mijia_cb15_temperature') | float %}
+              {% set sensor = states('sensor.kitchen_temperature') | float %}
               {% set radiator = states('sensor.radiator_3_temp') | float %}
               {{ (radiator + target - sensor) | round(1) }}

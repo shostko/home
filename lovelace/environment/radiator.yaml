@@ -61,7 +61,7 @@ cards:
           - type: entities
             title: Кухня
             entities:
-              - entity: sensor.xiaomi_mijia_cb15_temperature
+              - entity: sensor.kitchen_temperature
                 name: Сенсор
               - entity: input_number.kitchen_target_temperature
                 name: Целевая

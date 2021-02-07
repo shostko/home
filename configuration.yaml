@@ -320,6 +320,7 @@ sensor:
           {% set arr =
             ([
               states('sensor.bedroom_temp_and_hum_temperature'),
+              states('sensor.xiaomi_mijia_a4db_temperature'),
               states('sensor.humidifier_2_temp')
             ]) | map('float', -1000) | select('gt', -1000) | list
           %}
@@ -334,6 +335,8 @@ sensor:
           {{
             not is_state('sensor.bedroom_temp_and_hum_temperature', 'unavailable')
           or
+            not is_state('sensor.xiaomi_mijia_a4db_temperature', 'unavailable')
+          or
             not is_state('sensor.humidifier_2_temp', 'unavailable')
           }}
       bedroom_average_humidity:
@@ -344,6 +347,7 @@ sensor:
           {% set arr =
             ([
               states('sensor.bedroom_temp_and_hum_humidity'),
+              states('sensor.xiaomi_mijia_a4db_humidity'),
               states('sensor.humidifier_2_hum')
             ]) | map('float', -1000) | select('gt', -1000) | list
           %}
@@ -358,7 +362,57 @@ sensor:
           {{
             not is_state('sensor.bedroom_temp_and_hum_humidity', 'unavailable')
           or
+            not is_state('sensor.xiaomi_mijia_a4db_humidity', 'unavailable')
+          or
             not is_state('sensor.humidifier_2_hum', 'unavailable')
+          }}
+      kitchen_average_temperature:
+        unique_id: kitchen_average_temperature
+        friendly_name: "Kitchen Average Temperature"
+        unit_of_measurement: '°C'
+        value_template: >-
+          {% set arr =
+            ([
+              states('sensor.xiaomi_mijia_cb15_temperature'),
+              states('sensor.xiaomi_mijia_a810_temperature_2')
+            ]) | map('float', -1000) | select('gt', -1000) | list
+          %}
+          {% set count = arr | count %}
+          {% if count == 0 %}
+            'error'
+          {% else %}
+            {% set sum = arr | sum %}
+            {{ (sum / count) | round(1) }}
+          {% endif %}
+        availability_template: >-
+          {{
+            not is_state('sensor.xiaomi_mijia_cb15_temperature', 'unavailable')
+          or
+            not is_state('sensor.xiaomi_mijia_a810_temperature_2', 'unavailable')
+          }}
+      kitchen_average_humidity:
+        unique_id: kitchen_average_humidity
+        friendly_name: "Kitchen Average Humidity"
+        unit_of_measurement: '%'
+        value_template: >-
+          {% set arr =
+            ([
+              states('sensor.xiaomi_mijia_cb15_humidity'),
+              states('sensor.xiaomi_mijia_a810_humidity_2')
+            ]) | map('float', -1000) | select('gt', -1000) | list
+          %}
+          {% set count = arr | count %}
+          {% if count == 0 %}
+            'error'
+          {% else %}
+            {% set sum = arr | sum %}
+            {{ (sum / count) | round(1) }}
+          {% endif %}
+        availability_template: >-
+          {{
+            not is_state('sensor.xiaomi_mijia_cb15_humidity', 'unavailable')
+          or
+            not is_state('sensor.xiaomi_mijia_a810_humidity_2', 'unavailable')
           }}
   - platform: filter
     name: "Hall Temperature"
@@ -399,6 +453,30 @@ sensor:
   - platform: filter
     name: "Bedroom Humidity"
     entity_id: sensor.bedroom_average_humidity
+    filters:
+      - filter: outlier
+        window_size: 5
+        radius: 10.0
+      - filter: lowpass
+        time_constant: 5
+        precision: 1
+      - filter: time_simple_moving_average
+        window_size: "00:03"
+  - platform: filter
+    name: "Kitchen Temperature"
+    entity_id: sensor.kitchen_average_temperature
+    filters:
+      - filter: outlier
+        window_size: 5
+        radius: 10.0
+      - filter: lowpass
+        time_constant: 5
+        precision: 1
+      - filter: time_simple_moving_average
+        window_size: "00:03"
+  - platform: filter
+    name: "Kitchen Humidity"
+    entity_id: sensor.kitchen_average_humidity
     filters:
       - filter: outlier
         window_size: 5
