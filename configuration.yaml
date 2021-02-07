@@ -229,7 +229,7 @@ sensor:
         friendly_name: "Xiaomi THP #1 Pressure mmHg"
         unit_of_measurement: 'mmHg'
         value_template: "{{ (states('sensor.xiaomi_thp_1_pressure') | int * 0.75006156) | int }}"
-        availability_template: "{{ not is_state('sensor.xiaomi_thp_1_pressure', 'unavailable') }}"
+        availability_template: "{{ states('sensor.xiaomi_thp_1_pressure') | int > 0 }}"
         icon_template: >-
           {% set state = states('sensor.xiaomi_thp_1_pressure_mmhg') | int %}
           {% if state > 820 %}
@@ -246,7 +246,7 @@ sensor:
         friendly_name: "Xiaomi THP #2 Pressure mmHg"
         unit_of_measurement: 'mmHg'
         value_template: "{{ (states('sensor.xiaomi_thp_2_pressure') | int * 0.75006156) | int }}"
-        availability_template: "{{ not is_state('sensor.xiaomi_thp_2_pressure', 'unavailable') }}"
+        availability_template: "{{ states('sensor.xiaomi_thp_2_pressure') | int > 0 }}"
         icon_template: >-
           {% set state = states('sensor.xiaomi_thp_2_pressure_mmhg') | int %}
           {% if state > 820 %}
