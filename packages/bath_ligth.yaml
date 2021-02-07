@@ -9,11 +9,106 @@ bath_ligth:
     - platform: group
       name: Toilet Lights
       entities:
-        - light.gledopto_3    
+        - light.gledopto_3  
+
+  script:
+
+    ## BATH
+
+    bath_lights_turn_on:
+      mode: restart
+      sequence:
+        # Включить весь свет днём или один светильник ночью
+        - service: light.turn_on
+          data_template:
+            entity_id: >-
+              {%- if is_state('binary_sensor.tod_night', 'on') -%}
+                light.gledopto_1
+              {%- else -%}
+                light.bath_lights
+              {%- endif -%}
+        # Подождать 3 секунд (показывая, что скрипт только что сработал)
+        - delay: 3
+
+    bath_lights_turn_off:
+      mode: restart
+      sequence:
+        # Выключить весь свет
+        - service: light.turn_off
+          data_template:
+            entity_id: light.bath_lights
+        # Подождать 3 секунды
+        - delay: 1
+        # Контрольное выключение
+        - service: light.turn_off
+          data_template:
+            entity_id: light.bath_lights
+        # Подождать 2 секунды (показывая, что скрипт только что сработал)
+        - delay: 2
+
+    bath_lights_toggle:
+      sequence:
+        - choose:
+            # Весь свет в ванной выключен
+            - conditions:
+                - condition: state
+                  entity_id: light.bath_lights
+                  state: 'off'
+              sequence:
+                # Включить свет
+                - service: script.bath_lights_turn_on
+          # Любой свет в ванной включен
+          default:
+            # Выключить весь свет
+            - service: script.bath_lights_turn_off
+
+    ## TOILET
+
+    toilet_lights_turn_on:
+      mode: restart
+      sequence:
+        # Включить весь свет днём или один светильник ночью
+        - service: light.turn_on
+          data_template:
+            entity_id: light.toilet_lights
+        # Подождать 3 секунд (показывая, что скрипт только что сработал)
+        - delay: 3
+
+    toilet_lights_turn_off:
+      mode: restart
+      sequence:
+        # Выключить весь свет
+        - service: light.turn_off
+          data_template:
+            entity_id: light.toilet_lights
+        # Подождать 3 секунды
+        - delay: 1
+        # Контрольное выключение
+        - service: light.turn_off
+          data_template:
+            entity_id: light.toilet_lights
+        # Подождать 2 секунды (показывая, что скрипт только что сработал)
+        - delay: 2
+
+    toilet_lights_toggle:
+      sequence:
+        - choose:
+            # Весь свет в ванной выключен
+            - conditions:
+                - condition: state
+                  entity_id: light.toilet_lights
+                  state: 'off'
+              sequence:
+                # Включить свет
+                - service: script.toilet_lights_turn_on
+          # Любой свет в ванной включен
+          default:
+            # Выключить весь свет
+            - service: script.toilet_lights_turn_off
 
   automation:
 
-    - alias: Bath lights ON (via button)
+    - alias: Bath lights TOGGLE (via button)
       trigger:
         # Левая кнопка выключателя (одинарный клик)
         - platform: state
@@ -23,29 +118,18 @@ bath_ligth:
         - platform: state
           entity_id: sensor.bath_and_toilet_wireless_switch_action
           to: 'single_both'
+      condition:
+        # Недавно не было команды на включение света
+        - condition: state
+          entity_id: script.bath_lights_turn_on
+          state: 'off'
+        # Недавно не было команды на выключение света
+        - condition: state
+          entity_id: script.bath_lights_turn_off
+          state: 'off'
       action:
-        - choose:
-            # Весь свет в ванной выключен
-            - conditions:
-                - condition: state
-                  entity_id: light.bath_lights
-                  state: 'off'
-              sequence:
-                # Включить весь свет днём или один светильник ночью
-                - service: light.turn_on
-                  data_template:
-                    entity_id: >-
-                      {%- if is_state('binary_sensor.tod_night', 'on') -%}
-                        light.gledopto_1
-                      {%- else -%}
-                        light.bath_lights
-                      {%- endif -%}
-          # Любой свет в ванной включен
-          default:
-            # Выключить весь свет
-            - service: light.turn_off
-              data_template:
-                entity_id: light.bath_lights
+        # Переключить свет
+        - service: script.bath_lights_toggle
 
     - alias: Bath lights ON (via door)
       trigger:
@@ -60,17 +144,10 @@ bath_ligth:
           entity_id: light.bath_lights
           state: 'off'
       action:
-        # Включить весь свет днём или один светильник ночью
-        - service: light.turn_on
-          data_template:
-            entity_id: >-
-              {%- if is_state('binary_sensor.tod_night', 'on') -%}
-                light.gledopto_1
-              {%- else -%}
-                light.bath_lights
-              {%- endif -%}
+        # Включить свет
+        - service: script.bath_lights_turn_on
 
-    - alias: Toilet lights ON (via button)
+    - alias: Toilet lights TOGGLE (via button)
       trigger:
         # Правая кнопка выключателя (одинарный клик)
         - platform: state
@@ -80,24 +157,18 @@ bath_ligth:
         - platform: state
           entity_id: sensor.bath_and_toilet_wireless_switch_action
           to: 'single_both'
+      condition:
+        # Недавно не было команды на включение света
+        - condition: state
+          entity_id: script.toilet_lights_turn_on
+          state: 'off'
+        # Недавно не было команды на выключение света
+        - condition: state
+          entity_id: script.toilet_lights_turn_off
+          state: 'off'
       action:
-        - choose:
-            # Свет в туалете выключен
-            - conditions:
-                - condition: state
-                  entity_id: light.toilet_lights
-                  state: 'off'
-              sequence:
-                # Включить свет
-                - service: light.turn_on
-                  data_template:
-                    entity_id: light.toilet_lights
-          # Свет в туалете включен
-          default:
-            # Выключить свет
-            - service: light.turn_off
-              data_template:
-                entity_id: light.toilet_lights
+        # Переключить свет
+        - service: script.toilet_lights_toggle
 
     - alias: Toilet lights ON (via door)
       trigger:
@@ -113,6 +184,4 @@ bath_ligth:
           state: 'off'
       action:
         # Включить свет
-        - service: light.turn_on
-          data_template:
-            entity_id: light.toilet_lights
+        - service: script.toilet_lights_turn_on
