@@ -43,7 +43,7 @@ cards:
     cards:
       - type: sensor
         name: Температура
-        entity: sensor.xiaomi_mijia_cb15_temperature
+        entity: sensor.kitchen_temperature
       - type: glance
         show_icon: false
         entities:
@@ -55,12 +55,12 @@ cards:
         entities: []
         footer:
             type: graph
-            entity: sensor.xiaomi_mijia_cb15_temperature
+            entity: sensor.kitchen_temperature
   - type: custom:vertical-stack-in-card
     cards:
       - type: sensor
         name: Влажность
-        entity: sensor.xiaomi_mijia_cb15_humidity
+        entity: sensor.kitchen_humidity
       - type: glance
         show_icon: false
         entities:
@@ -72,7 +72,7 @@ cards:
         entities: []
         footer:
             type: graph
-            entity: sensor.bedroom_humidity
+            entity: sensor.kitchen_humidity
   - type: glance
     entities:
       - entity: binary_sensor.kitchen_water_leak
