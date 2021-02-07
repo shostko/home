@@ -94,6 +94,15 @@ sensor.kitchen_temperature:
   properties:
     - type: humidity
       entity: sensor.kitchen_humidity
+sensor.xiaomi_mijia_30d0_temperature:
+  type: devices.types.sensor
+  name: 'Тесто'
+  room: 'Кухня'
+  properties:
+    - type: temperature
+      entity: sensor.xiaomi_mijia_30d0_temperature
+    - type: humidity
+      entity: sensor.xiaomi_mijia_30d0_humidity
 group.kitchen_lights:
   type: devices.types.light
   name: 'Всё'
@@ -115,6 +124,15 @@ switch.kitchen_2_relay_l2:
   name: 'Подсветка'
   room: 'Кухня'
 # Санузлы
+sensor.xiaomi_mijia_4a07_temperature_2:
+  type: devices.types.sensor
+  name: 'Воздух'
+  room: 'Ванна'
+  properties:
+    - type: temperature
+      entity: sensor.xiaomi_mijia_4a07_temperature_2
+    - type: humidity
+      entity: sensor.xiaomi_mijia_4a07_humidity_2
 light.bath_lights:
   type: devices.types.light
   name: 'Свет'
@@ -141,6 +159,15 @@ switch.cupboard_relay:
   name: 'Шкаф'
   room: 'Кабинет'
 # Прихожая
+sensor.xiaomi_mijia_8ecf_temperature:
+  type: devices.types.sensor
+  name: 'Воздух'
+  room: 'Прихожая'
+  properties:
+    - type: temperature
+      entity: sensor.xiaomi_mijia_8ecf_temperature
+    - type: humidity
+      entity: sensor.xiaomi_mijia_8ecf_humidity
 switch.entrance_ring_sound:
   type: devices.types.other
   name: 'Звонок'
