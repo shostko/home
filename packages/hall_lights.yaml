@@ -24,98 +24,89 @@ hall_lights:
 
   automation:
 
-    - alias: Hall Full Ceiling Light OFF
+    - alias: Hall Ceiling Lights TOGGLE
       trigger:
         # Правая кнопка выключателя (одинарный клик)
         - platform: state
           entity_id: sensor.hall_wall_switch_action
           to: 'single_right'
-      condition:
-        # Любой свет на люстре включен
-        - condition: state
-          entity_id: group.hall_ceiling_lights
-          state: 'on'
       action:
-        # Выключить всю люстру
-        - service: homeassistant.turn_off
-          data_template:
-            entity_id: group.hall_ceiling_lights
+        - choose:
+            # Весь свет на люстре выключен
+            - conditions:
+                - condition: state
+                  entity_id: group.hall_ceiling_lights
+                  state: 'off'
+              sequence:
+                # Включить всю люстру
+                - service: homeassistant.turn_on
+                  data_template:
+                    entity_id: group.hall_ceiling_lights
+          # Любой свет на люстре включен
+          default:
+            # Выключить всю люстру
+            - service: homeassistant.turn_off
+              data_template:
+                entity_id: group.hall_ceiling_lights
 
-    - alias: Hall Full Ceiling Light ON
-      trigger:
-        # Правая кнопка выключателя (одинарный клик)
-        - platform: state
-          entity_id: sensor.hall_wall_switch_action
-          to: 'single_right'
-      condition:
-        # Весь свет на люстре выключен
-        - condition: state
-          entity_id: group.hall_ceiling_lights
-          state: 'off'
-      action:
-        # Включить всю люстру
-        - service: homeassistant.turn_on
-          data_template:
-            entity_id: group.hall_ceiling_lights
-
-    - alias: Hall Small Ceiling Light OFF
+    - alias: Hall Bra Lights TOGGLE
       trigger:
         # Левая кнопка выключателя (одинарный клик)
         - platform: state
           entity_id: sensor.hall_wall_switch_action
           to: 'single_left'
       action:
-        # Переключить меньшую часть на люстре
-        - service: light.toggle
-          data_template:
-            entity_id: light.hall_wall_switch_left
+        - choose:
+            # Все бра выключены
+            - conditions:
+                - condition: state
+                  entity_id: group.hall_bra_lights
+                  state: 'off'
+              sequence:
+                # Включить все бра
+                - service: homeassistant.turn_on
+                  data_template:
+                    entity_id: group.hall_bra_lights
+          # Хотя бы одна бра включена
+          default:
+            # Выключить все бра
+            - service: homeassistant.turn_off
+              data_template:
+                entity_id: group.hall_bra_lights
 
-    - alias: Hall All Lights OFF
+    - alias: Hall Lights TOGGLE
       trigger:
-        # Обе кнопки выключателя (одинарный клик)
+        # Обе кнопка выключателя (одинарный клик)
         - platform: state
           entity_id: sensor.hall_wall_switch_action
           to: 'single_both'
-      condition:
-        # Любой свет на люстре включен
-        - condition: state
-          entity_id: group.hall_lights
-          state: 'on'
       action:
-        # Выключить всю люстру
-        - service: homeassistant.turn_off
-          data_template:
-            entity_id: group.hall_lights
-
-    - alias: Hall All Lights ON
-      trigger:
-        # Обе кнопки выключателя (одинарный клик)
-        - platform: state
-          entity_id: sensor.hall_wall_switch_action
-          to: 'single_both'
-      condition:
-        # Весь свет на люстре выключен
-        - condition: state
-          entity_id: group.hall_lights
-          state: 'off'
-      action:
-        # Включить всю люстру
-        - service: homeassistant.turn_on
-          data_template:
-            entity_id: group.hall_lights
-
-    - alias: Hall Bra 1 TOGGLE
-      trigger:
-        # Выключатель под бра
-        - platform: state
-          entity_id: binary_sensor.bra_1_switch_contact
-          from: 'on'
-          to: 'off'
-        - platform: state
-          entity_id: binary_sensor.bra_1_switch_contact
-          from: 'off'
-          to: 'on'
-      action:
-        # Переключить бра
-        - service: light.toggle
-          entity_id: light.xiaomi_philips_light
+        - choose:
+            - conditions:
+                # Все бра выключены
+                - condition: state
+                  entity_id: group.hall_bra_lights
+                  state: 'off'
+                # Весь свет на люстре выключен
+                - condition: state
+                  entity_id: group.hall_ceiling_lights
+                  state: 'off'
+              sequence:
+                # Включить все бра
+                - service: homeassistant.turn_on
+                  data_template:
+                    entity_id: group.hall_bra_lights
+                # Включить всю люстру
+                - service: homeassistant.turn_on
+                  data_template:
+                    entity_id: group.hall_ceiling_lights
+          # Хотя бы одна бра или часть люстры включена
+          default:
+            # Выключить все бра
+            - service: homeassistant.turn_off
+              data_template:
+                entity_id: group.hall_bra_lights
+            # Выключить всю люстру
+            - service: homeassistant.turn_off
+              data_template:
+                entity_id: group.hall_ceiling_lights
