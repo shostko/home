@@ -102,7 +102,7 @@ cards:
       - entity: sensor.kitchen_filter_raw_daily
         name: Сырая сегодня
   - type: glance
-    title: Доп.датчик
+    title: Тесто
     entities:
       - entity: sensor.xiaomi_mijia_30d0_temperature
         name: Температура
