@@ -1,0 +1,13 @@
+title: System
+id: system
+path: system
+icon: mdi:desktop-classic
+panel: false
+cards:
+  - type: entities
+    title: Роутер
+    entities:
+      - entity: binary_sensor.guest_wifi
+        name: Гостевой Wi-Fi
+      - entity: switch.guest_wifi
+        name: Гостевой Wi-Fi

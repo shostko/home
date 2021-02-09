@@ -1,0 +1,47 @@
+router:
+
+  binary_sensor:
+    - platform: rest
+      name: Guest Wifi
+      device_class: connectivity
+      resource: http://192.168.1.1/system_status_data.asp
+      authentication: basic
+      username: !secret router_user
+      password: !secret router_pwd
+      verify_ssl: false
+      value_template: >-
+        {% if value | regex_search("wifi2:\s{[a-z1-9:\s,]*guest:\s?(\d)[a-z:,]*}") %}
+          {{ value | regex_findall_index("wifi2:\s{[a-z1-9:\s,]*guest:\s?(\d)[a-z:,]*}", 0, true) }}
+        {% else %}
+          unavailable
+        {% endif %}
+
+  rest_command:
+    guest_wifi:
+      method: POST
+      url: "http://192.168.1.1/start_apply.htm"
+      username: !secret router_user
+      password: !secret router_pwd
+      verify_ssl: false
+      content_type: "application/x-www-form-urlencoded"
+      payload: 'sid_list=WLANConfig11b;&action_mode=+Apply+&rt_guest_enable={{ status }}'
+
+  switch:
+    - platform: template
+      switches:
+        guest_wifi:
+          value_template: "{{ states('binary_sensor.guest_wifi') }}"
+          turn_on:
+            service: rest_command.guest_wifi
+            data:
+              status: 1
+          turn_off:
+            service: rest_command.guest_wifi
+            data:
+              status: 0
+          icon_template: >-
+            {% if is_state('switch.guest_wifi', 'on') %}
+              mdi:wifi
+            {% else %}
+              mdi:wifi-off
+            {% endif %}
