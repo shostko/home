@@ -37,14 +37,20 @@ bath_ligth:
         - service: light.turn_off
           data_template:
             entity_id: light.bath_lights
-        # Подождать 3 секунды
+        # Подождать 1 секунду
         - delay: 1
         # Контрольное выключение
         - service: light.turn_off
           data_template:
             entity_id: light.bath_lights
-        # Подождать 2 секунды (показывая, что скрипт только что сработал)
-        - delay: 2
+        # Подождать 1 секунду
+        - delay: 1
+        # Контрольное выключение
+        - service: light.turn_off
+          data_template:
+            entity_id: light.bath_lights
+        # Подождать 1 секунду (показывая, что скрипт только что сработал)
+        - delay: 1
 
     bath_lights_toggle:
       sequence:
@@ -81,14 +87,20 @@ bath_ligth:
         - service: light.turn_off
           data_template:
             entity_id: light.toilet_lights
-        # Подождать 3 секунды
+        # Подождать 1 секунду
         - delay: 1
         # Контрольное выключение
         - service: light.turn_off
           data_template:
             entity_id: light.toilet_lights
-        # Подождать 2 секунды (показывая, что скрипт только что сработал)
-        - delay: 2
+        # Подождать 1 секунду
+        - delay: 1
+        # Контрольное выключение
+        - service: light.turn_off
+          data_template:
+            entity_id: light.toilet_lights
+        # Подождать 1 секунду (показывая, что скрипт только что сработал)
+        - delay: 1
 
     toilet_lights_toggle:
       sequence:
@@ -144,6 +156,11 @@ bath_ligth:
           entity_id: light.bath_lights
           state: 'off'
       action:
+        # Завершить скрипты по ванне
+        - service: homeassistant.turn_off
+          entity_id: script.bath_lights_turn_off
+        - service: homeassistant.turn_off
+          entity_id: script.bath_lights_toggle
         # Включить свет
         - service: script.bath_lights_turn_on
 
@@ -183,5 +200,42 @@ bath_ligth:
           entity_id: light.toilet_lights
           state: 'off'
       action:
+        # Завершить скрипты по туалету
+        - service: homeassistant.turn_off
+          entity_id: script.toilet_lights_turn_off
+        - service: homeassistant.turn_off
+          entity_id: script.toilet_lights_toggle
         # Включить свет
         - service: script.toilet_lights_turn_on
+
+    - alias: Bath/Toilet all lights OFF
+      trigger:
+        # Обе кнопки выключателя (двойной клик)
+        - platform: state
+          entity_id: sensor.bath_and_toilet_wireless_switch_action
+          to: 'double_both'
+      action:
+        # Завершить скрипты по ванне
+        - service: homeassistant.turn_off
+          entity_id: script.bath_lights_turn_on
+        - service: homeassistant.turn_off
+          entity_id: script.bath_lights_toggle
+        # Завершить скрипты по туалету
+        - service: homeassistant.turn_off
+          entity_id: script.toilet_lights_turn_on
+        - service: homeassistant.turn_off
+          entity_id: script.toilet_lights_toggle
+        # Выключить свет в туалете
+        - service: script.turn_on
+          entity_id: script.toilet_lights_turn_off
+        # Выключить свет в ванной
+        - service: script.turn_on
+          entity_id: script.bath_lights_turn_off
+        # Подождать 3 секунды (что бы первый вызов скриптов завершился)
+        - delay: 3
+        # Выключить свет в туалете
+        - service: script.turn_on
+          entity_id: script.toilet_lights_turn_off
+        # Выключить свет в ванной
+        - service: script.turn_on
+          entity_id: script.bath_lights_turn_off
