@@ -44,6 +44,8 @@
 - light.xiaomi_gateway_light
 # Балкон
 - sensor.xiaomi_thp_2_temperature
+# Общее
+- switch.guest_wifi
 # Скрипты
 - script.good_night
 - script.at_bedroom

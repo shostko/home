@@ -8,6 +8,8 @@ cards:
     title: Роутер
     entities:
       - entity: binary_sensor.guest_wifi
-        name: Гостевой Wi-Fi
+        name: "Гостевой Wi-Fi: Стутус"
+      - entity: input_select.guest_wifi_process
+        name: "Гостевой Wi-Fi: Процесс"
       - entity: switch.guest_wifi
         name: Гостевой Wi-Fi

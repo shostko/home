@@ -196,6 +196,11 @@ sensor.xiaomi_thp_2_temperature:
   properties:
     - type: humidity
       entity: sensor.xiaomi_thp_2_humidity
+# Общее
+switch.guest_wifi:
+  type: devices.types.light
+  name: 'Гостевой Вай Фай'
+  room: 'Коридор'
 # Скрипты
 script.good_night:
   name: 'Спокойной ночи'
