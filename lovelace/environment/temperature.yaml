@@ -23,7 +23,7 @@ cards:
         hours_to_show: 24
         entities:
           - entity: sensor.bedroom_temp_and_hum_temperature
-            name: Датчик
+            name: Кроватка
           - entity: sensor.humidifier_2_temp
             name: Увлажнитель
           - entity: sensor.xiaomi_mijia_a4db_temperature

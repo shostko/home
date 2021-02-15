@@ -23,10 +23,10 @@ cards:
         hours_to_show: 24
         entities:
           - entity: sensor.bedroom_temp_and_hum_humidity
-            name: Датчик
+            name: Кроватка
           - entity: sensor.humidifier_2_hum
             name: Увлажнитель
-          - entity: sensor.xiaomi_mijia_a4db_humidity_2
+          - entity: sensor.xiaomi_mijia_a4db_humidity
             name: Зеркало
           - entity: sensor.bedroom_humidity
             name: Среднее
@@ -36,7 +36,7 @@ cards:
         entities:
           - entity: sensor.xiaomi_mijia_cb15_humidity
             name: Датчик
-          - entity: sensor.xiaomi_mijia_a810_humidity
+          - entity: sensor.xiaomi_mijia_a810_humidity_2
             name: Стол
           - entity: sensor.kitchen_humidity
             name: Среднее
