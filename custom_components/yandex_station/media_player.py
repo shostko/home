@@ -5,6 +5,7 @@ import re
 import uuid
 from typing import Optional
 
+from homeassistant.components import shopping_list
 from homeassistant.components.media_player import SUPPORT_PAUSE, \
     SUPPORT_VOLUME_SET, SUPPORT_PREVIOUS_TRACK, \
     SUPPORT_NEXT_TRACK, SUPPORT_PLAY, SUPPORT_TURN_OFF, \
@@ -30,6 +31,7 @@ _LOGGER = logging.getLogger(__name__)
 
 RE_EXTRA = re.compile(br'{.+[\d"]}')
 RE_MUSIC_ID = re.compile(r'^\d+(:\d+)?$')
+RE_SHOPPING = re.compile(r'^\d+\) (.+)\.$', re.MULTILINE)
 
 BASE_FEATURES = (SUPPORT_TURN_OFF | SUPPORT_VOLUME_SET | SUPPORT_VOLUME_STEP |
                  SUPPORT_VOLUME_MUTE | SUPPORT_PLAY_MEDIA |
@@ -146,7 +148,6 @@ class YandexStation(MediaPlayerEntity):
         if not self.glagol:
             self.glagol = YandexGlagol(self.quasar.session, self.device)
             self.glagol.update_handler = self.update
-            self.glagol.response_handler = self.response
 
         await self.glagol.start_or_restart()
 
@@ -430,31 +431,30 @@ class YandexStation(MediaPlayerEntity):
     async def response(self, card: dict, request_id: str):
         _LOGGER.debug(f"{self.name} | {card['text']} | {request_id}")
 
-        if request_id in self.requests:
-            if card['type'] == 'simple_text':
-                text = card['text']
+        if card['type'] == 'simple_text':
+            text = card['text']
 
-            elif card['type'] == 'text_with_button':
-                text = card['text']
+        elif card['type'] == 'text_with_button':
+            text = card['text']
 
-                for button in card['buttons']:
-                    assert button['type'] == 'action'
-                    for directive in button['directives']:
-                        if directive['name'] == 'open_uri':
-                            title = button['title']
-                            uri = directive['payload']['uri']
-                            text += f"\n[{title}]({uri})"
+            for button in card['buttons']:
+                assert button['type'] == 'action'
+                for directive in button['directives']:
+                    if directive['name'] == 'open_uri':
+                        title = button['title']
+                        uri = directive['payload']['uri']
+                        text += f"\n[{title}]({uri})"
 
-            else:
-                _LOGGER.error(f"Неизвестный тип ответа: {card['type']}")
-                return
+        else:
+            _LOGGER.error(f"Неизвестный тип ответа: {card['type']}")
+            return
 
-            self.hass.bus.async_fire(f"{DOMAIN}_response", {
-                'entity_id': self.entity_id,
-                'name': self.name,
-                'text': text,
-                'request_id': self.requests.pop(request_id)
-            })
+        self.hass.bus.async_fire(f"{DOMAIN}_response", {
+            'entity_id': self.entity_id,
+            'name': self.name,
+            'text': text,
+            'request_id': request_id
+        })
 
     async def _set_brightness(self, value: str):
         if self.device_platform != 'yandexstation_2':
@@ -479,6 +479,52 @@ class YandexStation(MediaPlayerEntity):
             device_config['led']['brightness']['auto'] = True
 
         await self.quasar.set_device_config(self.device, device_config)
+
+    async def _shopping_list(self):
+        if shopping_list.DOMAIN not in self.hass.data:
+            return
+
+        data: shopping_list.ShoppingData = self.hass.data[shopping_list.DOMAIN]
+
+        card = await self.glagol.send({'command': 'sendText',
+                                       'text': "Список покупок"})
+        alice_list = RE_SHOPPING.findall(card['text'])
+        _LOGGER.debug(f"Список покупок: {alice_list}")
+
+        remove_from = [
+            alice_list.index(item['name'])
+            for item in data.items
+            if item['complete'] and item['name'] in alice_list
+        ]
+        if remove_from:
+            # не может удалить больше 6 штук за раз
+            remove_from = sorted(remove_from, reverse=True)
+            for i in range(0, len(remove_from), 6):
+                items = [str(p + 1) for p in remove_from[i:i + 6]]
+                text = "Удали из списка покупок: " + ', '.join(items)
+                await self.glagol.send({'command': 'sendText', 'text': text})
+
+        add_to = [
+            item['name'] for item in data.items
+            if not item['complete'] and item['name'] not in alice_list and
+               not item['id'].startswith('alice')
+        ]
+        for name in add_to:
+            # плохо работает, если добавлять всё сразу через запятую
+            text = "Добавь в список покупок " + name
+            await self.glagol.send({'command': 'sendText', 'text': text})
+
+        if add_to or remove_from:
+            card = await self.glagol.send({'command': 'sendText',
+                                           'text': "Список покупок"})
+            alice_list = RE_SHOPPING.findall(card['text'])
+            _LOGGER.debug(f"Новый список покупок: {alice_list}")
+
+        data.items = [
+            {'name': name, 'id': 'alice' + uuid.uuid4().hex, 'complete': False}
+            for name in alice_list
+        ]
+        await self.hass.async_add_executor_job(data.save)
 
     async def async_play_media(self, media_type: str, media_id: str, **kwargs):
         if '/api/tts_proxy/' in media_id:
@@ -535,12 +581,16 @@ class YandexStation(MediaPlayerEntity):
                 await self._set_brightness(media_id)
                 return
 
+            elif media_type == 'shopping_list':
+                await self._shopping_list()
+                return
+
             elif media_type.startswith('question'):
-                request_id = str(uuid.uuid4())
-                self.requests[request_id] = (media_type.split(':', 1)[1]
-                                             if ':' in media_type else None)
-                await self.glagol.send(
-                    {'command': 'sendText', 'text': media_id}, request_id)
+                request_id = (media_type.split(':', 1)[1]
+                              if ':' in media_type else None)
+                card = await self.glagol.send({'command': 'sendText',
+                                               'text': media_id})
+                await self.response(card, request_id)
                 return
 
             else:
