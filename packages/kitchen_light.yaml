@@ -48,6 +48,8 @@ kitchen_light:
               and
                 is_state('binary_sensor.kitchen_motion', 'off')
               and
+                is_state('binary_sensor.kitchen_filter_drink_flows', 'off')
+              and
                 not is_state('input_select.kitchen_light_mode', 'None')
               }}
             icon_template: >-
@@ -59,11 +61,17 @@ kitchen_light:
           kitchen_light_motion_trigger:
             value_template: >-
               {{
-                is_state('binary_sensor.kitchen_motion', 'on')
-              and
                 not is_state('input_select.kitchen_light_mode', 'None')
               and
-                is_state('sun.sun', 'below_horizon')
+                (
+                  is_state('binary_sensor.kitchen_filter_drink_flows', 'on')
+                or
+                  (
+                    is_state('binary_sensor.kitchen_motion', 'on')
+                  and
+                    is_state('sun.sun', 'below_horizon')
+                  )
+                )
               }}
             icon_template: >-
               {% if is_state("binary_sensor.kitchen_light_motion_trigger", "on") %}
