@@ -17,6 +17,7 @@
 - switch.xiaomi_power_plug_1_switch
 - switch.xiaomi_socket_1
 - light.wled_maria_bed
+- media_player.yandex_station_ff98f02997470e7b4ca9be2f
 - fan.humidifier_2
 # Кухня
 - sensor.kitchen_temperature
@@ -26,6 +27,7 @@
 - light.kitchen_ceiling_nightlight
 - switch.kitchen_2_relay_l1
 - switch.kitchen_2_relay_l2
+- media_player.yandex_station_ff98f0102ae5595dd3b0bd40
 # Санузлы
 - sensor.xiaomi_mijia_4a07_temperature_2
 - light.bath_lights
@@ -48,6 +50,7 @@
 - switch.guest_wifi
 # Скрипты
 - script.good_night
+- script.goodbye
 - script.at_bedroom
 - script.at_hall
 - script.at_cabinet

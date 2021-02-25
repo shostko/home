@@ -79,6 +79,10 @@ light.wled_maria_bed:
   type: devices.types.light
   name: 'Ночник'
   room: 'Спальня'
+media_player.yandex_station_ff98f02997470e7b4ca9be2f:
+  type: devices.types.media_device
+  name: 'Колонка'
+  room: 'Спальня'
 fan.humidifier_2:
   type: devices.types.humidifier
   name: 'Увлажнитель'
@@ -122,6 +126,10 @@ switch.kitchen_2_relay_l1:
 switch.kitchen_2_relay_l2:
   type: devices.types.light
   name: 'Подсветка'
+  room: 'Кухня'
+media_player.yandex_station_ff98f0102ae5595dd3b0bd40:
+  type: devices.types.media_device
+  name: 'Колонка'
   room: 'Кухня'
 # Санузлы
 sensor.xiaomi_mijia_4a07_temperature_2:
@@ -204,6 +212,9 @@ switch.guest_wifi:
 # Скрипты
 script.good_night:
   name: 'Спокойной ночи'
+  room: 'Скрипты'
+script.goodbye:
+  name: 'Мы уходим'
   room: 'Скрипты'
 script.at_bedroom:
   name: 'Мы в спальне'
