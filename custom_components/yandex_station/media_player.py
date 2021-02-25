@@ -79,8 +79,6 @@ async def async_setup_entry(hass, entry, async_add_entities):
         entities.append(entity)
     async_add_entities(entities)
 
-    async_add_entities([YandexIntents(entry.unique_id)])
-
     # add TVs
     if CONF_INCLUDE not in hass.data[DOMAIN][DATA_CONFIG]:
         return
@@ -410,7 +408,7 @@ class YandexStation(MediaPlayerEntity):
     async def update(self, data: dict = None):
         """Обновления только в локальном режиме."""
         if data is None:
-            # возвращаем в облачный режим
+            _LOGGER.debug("Возврат в облачный режим")
             self.local_state = None
             self.async_write_ha_state()
             return
@@ -629,7 +627,7 @@ class YandexStation(MediaPlayerEntity):
                 return
 
             else:
-                _LOGGER.warning(f"Unsupported media: {media_id}")
+                _LOGGER.warning(f"Unsupported local media: {media_id}")
                 return
 
             await self.glagol.send(payload)
@@ -648,7 +646,7 @@ class YandexStation(MediaPlayerEntity):
                 return
 
             else:
-                _LOGGER.warning(f"Unsupported media: {media_type}")
+                _LOGGER.warning(f"Unsupported cloud media: {media_type}")
                 return
 
 
