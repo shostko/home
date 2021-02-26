@@ -1,3 +1,4 @@
+- media_player.yandex_intents
 # Зал
 - sensor.hall_average_temperature
 - group.hall_lights

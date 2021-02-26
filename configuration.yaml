@@ -517,6 +517,8 @@ media_player:
 yandex_station:
   username: !secret ya_username
   password: !secret ya_password
+  intents:
+    !include include/alice-intents.yaml
 yandex_smart_home_fix:
 yandex_smart_home:
   filter:

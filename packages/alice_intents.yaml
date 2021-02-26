@@ -1,0 +1,22 @@
+alice_intents: 
+
+  automation:
+
+  automation:
+    - alias: 'YandexIntent: Goodbye'
+      trigger:
+        - platform: event
+          event_type: yandex_intent
+          event_data:
+            text: До свидания
+        - platform: event
+          event_type: yandex_intent
+          event_data:
+            text: Пока - пока
+      action:
+        - service: script.turn_on
+          entity_id: script.goodbye
+        - service: persistent_notification.create
+          data:
+            title: Сообщение со станции
+            message: Кто-то попрощался
