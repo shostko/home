@@ -25,7 +25,7 @@
 '0x60a423fffeab1f22':
   friendly_name: Moes_Radiator_Actuator_2
 '0x00124b001ed01fa4':
-  friendly_name: Gledopto_3  
+  friendly_name: Gledopto_3
   transition: 0
 '0x00158d00049dec35':
   friendly_name: Xiaomi_Wriless_Switch_2
@@ -60,5 +60,7 @@
   friendly_name: Remote_1
 '0x00158d0002c5bee3':
   friendly_name: Xiaomi_ReadSwitch_3
+  retain: true
 '0x00158d0004073c73':
   friendly_name: Xiaomi_ReadSwitch_4
+  retain: true
