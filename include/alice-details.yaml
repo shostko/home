@@ -71,7 +71,7 @@ switch.xiaomi_power_plug_1_switch:
   type: devices.types.light
   name: 'Кровать'
   room: 'Спальня'
-switch.xiaomi_socket_1:
+light.bedroom_mirror:
   type: devices.types.light
   name: 'Зеркало'
   room: 'Спальня'
