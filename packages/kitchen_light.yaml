@@ -32,9 +32,8 @@ kitchen_light:
               {{ 
                 is_state('binary_sensor.rf_motion_0', 'on')
               or
-                is_state('binary_sensor.entrance_motion_sensor_occupancy', 'on')
+                is_state('binary_sensor.kitchen_motion_sensor_occupancy', 'on')
               }}
-            # binary_sensor.rf_motion_1
             availability_template: >-
               {{ 
                 not is_state('binary_sensor.rf_motion_0', 'unavailable')

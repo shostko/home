@@ -21,7 +21,7 @@ include:
     - person.sergey
     - person.alexa
     # Motion
-    - binary_sensor.entrance_motion_sensor_occupancy
+    - binary_sensor.kitchen_motion_sensor_occupancy
     - binary_sensor.rf_motion_0
     - binary_sensor.rf_motion_1
     - binary_sensor.kitchen_motion

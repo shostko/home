@@ -12,3 +12,5 @@ home-assistant_v2.*
 webostv.conf
 id_rsa
 sftp-config.json
+zigbee2mqtt/*
+!zigbee2mqtt/devices.yaml

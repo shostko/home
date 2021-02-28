@@ -112,7 +112,7 @@ light:
     entity_id: switch.xiaomi_power_plug_1_switch
   - platform: switch
     name: Bedroom Mirror
-    entity_id: switch.xiaomi_socket_1
+    entity_id: switch.xiaomi_socket_2
   - platform: switch
     name: Entrance Door
     entity_id: switch.entance_door_light

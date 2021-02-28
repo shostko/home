@@ -4,18 +4,16 @@
 - alias: Toggle Bedroom Mirror with Switch
   trigger:
     - platform: state
-      entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
-      # entity_id: binary_sensor.bedroom_mirror_switch_contact
+      entity_id: binary_sensor.bedroom_mirror_switch
       from: 'on'
       to: 'off'
     - platform: state
-      entity_id: binary_sensor.door_window_sensor_158d0002c5bee3
-      # entity_id: binary_sensor.bedroom_mirror_switch_contact
+      entity_id: binary_sensor.bedroom_mirror_switch
       from: 'off'
       to: 'on'
   action:
     - service: switch.toggle
-      entity_id: switch.xiaomi_socket_1
+      entity_id: switch.xiaomi_socket_2
 
 - alias: Bedroom Switch Both
   trigger:

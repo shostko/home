@@ -124,11 +124,11 @@ bath_ligth:
       trigger:
         # Левая кнопка выключателя (одинарный клик)
         - platform: state
-          entity_id: sensor.bath_and_toilet_wireless_switch_action
+          entity_id: sensor.xiaomi_wriless_switch_2_action
           to: 'single_left'
         # Обе кнопки выключателя (одинарный клик)
         - platform: state
-          entity_id: sensor.bath_and_toilet_wireless_switch_action
+          entity_id: sensor.xiaomi_wriless_switch_2_action
           to: 'single_both'
       condition:
         # Недавно не было команды на включение света
@@ -168,11 +168,11 @@ bath_ligth:
       trigger:
         # Правая кнопка выключателя (одинарный клик)
         - platform: state
-          entity_id: sensor.bath_and_toilet_wireless_switch_action
+          entity_id: sensor.xiaomi_wriless_switch_2_action
           to: 'single_right'
         # Обе кнопки выключателя (одинарный клик)
         - platform: state
-          entity_id: sensor.bath_and_toilet_wireless_switch_action
+          entity_id: sensor.xiaomi_wriless_switch_2_action
           to: 'single_both'
       condition:
         # Недавно не было команды на включение света
@@ -212,7 +212,7 @@ bath_ligth:
       trigger:
         # Обе кнопки выключателя (двойной клик)
         - platform: state
-          entity_id: sensor.bath_and_toilet_wireless_switch_action
+          entity_id: sensor.xiaomi_wriless_switch_2_action
           to: 'double_both'
       action:
         # Завершить скрипты по ванне

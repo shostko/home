@@ -1,0 +1,64 @@
+'0x842e14fffefd9823':
+  friendly_name: UseeLink_Multiprise_1
+'0x60a423fffe0b9303':
+  friendly_name: Lonsonho_X712A
+'0x00158d0002bffc7e':
+  friendly_name: Xiaomi_WallSwitch_1
+'0x00158d0003a0eb33':
+  friendly_name: Xiaomi_WallSwitch_3
+'0x00158d0002426de7':
+  friendly_name: Xiaomi_Socket_1
+'0x00158d0001dc4460':
+  friendly_name: Xiaomi_WallSwitch_2
+'0x00158d0001fa1474':
+  friendly_name: Xiaomi_Socket_2
+'0x842e14fffe1262f3':
+  friendly_name: Blitzwoolf_Socket_1
+'0x00124b001ed01e63':
+  friendly_name: Gledopto_1
+  transition: 0
+'0x00124b001ed01e16':
+  friendly_name: Gledopto_2
+  transition: 0
+'0xbc33acfffe63fc68':
+  friendly_name: Moes_Radiator_Actuator_1
+'0x60a423fffeab1f22':
+  friendly_name: Moes_Radiator_Actuator_2
+'0x00124b001ed01fa4':
+  friendly_name: Gledopto_3  
+  transition: 0
+'0x00158d00049dec35':
+  friendly_name: Xiaomi_Wriless_Switch_2
+'0x00158d00044bd72c':
+  friendly_name: Xiaomi_Relay2
+'0x00158d0004653a96':
+  friendly_name: Xiaomi_Wriless_Switch_1
+'0x00158d0001f3aec3':
+  friendly_name: Xiaomi_Wireless_Button_1
+'0x00158d0001d9203e':
+  friendly_name: Xiaomi_Motion_1
+  occupancy_timeout: 10
+'0x00158d000548a9b6':
+  friendly_name: Xiaomi_THP_2
+'0x00158d00054dbccc':
+  friendly_name: Xiaomi_THP_1
+'0x00158d00020293a1':
+  friendly_name: Xiaomi_TH_1
+'0x00158d00057f6ad8':
+  friendly_name: Door_Lock_1
+'0xbc33acfffe5e64b9':
+  friendly_name: Moes_Radiator_Actuator_3
+'0x00158d00044d5964':
+  friendly_name: Xiaomi_ReadSwitch_1
+'0x00158d0003d0baa3':
+  friendly_name: Xiaomi_ReadSwitch_2
+'0x5c0272fffec242f4':
+  friendly_name: Remote_2
+'0x00158d00022f9bbf':
+  friendly_name: Xiaomi_WaterLeak_1
+'0x5c0272fffec242d7':
+  friendly_name: Remote_1
+'0x00158d0002c5bee3':
+  friendly_name: Xiaomi_ReadSwitch_3
+'0x00158d0004073c73':
+  friendly_name: Xiaomi_ReadSwitch_4
