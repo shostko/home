@@ -1,0 +1,17 @@
+title: NightLight
+id: nightlight
+path: nightlight
+icon: mdi:weather-night
+panel: false
+cards:
+  - type: history-graph
+    hours_to_show: 24
+    entities:
+      - entity: sensor.xiaomi_mijia_70f0_idle_time
+        name: Idle
+      - entity: binary_sensor.xiaomi_mijia_70f0_motion
+        name: Motion
+      - entity: binary_sensor.xiaomi_mijia_70f0_light_status
+        name: Light Status
+      - entity: sensor.xiaomi_mijia_70f0_illuminance
+        name: Illuminance

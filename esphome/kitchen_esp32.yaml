@@ -68,3 +68,17 @@ sensor:
       name: "Xiaomi MiJia 4A07 Humidity"
     battery_level:
       name: "Xiaomi MiJia 4A07 Battery Level"
+
+binary_sensor:
+  - platform: xiaomi_mjyd02yla
+    name: "Xiaomi MiJia 70F0 Motion"
+    mac_address: "28:D1:27:3C:70:F0"
+    bindkey: "fc68f1452c86879501cde2dcb3c571df"
+    idle_time:
+      name: "Xiaomi MiJia 70F0 Idle Time"
+    light:
+      name: "Xiaomi MiJia 70F0 Light Status"
+    battery_level:
+      name: "Xiaomi MiJia 70F0 Battery Level"
+    illuminance:
+      name: "Xiaomi MiJia 70F0 Illuminance"

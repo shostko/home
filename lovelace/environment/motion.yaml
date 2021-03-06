@@ -20,5 +20,7 @@ cards:
         title: Прихожая
         hours_to_show: 2
         entities:
+          - entity: binary_sensor.xiaomi_mijia_70f0_motion
+            name: коридор (ble night light)
           - entity: binary_sensor.rf_motion_1
             name: rf433

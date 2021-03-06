@@ -34,6 +34,13 @@ lovelace:
       icon: mdi:chart-areaspline
       show_in_sidebar: true
       require_admin: false
+    lovelace-devices:
+      mode: yaml
+      filename: lovelace/devices.yaml
+      title: Devices
+      icon: mdi:android-studio
+      show_in_sidebar: true
+      require_admin: true
 
 automation: !include automations.yaml
 script: !include scripts.yaml
