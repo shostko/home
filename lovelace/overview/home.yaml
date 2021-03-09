@@ -73,19 +73,13 @@ cards:
             name: Люстра
             icon: mdi:ceiling-light
           - type: button
-            entity: light.kitchen_ceiling_nightlight
-            name: Ночник
-            icon: mdi:weather-night
-      - type: horizontal-stack
-        cards:
-          - type: button
-            entity: light.kitchen_2_relay_l1
-            name: Гирлянда
-            icon: mdi:string-lights
-          - type: button
             entity: light.kitchen_2_relay_l2
             name: Подсветка
             icon: mdi:led-strip-variant
+          # - type: button
+          #   entity: light.kitchen_2_relay_l1
+          #   name: Гирлянда
+          #   icon: mdi:string-lights
   - type: custom:vertical-stack-in-card
     title: Санузел
     cards:
