@@ -3,6 +3,16 @@ alice_intents:
   automation:
 
   automation:
+
+    - alias: 'YandexIntent: logging'
+      trigger:
+        - platform: event
+          event_type: yandex_intent
+      action:
+        - service: notify.log
+          data:
+            message: 'YandexIntent: {{trigger.event.data.text}}'
+
     - alias: 'YandexIntent: Goodbye'
       trigger:
         - platform: event
@@ -12,11 +22,7 @@ alice_intents:
         - platform: event
           event_type: yandex_intent
           event_data:
-            text: Пока - пока
+            text: Мы уходим
       action:
         - service: script.turn_on
           entity_id: script.goodbye
-        - service: persistent_notification.create
-          data:
-            title: Сообщение со станции
-            message: Кто-то попрощался
