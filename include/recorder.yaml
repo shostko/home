@@ -39,6 +39,7 @@ include:
     - binary_sensor.bath_door
     - binary_sensor.toilet_door
     # Illumination
+    - sensor.xiaomi_gateway_illuminance
     - sensor.illumination_7811dcb2404d
     - sensor.xiaomi_mijia_70f0_illuminance
     - binary_sensor.xiaomi_mijia_70f0_light_status
