@@ -1,0 +1,83 @@
+remote_1:
+
+  automation:
+
+    - alias: 'Remote #1: 1 single'
+      trigger:
+        - platform: state
+          entity_id: sensor.remote_1_action
+          to: '1_single'
+      action:
+        - service: media_player.media_play_pause
+          data_template:
+            entity_id: media_player.tv
+
+    - alias: 'Remote #1: 1 double'
+      trigger:
+        - platform: state
+          entity_id: sensor.remote_1_action
+          to: '1_double'
+      action:
+        # Выключить колонку на кухне
+        - service: media_player.turn_off
+          data_template:
+            entity_id: media_player.yandex_station_ff98f0102ae5595dd3b0bd40
+        # Выключить колонку в спальне
+        - service: media_player.turn_off
+          data_template:
+            entity_id: media_player.yandex_station_ff98f02997470e7b4ca9be2f
+
+    - alias: 'Remote #1: 1 hold'
+      trigger:
+        - platform: state
+          entity_id: sensor.remote_1_action
+          to: '1_hold'
+      action:
+        - service: script.turn_on
+          entity_id: script.at_hall
+
+    - alias: 'Remote #1: 2 single'
+      trigger:
+        - platform: state
+          entity_id: sensor.remote_1_action
+          to: '2_single'
+      action:
+        - service: homeassistant.toggle
+          data_template:
+            entity_id: group.hall_bra_lights
+
+    - alias: 'Remote #1: 2 double'
+      trigger:
+        - platform: state
+          entity_id: sensor.remote_1_action
+          to: '2_double'
+      action:
+        - service: homeassistant.turn_on
+          data_template:
+            entity_id: group.hall_bra_lights
+        - service: homeassistant.turn_off
+          data_template:
+            entity_id: group.hall_ceiling_lights
+
+    - alias: 'Remote #1: 3 single'
+      trigger:
+        - platform: state
+          entity_id: sensor.remote_1_action
+          to: '3_single'
+      action:
+        - service: homeassistant.toggle
+          data_template:
+            entity_id: group.hall_ceiling_lights
+
+    - alias: 'Remote #1: 3 double'
+      trigger:
+        - platform: state
+          entity_id: sensor.remote_1_action
+          to: '3_double'
+      action:
+        - service: homeassistant.turn_off
+          data_template:
+            entity_id: group.hall_bra_lights
+        - service: homeassistant.turn_off
+          data_template:
+            entity_id: group.hall_ceiling_lights

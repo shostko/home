@@ -2,8 +2,6 @@ alice_intents:
 
   automation:
 
-  automation:
-
     - alias: 'YandexIntent: logging'
       trigger:
         - platform: event
