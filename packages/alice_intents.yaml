@@ -12,6 +12,8 @@ alice_intents:
             message: 'YandexIntent: {{trigger.event.data.text}}'
 
     - alias: 'YandexIntent: Goodbye'
+      mode: single
+      max_exceeded: silent
       trigger:
         - platform: event
           event_type: yandex_intent
@@ -24,3 +26,4 @@ alice_intents:
       action:
         - service: script.turn_on
           entity_id: script.goodbye
+        - delay: 10 # запретить выполнять автоматизацию чаще раза в 10 секунд (из-за mode = single)
