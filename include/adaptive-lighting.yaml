@@ -21,7 +21,7 @@
   transition: 60
   initial_transition: 0
   interval: 300
-  min_brightness: 1
+  min_brightness: 10 # На меньшей яркости через некоторое время лампа гаснет
   max_brightness: 100
   min_color_temp: 2000 # 500 mireds
   max_color_temp: 6535 # 153 mireds
