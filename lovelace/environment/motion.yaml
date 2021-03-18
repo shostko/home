@@ -17,6 +17,12 @@ cards:
           - entity: binary_sensor.rf_motion_0
             name: rf433
       - type: history-graph
+        title: Санузлы
+        hours_to_show: 2
+        entities:
+          - entity: binary_sensor.toilet_motion
+            name: туалет
+      - type: history-graph
         title: Прихожая
         hours_to_show: 2
         entities:

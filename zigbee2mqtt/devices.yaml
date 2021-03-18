@@ -64,3 +64,6 @@
 '0x00158d0004073c73':
   friendly_name: Xiaomi_ReadSwitch_4
   retain: true
+'0x00158d000669576d':
+  friendly_name: Toilet_Motion
+  occupancy_timeout: 10

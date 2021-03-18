@@ -9,7 +9,49 @@ bath_ligth:
     - platform: group
       name: Toilet Lights
       entities:
-        - light.gledopto_3  
+        - light.gledopto_3
+
+  input_boolean:
+    toilet_occupied:
+      name: Toilet Occupied
+      icon: mdi:toilet
+      initial: false
+
+  binary_sensor:  
+    - platform: template
+      sensors:
+        toilet_light_timer_required:
+          value_template: >-
+            {{ 
+              is_state('light.toilet_lights', 'on')
+            and
+              is_state('binary_sensor.toilet_motion', 'off')
+            and
+              is_state('input_boolean.toilet_occupied', 'off')
+            }}
+          icon_template: >-
+            {% if is_state("binary_sensor.toilet_light_timer_required", "on") %}
+              mdi:timer
+            {% else %}
+              mdi:timer-off
+            {% endif %}
+        toilet_light_motion_trigger:
+          value_template: >-
+            {{
+              is_state('binary_sensor.toilet_motion', 'on')
+            or
+              is_state('input_boolean.toilet_occupied', 'on')
+            }}
+          icon_template: >-
+            {% if is_state("binary_sensor.toilet_light_motion_trigger", "on") %}
+              mdi:motion-sensor
+            {% else %}
+              mdi:motion-sensor-off
+            {% endif %}
+
+  timer:
+    toilet_light:
+      duration: '00:00:10'
 
   script:
 
@@ -96,6 +138,133 @@ bath_ligth:
 
   automation:
 
+    - alias: Toilet light timer reload
+      trigger:
+        # Таймер должен быть включен
+        - platform: state
+          entity_id: binary_sensor.toilet_light_timer_required
+          to: 'on'
+      action:
+        # Включить таймер
+        - service: timer.start
+          entity_id: timer.toilet_light
+  
+    - alias: Toilet light timer cancel
+      trigger:
+        # Таймер должен быть выключен
+        - platform: state
+          entity_id: binary_sensor.toilet_light_timer_required
+          to: 'off'
+      action:
+        # Выключить таймер
+        - service: timer.cancel
+          entity_id: timer.toilet_light
+    
+    - alias: Toilet light ON (via sensors)
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.toilet_light_motion_trigger
+          to: 'on'
+        - platform: state
+          entity_id: binary_sensor.toilet_door
+          from: 'off'
+          to: 'on'
+      condition:
+        # Весь свет выключен
+        - condition: state
+          entity_id: light.toilet_lights
+          state: 'off'
+      action:
+        # Завершить скрипты по туалету
+        - service: homeassistant.turn_off
+          entity_id: script.toilet_lights_turn_off
+        - service: homeassistant.turn_off
+          entity_id: script.toilet_lights_toggle
+        # Включить свет
+        - service: script.toilet_lights_turn_on
+    
+    - alias: Toilet light OFF (via timer)
+      trigger:
+        # Таймер
+        - platform: event
+          event_type: timer.finished
+          event_data:
+            entity_id: timer.toilet_light
+      condition:
+        # Любой свет включен
+        - condition: state
+          entity_id: light.toilet_lights
+          state: 'on'
+      action:
+        # Выключить весь свет
+        - service: script.toilet_lights_turn_off
+
+    - alias: Toilet lights TOGGLE (via button)
+      trigger:
+        # Правая кнопка выключателя (одинарный клик)
+        - platform: state
+          entity_id: sensor.xiaomi_wriless_switch_2_action
+          to: 'single_right'
+        # Обе кнопки выключателя (одинарный клик)
+        - platform: state
+          entity_id: sensor.xiaomi_wriless_switch_2_action
+          to: 'single_both'
+      condition:
+        # Недавно не было команды на включение света
+        - condition: state
+          entity_id: script.toilet_lights_turn_on
+          state: 'off'
+      action:
+        # Переключить свет
+        - service: script.toilet_lights_toggle
+
+    - alias: Toilet occupancy ON
+      trigger:
+        # Обнаружено начало движения
+        - platform: state
+          entity_id: binary_sensor.toilet_motion
+          to: 'on'
+        # Дверь закрыта 15 секунд (чуть больше таймера отключения датчика движения)
+        - platform: state
+          entity_id: binary_sensor.toilet_door
+          to: 'off'
+          for: "00:00:15"
+      condition:
+        # Есть движение
+        - condition: state
+          entity_id: binary_sensor.toilet_motion
+          state: 'on'
+        # Дверь закрыта
+        - condition: state
+          entity_id: binary_sensor.toilet_door
+          state: 'off'
+        # Переменная занятости = не занято
+        - condition: state
+          entity_id: input_boolean.toilet_occupied
+          state: 'off'
+      action:
+        # Отметить занятость туалета
+        - service: input_boolean.turn_on
+          target:
+            entity_id: input_boolean.toilet_occupied
+
+    - alias: Toilet occupancy OFF
+      trigger:
+        # Дверь открылась
+        - platform: state
+          entity_id: binary_sensor.toilet_door
+          to: 'on'
+      condition:
+        # Переменная занятости = занято
+        - condition: state
+          entity_id: input_boolean.toilet_occupied
+          state: 'on'
+      action:
+        # Убрать занятость туалета
+        - service: input_boolean.turn_off
+          target:
+            entity_id: input_boolean.toilet_occupied
+
     - alias: Bath lights TOGGLE (via button)
       trigger:
         # Левая кнопка выключателя (одинарный клик)
@@ -139,47 +308,3 @@ bath_ligth:
           entity_id: script.bath_lights_toggle
         # Включить свет
         - service: script.bath_lights_turn_on
-
-    - alias: Toilet lights TOGGLE (via button)
-      trigger:
-        # Правая кнопка выключателя (одинарный клик)
-        - platform: state
-          entity_id: sensor.xiaomi_wriless_switch_2_action
-          to: 'single_right'
-        # Обе кнопки выключателя (одинарный клик)
-        - platform: state
-          entity_id: sensor.xiaomi_wriless_switch_2_action
-          to: 'single_both'
-      condition:
-        # Недавно не было команды на включение света
-        - condition: state
-          entity_id: script.toilet_lights_turn_on
-          state: 'off'
-        # Недавно не было команды на выключение света
-        - condition: state
-          entity_id: script.toilet_lights_turn_off
-          state: 'off'
-      action:
-        # Переключить свет
-        - service: script.toilet_lights_toggle
-
-    - alias: Toilet lights ON (via door)
-      trigger:
-        # Дверь в теалет открылась
-        - platform: state
-          entity_id: binary_sensor.toilet_door
-          from: 'off'
-          to: 'on'
-      condition:
-        # Свет в туалете выключен
-        - condition: state
-          entity_id: light.toilet_lights
-          state: 'off'
-      action:
-        # Завершить скрипты по туалету
-        - service: homeassistant.turn_off
-          entity_id: script.toilet_lights_turn_off
-        - service: homeassistant.turn_off
-          entity_id: script.toilet_lights_toggle
-        # Включить свет
-        - service: script.toilet_lights_turn_on

@@ -13,14 +13,35 @@ cards:
         entity: light.toilet_lights
         name: Туалет
         icon: mdi:lightbulb
-  - type: glance
-    entities:
-      - entity: binary_sensor.bath_door
-        name: Ванна дверь
-        show_last_changed: true
-      - entity: binary_sensor.toilet_door
-        name: Туалет дверь
-        show_last_changed: true
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: glance
+        title: Ванна
+        entities:
+          - entity: binary_sensor.bath_door
+            name: Дверь
+            show_last_changed: true
+      - type: glance
+        title: Туалет
+        entities:
+          - entity: binary_sensor.toilet_door
+            name: Дверь
+            show_last_changed: true
+          - entity: binary_sensor.toilet_motion
+            name: Движение
+            show_last_changed: true
+          - entity: input_boolean.toilet_occupied
+            name: Занятость
+            show_last_changed: true
+      - type: entities
+        entities:
+          - type: conditional
+            conditions:
+              - entity: timer.toilet_light
+                state_not: idle
+            row:
+              entity: timer.toilet_light
+              name: Свет выключится через
   - type: sensor
     name: Температура (ванна)
     graph: line
