@@ -26,6 +26,15 @@ cards:
           - entity: input_boolean.bath_occupied
             name: Занятость
             show_last_changed: true
+      - type: entities
+        entities:
+          - type: conditional
+            conditions:
+              - entity: timer.bath_light
+                state_not: idle
+            row:
+              entity: timer.toilet_light
+              name: Свет выключится через
       - type: glance
         title: Туалет
         entities:
