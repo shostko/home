@@ -17,6 +17,8 @@ include:
     - sensor.*_power
     - sensor.*_action
   entities:
+    # System
+    - binary_sensor.rpi_power_status
     # Person
     - person.sergey
     - person.alexa
