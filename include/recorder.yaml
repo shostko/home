@@ -17,8 +17,6 @@ include:
     - sensor.*_power
     - sensor.*_action
   entities:
-    # System
-    - binary_sensor.rpi_power_status
     # Person
     - person.sergey
     - person.alexa
@@ -30,8 +28,10 @@ include:
     - binary_sensor.xiaomi_mijia_70f0_motion
     - sensor.xiaomi_mijia_70f0_idle_time
     - binary_sensor.toilet_motion
+    - binary_sensor.bath_motion
     # Occupancy
     - input_boolean.toilet_occupied
+    - input_boolean.bath_occupied
     # Water leak
     - binary_sensor.kitchen_water_leak
     # Smoke detection

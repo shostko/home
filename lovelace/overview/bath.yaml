@@ -21,6 +21,11 @@ cards:
           - entity: binary_sensor.bath_door
             name: Дверь
             show_last_changed: true
+          - entity: binary_sensor.bath_motion
+            name: Движение
+          - entity: input_boolean.bath_occupied
+            name: Занятость
+            show_last_changed: true
       - type: glance
         title: Туалет
         entities:

@@ -22,6 +22,8 @@ cards:
         entities:
           - entity: binary_sensor.toilet_motion
             name: туалет
+          - entity: binary_sensor.bath_motion
+            name: ванна
       - type: history-graph
         title: Прихожая
         hours_to_show: 2
