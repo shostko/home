@@ -47,10 +47,16 @@ cards:
           - entity: sensor.xiaomi_mijia_4a07_temperature_2
             name: Датчик
       - type: history-graph
-        title: Прихожая
+        title: Ванна
         hours_to_show: 24
         entities:
-          - entity: sensor.xiaomi_mijia_8ecf_temperature
+          - entity: sensor.xiaomi_mijia_4a07_temperature_2
+            name: Датчик
+      - type: history-graph
+        title: Кабинет
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_mijia_cb5b_temperature
             name: Датчик
       - type: history-graph
         title: Балкон

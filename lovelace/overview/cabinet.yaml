@@ -30,6 +30,14 @@ cards:
           - type: section
           - entity: input_select.cabinet_wall_switch_right_mode
             name: Правая кнопка
+  - type: sensor
+    name: Температура
+    graph: line
+    entity: sensor.xiaomi_mijia_cb5b_temperature
+  - type: sensor
+    name: Влажность
+    graph: line
+    entity: sensor.xiaomi_mijia_cb5b_humidity
   - type: custom:vertical-stack-in-card
     title: Мониторы
     cards:
