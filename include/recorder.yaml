@@ -49,8 +49,8 @@ include:
     - sensor.kitchen_motion_2_illuminance
     - sensor.toilet_motion_illuminance
     - sensor.bath_motion_illuminance
-    - sensor.xiaomi_mijia_70f0_illuminance # Шайба в прихожей
-    - sensor.xiaomi_gateway_illuminance # Ночник в корридоре на кухню
+    - sensor.xiaomi_mijia_70f0_illuminance # Ночник в корридоре на кухню
+    - sensor.xiaomi_gateway_illuminance # Шайба в прихожей
     # Radiator
     - sensor.moes_radiator_actuator_1_position
     - sensor.moes_radiator_actuator_2_position
