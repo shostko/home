@@ -34,70 +34,6 @@ entrance_light:
       duration: '00:01:00'
 
   automation:
-
-    # - alias: Entrance puck TOGGLE
-    #   trigger:
-    #     - platform: state
-    #       entity_id: sensor.illumination_7811dcb2404d
-    #     - platform: state
-    #       entity_id: sun.sun
-    #     - platform: state
-    #       entity_id: switch.hall_wall_switch_left
-    #     - platform: state
-    #       entity_id: switch.hall_wall_switch_right
-    #     - platform: state
-    #       entity_id: light.entrance_wall_switch_right
-    #     - platform: state
-    #       entity_id: light.entrance_wall_switch_left
-    #     - platform: state
-    #       entity_id: light.shellydimmerwn0
-    #     - platform: state
-    #       entity_id: light.kitchen_ceiling
-    #   action:
-    #     - choose:
-    #         - conditions:
-    #             # Освещённость ниже порога
-    #             - condition: numeric_state
-    #               entity_id: sensor.illumination_7811dcb2404d
-    #               below: 150
-    #             # Солнце за горизонтом
-    #             - condition: state
-    #               entity_id: sun.sun
-    #               state: 'below_horizon'
-    #             # Люстра в зале выключена 2
-    #             - condition: state
-    #               entity_id: light.hall_wall_switch_left
-    #               state: 'off'
-    #             # Люстра в зале выключена 3
-    #             - condition: state
-    #               entity_id: light.hall_wall_switch_right
-    #               state: 'off'
-    #             # Свет в прихожей выключен
-    #             - condition: state
-    #               entity_id: light.entrance_wall_switch_right
-    #               state: 'off'
-    #             # Свет в корридоре выключен
-    #             - condition: state
-    #               entity_id: light.entrance_wall_switch_left
-    #               state: 'off'
-    #             # Бра 2 в зале выключена
-    #             - condition: state
-    #               entity_id: light.shellydimmerwn0
-    #               state: 'off'
-    #             # Люстра на кухне выключена
-    #             - condition: state
-    #               entity_id: light.kitchen_ceiling
-    #               state: 'off'
-    #           sequence:
-    #             # Включить шайбу
-    #             - service: light.turn_on
-    #               entity_id: light.xiaomi_gateway_light
-    #               data:
-    #                 brightness: 64
-    #       default:
-    #         # Выключить шайбу
-    #         - service: light.turn_off
-    #           entity_id: light.xiaomi_gateway_light
   
     - alias: Entrance light timer reload
       trigger:
@@ -149,8 +85,8 @@ entrance_light:
       condition:
         # Освещённость ниже порога
         - condition: numeric_state
-          entity_id: sensor.illumination_7811dcb2404d
-          below: 150
+          entity_id: sensor.xiaomi_gateway_illuminance
+          below: 280
         # Весь выключен
         - condition: state
           entity_id: group.entrance_lights
