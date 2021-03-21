@@ -258,56 +258,39 @@ kitchen_light:
               entity_id: input_datetime.kitchen_light_started_at
               timestamp: "{{ now().timestamp() }}"
 
-      - alias: Kitchen light started hardcoded (when lights OFF)
+      - alias: Kitchen light started hardcoded
         trigger:
           # Беспроводная кнопка (двойной клик)
           - platform: state
             entity_id: sensor.xiaomi_wireless_button_1_action
             to: 'double'
         condition:
-          # Весь свет выключен
-          - condition: state
-            entity_id: group.kitchen_lights
-            state: 'off'
-        action:
-          # Деактивировать запись текущего времени
-          - service: automation.turn_off
-            data:
-              entity_id: automation.kitchen_light_started_recording
-          # Включить свет 
-          - service: script.kitchen_lights_turn_on
-          # Записать вчерашнюю дату и время
-          - service: input_datetime.set_datetime
-            data:
-              entity_id: input_datetime.kitchen_light_started_at
-              timestamp: "{{ (now() - timedelta( days = 1 )).timestamp() }}"
-          # Активировать запись текущего времени
-          - service: automation.turn_on
-            data:
-              entity_id: automation.kitchen_light_started_recording
-
-      - alias: Kitchen light started hardcoded (when lights ON)
-        trigger:
-          # Беспроводная кнопка (двойной клик)
-          - platform: state
-            entity_id: sensor.xiaomi_wireless_button_1_action
-            to: 'double'
-        condition:
-          # Любой свет включен
-          - condition: state
-            entity_id: group.kitchen_lights
-            state: 'on'
         action:
           # Записать вчерашнюю дату и время
           - service: input_datetime.set_datetime
             data:
               entity_id: input_datetime.kitchen_light_started_at
               timestamp: "{{ (now() - timedelta( days = 1 )).timestamp() }}"
-          # Перезапустить таймер
-          - service: timer.start
-            entity_id: timer.kitchen_light
-            data:
-              duration: 00:30:00
+          - choose:
+              - conditions:
+                  # Таймер работает
+                  - condition: state
+                    entity_id: timer.kitchen_light
+                    state: 'active'
+                sequence:
+                  # Перезапустить таймер
+                  - service: timer.start
+                    entity_id: timer.kitchen_light
+                    data:
+                      duration: 00:30:00
+              - conditions:
+                  # Весь свет выключен
+                  - condition: state
+                    entity_id: group.kitchen_lights
+                    state: 'off'
+                sequence:
+                  # Включить свет 
+                  - service: script.kitchen_lights_turn_on
 
       - alias: Kitchen light stopped recording
         trigger:
