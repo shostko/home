@@ -70,6 +70,10 @@ cards:
   - type: sensor
     name: Освещенность
     graph: line
-    entity: sensor.illumination_7811dcb2404d
+    entity: sensor.xiaomi_gateway_illuminance
+  - type: sensor
+    name: Освещенность (коридор)
+    graph: line
+    entity: sensor.xiaomi_gateway_illuminance
   - type: picture-entity
     entity: camera.sonoff_camera_1

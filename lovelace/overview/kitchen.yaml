@@ -67,6 +67,10 @@ cards:
         footer:
             type: graph
             entity: sensor.kitchen_humidity
+  - type: sensor
+    name: Освещенность
+    graph: line
+    entity: sensor.kitchen_motion_2_illuminance
   - type: glance
     entities:
       - entity: binary_sensor.kitchen_water_leak

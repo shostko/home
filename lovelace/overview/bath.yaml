@@ -64,3 +64,11 @@ cards:
     name: Влажность (ванна)
     graph: line
     entity: sensor.xiaomi_mijia_4a07_humidity_2
+  - type: sensor
+    name: Освещенность (ванна)
+    graph: line
+    entity: sensor.bath_motion_illuminance
+  - type: sensor
+    name: Освещенность (туалет)
+    graph: line
+    entity: sensor.toilet_motion_illuminance
