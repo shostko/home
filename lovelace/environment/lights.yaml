@@ -40,7 +40,13 @@ cards:
         title: Освещенность
         hours_to_show: 24
         entities:
+          - entity: sensor.kitchen_motion_2_illuminance
+            name: Кухня
+          - entity: sensor.xiaomi_mijia_70f0_illuminance
+            name: Корридор
+          - entity: sensor.toilet_motion_illuminance
+            name: Туалет
+          - entity: sensor.bath_motion_illuminance
+            name: Ванна
           - entity: sensor.xiaomi_gateway_illuminance
-            name: xiaomi_gateway_illuminance
-          - entity: sensor.illumination_7811dcb2404d
-            name: illumination_7811dcb2404d
+            name: Прихожая
