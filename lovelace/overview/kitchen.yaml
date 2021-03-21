@@ -35,6 +35,16 @@ cards:
     entity: media_player.yandex_station_ff98f0102ae5595dd3b0bd40
   - type: custom:vertical-stack-in-card
     cards:
+      - type: glance
+        entities:
+          - entity: binary_sensor.kitchen_water_leak
+            name: Протечка
+          - entity: binary_sensor.rf_smoke_0
+            name: Задымление
+          - entity: binary_sensor.kitchen_motion
+            name: Движение 
+            show_last_changed: true
+      - type: divider
       - type: sensor
         name: Температура
         entity: sensor.kitchen_temperature
@@ -45,13 +55,7 @@ cards:
             name: Вход
           - entity: sensor.xiaomi_mijia_a810_temperature_2
             name: Стол
-      - type: entities
-        entities: []
-        footer:
-            type: graph
-            entity: sensor.kitchen_temperature
-  - type: custom:vertical-stack-in-card
-    cards:
+      - type: divider
       - type: sensor
         name: Влажность
         entity: sensor.kitchen_humidity
@@ -62,24 +66,10 @@ cards:
             name: Вход
           - entity: sensor.xiaomi_mijia_a810_humidity_2
             name: Стол
-      - type: entities
-        entities: []
-        footer:
-            type: graph
-            entity: sensor.kitchen_humidity
-  - type: sensor
-    name: Освещенность
-    graph: line
-    entity: sensor.kitchen_motion_2_illuminance
-  - type: glance
-    entities:
-      - entity: binary_sensor.kitchen_water_leak
-        name: Протечка
-      - entity: binary_sensor.rf_smoke_0
-        name: Задымление
-      - entity: binary_sensor.kitchen_motion
-        name: Движение 
-        show_last_changed: true
+      - type: divider
+      - type: sensor
+        name: Освещенность
+        entity: sensor.kitchen_motion_2_illuminance
   - type: custom:vertical-stack-in-card
     cards:
       - type: entities

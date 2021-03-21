@@ -45,13 +45,7 @@ cards:
             name: Столик
           - entity: sensor.humidifier_1_temp
             name: Увлажнитель
-      - type: entities
-        entities: []
-        footer:
-            type: graph
-            entity: sensor.hall_temperature
-  - type: custom:vertical-stack-in-card
-    cards:
+      - type: divider
       - type: sensor
         name: Влажность
         entity: sensor.hall_humidity
@@ -64,15 +58,10 @@ cards:
             name: Столик
           - entity: sensor.humidifier_1_hum
             name: Увлажнитель
-      - type: entities
-        entities: []
-        footer:
-            type: graph
-            entity: sensor.hall_humidity
-  - type: sensor
-    name: Давление
-    graph: line
-    entity: sensor.xiaomi_thp_1_pressure_mmhg
+      - type: divider
+      - type: sensor
+        name: Давление
+        entity: sensor.xiaomi_thp_1_pressure_mmhg
   - type: custom:vertical-stack-in-card
     cards:
       - type: entities

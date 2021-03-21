@@ -27,6 +27,11 @@ cards:
     entity: media_player.yandex_station_ff98f02997470e7b4ca9be2f
   - type: custom:vertical-stack-in-card
     cards:
+      - type: glance
+        entities:
+          - entity: binary_sensor.honeywell_smoke_sensor
+            name: Задымление
+      - type: divider
       - type: sensor
         name: Температура
         entity: sensor.bedroom_temperature
@@ -39,13 +44,7 @@ cards:
             name: Зеркало
           - entity: sensor.humidifier_2_temp
             name: Увлажнитель
-      - type: entities
-        entities: []
-        footer:
-            type: graph
-            entity: sensor.bedroom_temperature
-  - type: custom:vertical-stack-in-card
-    cards:
+      - type: divider
       - type: sensor
         name: Влажность
         entity: sensor.bedroom_humidity
@@ -58,19 +57,10 @@ cards:
             name: Зеркало
           - entity: sensor.humidifier_2_hum
             name: Увлажнитель
-      - type: entities
-        entities: []
-        footer:
-            type: graph
-            entity: sensor.bedroom_humidity
-  - type: sensor
-    name: CO2
-    graph: line
-    entity: sensor.mh_z19_1_co2
-  - type: glance
-    entities:
-      - entity: binary_sensor.honeywell_smoke_sensor
-        name: Задымление
+      - type: divider
+      - type: sensor
+        name: CO2
+        entity: sensor.mh_z19_1_co2
   - type: custom:vertical-stack-in-card
     cards:
       - type: entities

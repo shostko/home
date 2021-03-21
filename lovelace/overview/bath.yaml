@@ -5,18 +5,40 @@ icon: mdi:water-pump
 cards:
   - type: horizontal-stack
     cards:
-      - type: light
-        entity: light.bath_lights
-        name: Ванна
-        icon: mdi:lightbulb-multiple
-      - type: light
-        entity: light.toilet_lights
-        name: Туалет
-        icon: mdi:lightbulb
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: light
+            entity: light.bath_lights
+            name: Ванна
+            icon: mdi:lightbulb-multiple
+          - type: entities
+            entities:
+              - type: conditional
+                conditions:
+                  - entity: timer.bath_light
+                    state_not: idle
+                row:
+                  entity: timer.bath_light
+                  name: Выключится через
+      - type: custom:vertical-stack-in-card
+        cards:
+          - type: light
+            entity: light.toilet_lights
+            name: Туалет
+            icon: mdi:lightbulb
+          - type: entities
+            entities:
+              - type: conditional
+                conditions:
+                  - entity: timer.toilet_light
+                    state_not: idle
+                row:
+                  entity: timer.toilet_light
+                  name: Выключится через
   - type: custom:vertical-stack-in-card
+    title: Ванна
     cards:
       - type: glance
-        title: Ванна
         entities:
           - entity: binary_sensor.bath_door
             name: Дверь
@@ -26,17 +48,22 @@ cards:
           - entity: input_boolean.bath_occupied
             name: Занятость
             show_last_changed: true
-      - type: entities
-        entities:
-          - type: conditional
-            conditions:
-              - entity: timer.bath_light
-                state_not: idle
-            row:
-              entity: timer.toilet_light
-              name: Свет выключится через
+      - type: divider
+      - type: sensor
+        name: Температура
+        entity: sensor.xiaomi_mijia_4a07_temperature_2
+      - type: divider
+      - type: sensor
+        name: Влажность
+        entity: sensor.xiaomi_mijia_4a07_humidity_2
+      - type: divider
+      - type: sensor
+        name: Освещенность
+        entity: sensor.bath_motion_illuminance
+  - type: custom:vertical-stack-in-card
+    title: Туалет
+    cards:
       - type: glance
-        title: Туалет
         entities:
           - entity: binary_sensor.toilet_door
             name: Дверь
@@ -47,28 +74,7 @@ cards:
           - entity: input_boolean.toilet_occupied
             name: Занятость
             show_last_changed: true
-      - type: entities
-        entities:
-          - type: conditional
-            conditions:
-              - entity: timer.toilet_light
-                state_not: idle
-            row:
-              entity: timer.toilet_light
-              name: Свет выключится через
-  - type: sensor
-    name: Температура (ванна)
-    graph: line
-    entity: sensor.xiaomi_mijia_4a07_temperature_2
-  - type: sensor
-    name: Влажность (ванна)
-    graph: line
-    entity: sensor.xiaomi_mijia_4a07_humidity_2
-  - type: sensor
-    name: Освещенность (ванна)
-    graph: line
-    entity: sensor.bath_motion_illuminance
-  - type: sensor
-    name: Освещенность (туалет)
-    graph: line
-    entity: sensor.toilet_motion_illuminance
+      - type: divider
+      - type: sensor
+        name: Освещенность
+        entity: sensor.toilet_motion_illuminance
