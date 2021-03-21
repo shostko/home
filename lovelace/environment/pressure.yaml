@@ -7,18 +7,10 @@ cards:
   - type: custom:vertical-stack-in-card
     cards:
       - type: history-graph
-        title: Зал
+        title: Давление
         hours_to_show: 24
         entities:
           - entity: sensor.xiaomi_thp_1_pressure_mmhg
-            name: mmHg
-          - entity: sensor.xiaomi_thp_1_pressure
-            name: hPa
-      - type: history-graph
-        title: Балкон
-        hours_to_show: 24
-        entities:
+            name: Зал
           - entity: sensor.xiaomi_thp_2_pressure_mmhg
-            name: mmHg
-          - entity: sensor.xiaomi_thp_2_pressure
-            name: hPa
+            name: Балкон

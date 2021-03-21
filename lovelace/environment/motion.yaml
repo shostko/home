@@ -8,7 +8,7 @@ cards:
     cards:
       - type: history-graph
         title: Кухня
-        hours_to_show: 2
+        hours_to_show: 24
         entities:
           - entity: binary_sensor.kitchen_motion
             name: общий
@@ -17,16 +17,24 @@ cards:
           - entity: binary_sensor.kitchen_motion_2
             name: zigbee
       - type: history-graph
-        title: Санузлы
-        hours_to_show: 2
+        title: Тулает
+        hours_to_show: 24
         entities:
           - entity: binary_sensor.toilet_motion
-            name: туалет
+            name: движение
+          - entity: input_boolean.toilet_occupied
+            name: занятость
+      - type: history-graph
+        title: Ванна
+        hours_to_show: 24
+        entities:
           - entity: binary_sensor.bath_motion
-            name: ванна
+            name: движение
+          - entity: input_boolean.bath_occupied
+            name: занятость
       - type: history-graph
         title: Прихожая
-        hours_to_show: 2
+        hours_to_show: 24
         entities:
           - entity: binary_sensor.xiaomi_mijia_70f0_motion
             name: ble night light

@@ -7,36 +7,6 @@ cards:
   - type: custom:vertical-stack-in-card
     cards:
       - type: history-graph
-        title: Температура
-        hours_to_show: 24
-        entities:
-          - entity: sensor.cabinet_desk_lamp_adaptive_color_temp
-            name: Кабинет
-          - entity: sensor.bath_lights_adaptive_color_temp
-            name: Ванна
-          - entity: sensor.toilet_lights_adaptive_color_temp
-            name: Туалет
-          - entity: sensor.hall_bra_1_adaptive_color_temp
-            name: Зал Бра 1
-          - entity: sensor.kitchen_ceiling_adaptive_color_temp
-            name: Кухня
-      - type: history-graph
-        title: Яркость
-        hours_to_show: 24
-        entities:
-          - entity: sensor.cabinet_desk_lamp_adaptive_brightness
-            name: Кабинет
-          - entity: sensor.bath_lights_adaptive_brightness
-            name: Ванна
-          - entity: sensor.toilet_lights_adaptive_brightness
-            name: Туалет
-          - entity: sensor.hall_bra_1_adaptive_brightness
-            name: Зал Бра 1
-          - entity: sensor.hall_bra_2_adaptive_brightness
-            name: Зал Бра 2
-          - entity: sensor.kitchen_ceiling_adaptive_brightness
-            name: Кухня
-      - type: history-graph
         title: Освещенность
         hours_to_show: 24
         entities:

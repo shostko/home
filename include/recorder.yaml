@@ -25,7 +25,6 @@ include:
     # Motion
     - binary_sensor.entrance_motion
     - binary_sensor.rf_motion_0
-    - binary_sensor.rf_motion_1
     - binary_sensor.kitchen_motion
     - binary_sensor.kitchen_motion_2
     - binary_sensor.xiaomi_mijia_70f0_motion
@@ -79,19 +78,3 @@ include:
     - sensor.kitchen_filter_raw_sum
     - binary_sensor.kitchen_filter_raw_flows
     - sensor.kitchen_filter_raw_daily
-    # Temporary
-    - sensor.xiaomi_thp_1_pressure
-    - sensor.xiaomi_thp_2_pressure
-    # Adaptive Lights
-    - sensor.cabinet_desk_lamp_adaptive_color_temp
-    - sensor.bath_lights_adaptive_color_temp
-    - sensor.toilet_lights_adaptive_color_temp
-    - sensor.hall_bra_1_adaptive_color_temp
-    - sensor.hall_bra_2_adaptive_color_temp
-    - sensor.cabinet_desk_lamp_adaptive_brightness
-    - sensor.bath_lights_adaptive_brightness
-    - sensor.toilet_lights_adaptive_brightness
-    - sensor.hall_bra_1_adaptive_brightness
-    - sensor.hall_bra_2_adaptive_brightness
-    - sensor.kitchen_ceiling_adaptive_color_temp
-    - sensor.kitchen_ceiling_adaptive_brightness
