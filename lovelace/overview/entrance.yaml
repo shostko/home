@@ -45,7 +45,7 @@ cards:
       - entity: binary_sensor.entrance_lock_bottom
         name: Замок
         show_last_changed: true
-      - entity: binary_sensor.rf_motion_1
+      - entity: binary_sensor.entrance_motion
         name: Движение
         show_last_changed: true
   - type: entities

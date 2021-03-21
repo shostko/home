@@ -12,10 +12,10 @@ cards:
         entities:
           - entity: binary_sensor.kitchen_motion
             name: общий
-          - entity: binary_sensor.kitchen_motion_sensor_occupancy
-            name: zigbee
           - entity: binary_sensor.rf_motion_0
             name: rf433
+          - entity: binary_sensor.kitchen_motion_2
+            name: zigbee
       - type: history-graph
         title: Санузлы
         hours_to_show: 2
@@ -29,6 +29,6 @@ cards:
         hours_to_show: 2
         entities:
           - entity: binary_sensor.xiaomi_mijia_70f0_motion
-            name: коридор (ble night light)
-          - entity: binary_sensor.rf_motion_1
-            name: rf433
+            name: ble night light
+          - entity: binary_sensor.entrance_motion
+            name: zigbee

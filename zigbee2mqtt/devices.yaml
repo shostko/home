@@ -36,7 +36,7 @@
 '0x00158d0001f3aec3':
   friendly_name: Xiaomi_Wireless_Button_1
 '0x00158d0001d9203e':
-  friendly_name: Xiaomi_Motion_1
+  friendly_name: Entrance_Motion
   occupancy_timeout: 10
 '0x00158d000548a9b6':
   friendly_name: Xiaomi_THP_2
@@ -72,3 +72,5 @@
 '0x00158d000659d624':
   friendly_name: Bath_Motion
   occupancy_timeout: 10
+'0x00158d0001e4be7c':
+  friendly_name: Kitchen_Motion_2
