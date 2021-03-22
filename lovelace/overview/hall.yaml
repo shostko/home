@@ -33,6 +33,12 @@ cards:
     entity: media_player.tv
   - type: custom:vertical-stack-in-card
     cards:
+      - type: glance
+        entities:
+          - entity: binary_sensor.ble_motion_hall
+            name: Движение 
+            show_last_changed: true
+      - type: divider
       - type: sensor
         name: Температура
         entity: sensor.hall_temperature
@@ -62,6 +68,10 @@ cards:
       - type: sensor
         name: Давление
         entity: sensor.xiaomi_thp_1_pressure_mmhg
+      - type: divider
+      - type: sensor
+        name: Освещённость
+        entity: sensor.ble_illuminance_hall
   - type: custom:vertical-stack-in-card
     cards:
       - type: entities

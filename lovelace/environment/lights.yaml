@@ -10,6 +10,8 @@ cards:
         title: Освещенность
         hours_to_show: 24
         entities:
+          - entity: sensor.ble_illuminance_hall
+            name: Зал
           - entity: sensor.kitchen_motion_2_illuminance
             name: Кухня
           - entity: sensor.xiaomi_mijia_70f0_illuminance

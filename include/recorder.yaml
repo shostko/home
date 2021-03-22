@@ -31,6 +31,7 @@ include:
     - sensor.xiaomi_mijia_70f0_idle_time
     - binary_sensor.toilet_motion
     - binary_sensor.bath_motion
+    - binary_sensor.ble_motion_hall
     # Occupancy
     - input_boolean.toilet_occupied
     - input_boolean.bath_occupied
@@ -51,6 +52,7 @@ include:
     - sensor.bath_motion_illuminance
     - sensor.xiaomi_mijia_70f0_illuminance # Ночник в корридоре на кухню
     - sensor.xiaomi_gateway_illuminance # Шайба в прихожей
+    - sensor.ble_illuminance_hall
     # Radiator
     - sensor.moes_radiator_actuator_1_position
     - sensor.moes_radiator_actuator_2_position

@@ -65,6 +65,21 @@ yeelight:
       save_on_change: true
       model: lamp1
 
+ble_monitor:
+  discovery: False
+  active_scan: False
+  report_unknown: False
+  batt_entities: True
+  decimals: 1
+  period: 60
+  restore_state: False
+  devices:
+    - mac: '58:2D:34:60:2D:86'
+      name: 'Hall'
+      encryption_key: '765ff054861658ecab62e4e7f827a650'
+      decimals: 0
+      reset_timer: 35
+
 light:
   - platform: xiaomi_miio
     host: 192.168.1.44

@@ -7,6 +7,12 @@ cards:
   - type: custom:vertical-stack-in-card
     cards:
       - type: history-graph
+        title: Зал
+        hours_to_show: 24
+        entities:
+          - entity: binary_sensor.ble_motion_hall
+            name: qingping
+      - type: history-graph
         title: Кухня
         hours_to_show: 24
         entities:
