@@ -184,6 +184,13 @@ bath_ligth:
         # Включить таймер
         - service: timer.start
           entity_id: timer.toilet_light
+          data_template: 
+            duration: >
+              {%- if is_state('binary_sensor.toilet_door', 'on') -%}
+                00:01:00
+              {%- else -%}
+                00:00:10
+              {%- endif -%}
   
     - alias: Toilet light timer cancel
       trigger:
@@ -313,6 +320,13 @@ bath_ligth:
         # Включить таймер
         - service: timer.start
           entity_id: timer.bath_light
+          data_template: 
+            duration: >
+              {%- if is_state('binary_sensor.bath_door', 'on') -%}
+                00:01:00
+              {%- else -%}
+                00:00:10
+              {%- endif -%}
   
     - alias: Bath light timer cancel
       trigger:
