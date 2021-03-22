@@ -45,6 +45,17 @@ entrance_light:
         # Включить таймер
         - service: timer.start
           entity_id: timer.entrance_light
+          data_template: 
+            duration: >
+              {%- if 
+                  is_state('light.entrance_wall_switch_right', 'on')
+                or 
+                  is_state('light.entrance_wall_switch_left', 'on') 
+              -%}
+                00:03:00
+              {%- else -%}
+                00:01:00
+              {%- endif -%}
   
     - alias: Entrance light timer cancel
       trigger:
