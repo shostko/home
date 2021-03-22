@@ -117,9 +117,12 @@ entrance_light:
           from: 'off'
           to: 'on'
       condition:
-        # Весь выключен
+        # Весь верхний свет выключен
         - condition: state
-          entity_id: group.entrance_lights
+          entity_id: light.entrance_wall_switch_left
+          state: 'off'
+        - condition: state
+          entity_id: light.entrance_wall_switch_right
           state: 'off'
         # Давно не было движения
         - condition: state
