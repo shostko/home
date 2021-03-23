@@ -265,6 +265,27 @@ bath_ligth:
         # Переключить свет
         - service: script.toilet_lights_toggle
 
+    - alias: Toilet occupancy force ON
+      trigger:
+        # Правая кнопка выключателя (двойной клик)
+        - platform: state
+          entity_id: sensor.xiaomi_wriless_switch_2_action
+          to: 'double_right'
+        # Обе кнопки выключателя (двойной клик)
+        - platform: state
+          entity_id: sensor.xiaomi_wriless_switch_2_action
+          to: 'double_both'
+      condition:
+        # Переменная занятости = не занято
+        - condition: state
+          entity_id: input_boolean.toilet_occupied
+          state: 'off'
+      action:
+        # Отметить занятость туалета
+        - service: input_boolean.turn_on
+          target:
+            entity_id: input_boolean.toilet_occupied
+
     - alias: Toilet occupancy ON
       trigger:
         # Обнаружено начало движения
@@ -404,6 +425,27 @@ bath_ligth:
       action:
         # Переключить свет
         - service: script.bath_lights_toggle
+
+    - alias: Bath occupancyforce ON
+      trigger:
+        # Левая кнопка выключателя (двойной клик)
+        - platform: state
+          entity_id: sensor.xiaomi_wriless_switch_2_action
+          to: 'double_left'
+        # Обе кнопки выключателя (двойной клик)
+        - platform: state
+          entity_id: sensor.xiaomi_wriless_switch_2_action
+          to: 'double_both'
+      condition:
+        # Переменная занятости = не занято
+        - condition: state
+          entity_id: input_boolean.bath_occupied
+          state: 'off'
+      action:
+        # Отметить занятость ванны
+        - service: input_boolean.turn_on
+          target:
+            entity_id: input_boolean.bath_occupied
 
     - alias: Bath occupancy ON
       trigger:
