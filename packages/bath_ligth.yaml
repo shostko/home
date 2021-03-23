@@ -257,6 +257,10 @@ bath_ligth:
         - condition: state
           entity_id: script.toilet_lights_turn_on
           state: 'off'
+        # Туалет не занят
+        - condition: state
+          entity_id: input_boolean.toilet_occupied
+          state: 'off'
       action:
         # Переключить свет
         - service: script.toilet_lights_toggle
@@ -392,6 +396,10 @@ bath_ligth:
         # Недавно не было команды на включение света
         - condition: state
           entity_id: script.bath_lights_turn_on
+          state: 'off'
+        # Ванна не занята
+        - condition: state
+          entity_id: input_boolean.bath_occupied
           state: 'off'
       action:
         # Переключить свет
