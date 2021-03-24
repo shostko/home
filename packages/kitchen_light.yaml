@@ -84,14 +84,14 @@ kitchen_light:
         name: Kitchen Lights
         entities:
           - light.kitchen_ceiling
-          - light.kitchen_2_relay_l2
+          - light.kitchen_work
 
     light:
       - platform: group
         name: Kitchen Lights
         entities:
           - light.kitchen_ceiling
-          - light.kitchen_2_relay_l2
+          - light.kitchen_work
 
     script:
       kitchen_lights_turn_on:
@@ -103,12 +103,12 @@ kitchen_light:
                 {% if is_state('input_select.kitchen_light_mode', 'Ceiling') %}
                   light.kitchen_ceiling
                 {% elif is_state('input_select.kitchen_light_mode', 'Work') %}
-                  light.kitchen_2_relay_l2
+                  light.kitchen_work
                 {% elif is_state('input_select.kitchen_light_mode', 'Ceiling+Work') %}
                   {% if is_state('binary_sensor.tod_day', 'on') %}
                     light.kitchen_ceiling
                   {% elif is_state('binary_sensor.tod_night', 'on') %}
-                    light.kitchen_2_relay_l2
+                    light.kitchen_work
                   {% endif %}
                 {% elif is_state('input_select.kitchen_light_mode', 'All') %}
                   light.kitchen_lights
@@ -344,4 +344,4 @@ kitchen_light:
           # Включить/выключить рабочую подсветку
           - service: light.toggle
             data_template:
-              entity_id: light.kitchen_2_relay_l2
+              entity_id: light.kitchen_work

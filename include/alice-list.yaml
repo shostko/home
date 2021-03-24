@@ -25,9 +25,8 @@
 - sensor.xiaomi_mijia_30d0_temperature # датчик для теста
 - group.kitchen_lights
 - light.kitchen_ceiling
-- light.kitchen_ceiling_nightlight
+- light.kitchen_work
 - switch.kitchen_2_relay_l1
-- switch.kitchen_2_relay_l2
 - media_player.yandex_station_ff98f0102ae5595dd3b0bd40
 # Санузлы
 - sensor.xiaomi_mijia_4a07_temperature_2

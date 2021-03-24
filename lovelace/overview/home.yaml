@@ -68,12 +68,12 @@ cards:
     cards:
       - type: horizontal-stack
         cards:
-          - type: button
+          - type: light
             entity: light.kitchen_ceiling
             name: Люстра
             icon: mdi:ceiling-light
-          - type: button
-            entity: light.kitchen_2_relay_l2
+          - type: light
+            entity: light.kitchen_work
             name: Подсветка
             icon: mdi:led-strip-variant
           # - type: button

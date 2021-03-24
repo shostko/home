@@ -115,15 +115,11 @@ light.kitchen_ceiling:
   type: devices.types.light
   name: 'Свет'
   room: 'Кухня'
-light.kitchen_ceiling_nightlight:
-  type: devices.types.light
-  name: 'Луна'
-  room: 'Кухня'
 switch.kitchen_2_relay_l1:
   type: devices.types.light
   name: 'Гирлянда'
   room: 'Кухня'
-switch.kitchen_2_relay_l2:
+light.kitchen_work:
   type: devices.types.light
   name: 'Подсветка'
   room: 'Кухня'
