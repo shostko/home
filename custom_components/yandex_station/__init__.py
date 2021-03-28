@@ -175,6 +175,9 @@ async def _init_services(hass: HomeAssistant):
             ATTR_ENTITY_ID: entity_ids,
         }
 
+        if 'options' in call.data:
+            data['extra'] = call.data['options']
+
         await hass.services.async_call(DOMAIN_MP, SERVICE_PLAY_MEDIA, data,
                                        blocking=True)
 
@@ -250,7 +253,7 @@ async def _setup_include(hass: HomeAssistant, entry: ConfigEntry):
     if CONF_INCLUDE not in config:
         return
 
-    for domain in ('climate', 'light', 'remote', 'switch'):
+    for domain in ('climate', 'light', 'remote', 'switch', 'vacuum'):
         hass.async_create_task(hass.config_entries.async_forward_entry_setup(
             entry, domain
         ))
