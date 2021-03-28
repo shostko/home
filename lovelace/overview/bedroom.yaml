@@ -61,17 +61,15 @@ cards:
       - type: sensor
         name: CO2
         entity: sensor.mh_z19_1_co2
+  - type: entities
+    entities:
+      - entity: fan.humidifier_2
+        name: Увлажнитель
   - type: custom:vertical-stack-in-card
     cards:
-      - type: entities
-        entities:
-          - entity: fan.humidifier_2
-            name: Увлажнитель
-          - entity: sensor.radiator_2_temp
-            name: Радиатор (температура)
-          - entity: lock.moes_radiator_actuator_2_child_lock
-            name: Радиатор (блокировка)
-          - entity: sensor.moes_radiator_actuator_2_position
-            name: Радиатор (положение)
+      - type: sensor
+        name: Радиатор
+        entity: sensor.moes_radiator_actuator_2_position
       - type: thermostat
+        name: ' '
         entity: climate.moes_radiator_actuator_2_climate

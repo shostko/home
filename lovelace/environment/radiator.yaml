@@ -6,16 +6,56 @@ panel: true
 cards:
   - type: custom:vertical-stack-in-card
     cards:
-      - type: history-graph
-        title: Температура
-        hours_to_show: 24
-        entities:
-          - entity: sensor.radiator_1_temp
-            name: Зал
-          - entity: sensor.radiator_2_temp
-            name: Спальня
-          - entity: sensor.radiator_3_temp
-            name: Кухня
+      - type: horizontal-stack
+        cards:
+          - type: custom:vertical-stack-in-card
+            title: Зал
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.hall_temperature
+                    name: Сенсор
+                  - entity: sensor.moes_radiator_actuator_1_position
+                    name: Положение
+              - type: thermostat
+                name: ' '
+                entity: climate.moes_radiator_actuator_1_climate
+              - type: entities
+                entities:
+                  - entity: automation.hall_radiator_temp_calibration
+                    name: Автоматизация калибровки
+          - type: custom:vertical-stack-in-card
+            title: Спальня
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.bedroom_temperature
+                    name: Сенсор
+                  - entity: sensor.moes_radiator_actuator_2_position
+                    name: Положение
+              - type: thermostat
+                name: ' '
+                entity: climate.moes_radiator_actuator_2_climate
+              - type: entities
+                entities:
+                  - entity: automation.bedroom_radiator_temp_calibration
+                    name: Автоматизация калибровки
+          - type: custom:vertical-stack-in-card
+            title: Кухня
+            cards:
+              - type: glance
+                entities:
+                  - entity: sensor.kitchen_temperature
+                    name: Сенсор
+                  - entity: sensor.moes_radiator_actuator_3_position
+                    name: Положение
+              - type: thermostat
+                name: ' '
+                entity: climate.moes_radiator_actuator_3_climate
+              - type: entities
+                entities:
+                  - entity: automation.kitchen_radiator_temp_calibration
+                    name: Автоматизация калибровки
       - type: history-graph
         title: Положение
         hours_to_show: 24
@@ -26,62 +66,3 @@ cards:
             name: Спальня
           - entity: sensor.moes_radiator_actuator_3_position
             name: Кухня
-      - type: horizontal-stack
-        cards:
-          - type: entities
-            title: Зал
-            entities:
-              - entity: sensor.hall_temperature
-                name: Сенсор
-              - entity: input_number.hall_target_temperature
-                name: Целевая
-              - entity: sensor.radiator_1_temp
-                name: Радиатор
-                icon: mdi:radiator
-              - entity: climate.moes_radiator_actuator_1_climate
-                type: attribute
-                attribute: temperature
-                name: Эмуляция
-                icon: mdi:virtual-reality
-          - type: entities
-            title: Спальня
-            entities:
-              - entity: sensor.bedroom_temperature
-                name: Сенсор
-              - entity: input_number.bedroom_target_temperature
-                name: Целевая
-              - entity: sensor.radiator_2_temp
-                name: Радиатор
-                icon: mdi:radiator
-              - entity: climate.moes_radiator_actuator_2_climate
-                type: attribute
-                attribute: temperature
-                name: Эмуляция
-                icon: mdi:virtual-reality
-          - type: entities
-            title: Кухня
-            entities:
-              - entity: sensor.kitchen_temperature
-                name: Сенсор
-              - entity: input_number.kitchen_target_temperature
-                name: Целевая
-              - entity: sensor.radiator_3_temp
-                name: Радиатор
-                icon: mdi:radiator
-              - entity: climate.moes_radiator_actuator_3_climate
-                type: attribute
-                attribute: temperature
-                name: Эмуляция
-                icon: mdi:virtual-reality
-      - type: horizontal-stack
-        title: Управление
-        cards:
-          - type: thermostat
-            name: Зал
-            entity: climate.moes_radiator_actuator_1_climate
-          - type: thermostat
-            name: Спальня
-            entity: climate.moes_radiator_actuator_2_climate
-          - type: thermostat
-            name: Кухня
-            entity: climate.moes_radiator_actuator_3_climate

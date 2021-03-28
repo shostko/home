@@ -72,15 +72,11 @@ cards:
         entity: sensor.kitchen_motion_2_illuminance
   - type: custom:vertical-stack-in-card
     cards:
-      - type: entities
-        entities:
-          - entity: sensor.radiator_3_temp
-            name: Радиатор (температура)
-          - entity: lock.moes_radiator_actuator_3_child_lock
-            name: Радиатор (блокировка)
-          - entity: sensor.moes_radiator_actuator_3_position
-            name: Радиатор (положение)
+      - type: sensor
+        name: Радиатор
+        entity: sensor.moes_radiator_actuator_3_position
       - type: thermostat
+        name: ' '
         entity: climate.moes_radiator_actuator_3_climate
   - type: entities
     title: Фильтры

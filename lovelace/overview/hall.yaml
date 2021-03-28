@@ -72,17 +72,15 @@ cards:
       - type: sensor
         name: Освещённость
         entity: sensor.ble_illuminance_hall
+  - type: entities
+    entities:
+      - entity: fan.humidifier_1
+        name: Увлажнитель
   - type: custom:vertical-stack-in-card
     cards:
-      - type: entities
-        entities:
-          - entity: fan.humidifier_1
-            name: Увлажнитель
-          - entity: sensor.radiator_1_temp
-            name: Радиатор (температура)
-          - entity: lock.moes_radiator_actuator_1_child_lock
-            name: Радиатор (блокировка)
-          - entity: sensor.moes_radiator_actuator_1_position
-            name: Радиатор (положение)
+      - type: sensor
+        name: Радиатор
+        entity: sensor.moes_radiator_actuator_1_position
       - type: thermostat
+        name: ' '
         entity: climate.moes_radiator_actuator_1_climate
