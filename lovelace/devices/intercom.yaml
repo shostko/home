@@ -1,0 +1,26 @@
+title: Intercom
+id: intercom
+path: intercom
+icon: mdi:cellphone-key
+panel: false
+cards:
+  - type: entities
+    title: Домофон
+    show_header_toggle: false
+    entities:
+      - entity: binary_sensor.intercom_incoming_call
+        name: Звонок
+      - entity: switch.intercom_accept_call
+        name: Открыть
+      - entity: switch.intercom_reject_call
+        name: Отбой
+      - entity: switch.intercom_mute_sound
+        name: Режим "Без звука"
+      - entity: switch.intercom_mute_sound_once
+        name: Режим "Без звука (один раз)"
+      - entity: switch.intercom_automatically_open
+        name: Режим "Автооткрыие"
+      - entity: switch.intercom_automatically_open_once
+        name: Режим "Автооткрыие (один раз)"
+      - entity: switch.intercom_automatically_reject
+        name: Режим "Автоотбой"

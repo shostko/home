@@ -1,0 +1,56 @@
+esphome:
+  name: $mdns_name
+  platform: ESP8266
+  board: $board
+  comment: "https://github.com/Anonym-tsk/smart-domofon/tree/master/ge1mer"
+  esp8266_restore_from_flash: true
+
+wifi:
+  ssid: $wifi_ssid
+  password: $wifi_password
+  fast_connect: on
+  ap:
+    ssid: $ap_ssid
+    password: $ap_password
+
+captive_portal:
+
+web_server:
+  port: 80
+  auth:
+    username: $web_user
+    password: $web_password
+
+logger:
+  baud_rate: 0
+  logs:
+    light: INFO
+
+ota:
+  password: $ota_password
+
+# Blue status led
+status_led:
+  pin: $pin_led_blue
+
+globals:
+  - id: mode_auto_open
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: mode_auto_open_once
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: mode_auto_reject
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: mode_mute
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
+  - id: mode_mute_once
+    type: bool
+    restore_value: yes
+    initial_value: 'false'
