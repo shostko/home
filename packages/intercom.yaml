@@ -1,0 +1,105 @@
+intercom:
+
+  automation:
+
+    - alias: 'Intercom incoming call notification'
+      trigger:
+        # Обнаружен звонок
+        - platform: state
+          entity_id: binary_sensor.intercom_incoming_call
+          to: 'on'
+      action:
+        - choose:
+            # Включено автооткрытие или автооткрытие один раз
+            - conditions:
+                - condition: or
+                  conditions:
+                    - condition: state
+                      entity_id: switch.intercom_automatically_open
+                      state: 'on'
+                    - condition: state
+                      entity_id: switch.intercom_automatically_open_once
+                      state: 'on'
+              sequence:
+                # Отправить уведомление текстом
+                - service: notify.sergey
+                  data:
+                    message: "Звонок в домофон (откроется автоматически)"
+            # Включён автосброс
+            - conditions:
+                - condition: state
+                  entity_id: switch.intercom_automatically_reject
+                  state: 'on'
+              sequence:
+                # Отправить уведомление текстом
+                - service: notify.sergey
+                  data:
+                    message: "Звонок в домофон (сбросится автоматически)"
+          default:
+            # Отправить уведомление с кнопками Открыть/Сбросить
+            - service: notify.sergey
+              data:
+                message: "Звонок в домофон"
+                data:
+                  inline_keyboard:
+                    - "{{ 'Открыть:/intercom_open, Сбросить:/intercom_reject' }}"
+
+    - alias: 'Intercom: open from Telegram'
+      trigger:
+        # Из телеграмма пришла команда Открыть
+        - platform: event
+          event_type: telegram_callback
+          event_data:
+            data: '/intercom_open'
+      action:
+        - choose:
+            # Идет звонок
+            - conditions:
+                - condition: state
+                  entity_id: binary_sensor.intercom_incoming_call
+                  state: 'on'
+              sequence:
+                # Отправить подтверждение о намерении открыть
+                - service: telegram_bot.answer_callback_query
+                  data_template:
+                    callback_query_id: "{{ trigger.event.data.id }}"
+                    message: "Открываю..."
+                # Открыть
+                - service: switch.turn_on
+                  entity_id: switch.intercom_accept_call
+          default:
+            # Отправить ответ, что нету звонка
+            - service: telegram_bot.answer_callback_query
+              data_template:
+                callback_query_id: "{{ trigger.event.data.id }}"
+                message: "Нет входящего звонка"
+
+    - alias: 'Intercom: reject from Telegram'
+      trigger:
+        # Из телеграмма пришла команда Сбросить
+        - platform: event
+          event_type: telegram_callback
+          event_data:
+            data: '/intercom_reject'
+      action:
+        - choose:
+            # Идет звонок
+            - conditions:
+                - condition: state
+                  entity_id: binary_sensor.intercom_incoming_call
+                  state: 'on'
+              sequence:
+                # Отправить подтверждение о намерении сбросить
+                - service: telegram_bot.answer_callback_query
+                  data_template:
+                    callback_query_id: "{{ trigger.event.data.id }}"
+                    message: "Сбрасываю..."
+                # Открыть
+                - service: switch.turn_on
+                  entity_id: switch.intercom_reject_call
+          default:
+            # Отправить ответ, что нету звонка
+            - service: telegram_bot.answer_callback_query
+              data_template:
+                callback_query_id: "{{ trigger.event.data.id }}"
+                message: "Нет входящего звонка"
