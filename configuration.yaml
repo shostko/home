@@ -46,12 +46,11 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 
 mqtt:
-  broker: core-mosquitto  # Локальный брокер
-  #broker: IP adress  # Внешний брокер
+  broker: core-mosquitto
   discovery: true
   discovery_prefix: homeassistant  
-  username: mqtt
-  password: mqtt
+  username: !secret mqtt_user
+  password: !secret mqtt_pwd
 
 yeelight:
   devices:
