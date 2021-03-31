@@ -151,53 +151,72 @@ humidifier:
         - service: fan.turn_off
           entity_id: fan.humidifier_1
         # Сообщение в LOG
-        - service: notify.log
+        - service: notify.sergey
           data_template:
-            message: "Увлажнитель в зале выключен: {{ trigger.from_state.state }}% -> {{ trigger.to_state.state }}%"
+            message: "Увлажнитель в зале выключен: уровень воды {{ trigger.to_state.state }}%"
     
-    - alias: Humidifier 1 water low
+    - alias: Humidifier 1 speed changing
       trigger:
-        # Уровень воды ниже порога (но вода есть)
+        # Влажность > 50%
+        - platform: numeric_state
+          entity_id: sensor.hall_humidity
+          above: 50
+          for: "00:02:00"
+        # Влажность от 40% до 50% 
+        - platform: numeric_state
+          entity_id: sensor.hall_humidity
+          above: 40
+          below: 50
+          for: "00:02:00"
+        # Влажность < 40%
+        - platform: numeric_state
+          entity_id: sensor.hall_humidity
+          below: 40
+          for: "00:02:00"
+        # Уровень воды > 90%
         - platform: numeric_state
           entity_id: sensor.humidifier_1_water
-          above: 3
-          below: 30
-          for: "00:00:10"
+          above: 90
+          for: "00:01:00"
+        # Увлажнитель включился
+        - platform: state
+          entity_id: fan.humidifier_1
+          to: 'on'
       condition:
-        - "{{ trigger.to_state.state == 'on' }}"
-        - "{{ state_attr('fan.humidifier_1', 'speed') != 'Silent' }}"
+        # Влажность известна
+        - "{{ states('sensor.hall_humidity') | float(-1000) > -1000 }}"
+        - condition: or
+          conditions:
+            # Увлажнитель включен
+            - condition: state
+              entity_id: fan.humidifier_1
+              state: "on"
+            # Уровень воды > 90%
+            - condition: numeric_state
+              entity_id: sensor.humidifier_1_water
+              above: 90
       action:
-        # Установить режим low
+        # Рассчитываем нужный режим
+        - variables: 
+            target: >-
+              {%- set hum = states('sensor.hall_humidity') | float %}
+              {%- if hum > 50 %} 
+                High
+              {%- elif hum >= 40 %}
+                Medium
+              {%- else %}
+                Silent
+              {%- endif %}
+        # Установить режим
         - service: fan.set_speed
           entity_id: fan.humidifier_1
           data:
-            speed: silent
+            speed: "{{ target }}"
         # Сообщение в LOG
         - service: notify.log
           data_template:
-            message: "Увлажнитель в зале переведён в тихий режим from {{ trigger.from_state.speed }}: {{ trigger.from_state.state }}% -> {{ trigger.to_state.state }}%"
-    
-    - alias: Humidifier 1 water enough
-      trigger:
-        # Уровень воды выше порога
-        - platform: numeric_state
-          entity_id: sensor.humidifier_1_water
-          above: 30
-          for: "00:00:10"
-      condition:
-        - "{{ trigger.to_state.state == 'on' }}"
-        - "{{ state_attr('fan.humidifier_1', 'speed') != 'High' }}"
-      action:
-        # Установить режим high
-        - service: fan.set_speed
-          entity_id: fan.humidifier_1
-          data:
-            speed: high
-        # Сообщение в LOG
-        - service: notify.log
-          data_template:
-            message: "Увлажнитель в зале переведён в максимальный режим from {{ trigger.from_state.speed }}: {{ trigger.from_state.state }}% -> {{ trigger.to_state.state }}%"
-    
+            message: "Увлажнитель в зале переведён в режим {{ target }}"
+
     - alias: Humidifier 2 is off
       trigger:
         # Увлажнитель выключен
@@ -231,49 +250,68 @@ humidifier:
         - service: fan.turn_off
           entity_id: fan.humidifier_2
         # Сообщение в LOG
-        - service: notify.log
+        - service: notify.sergey
           data_template:
-            message: "Увлажнитель в спальне выключен: {{ trigger.from_state.state }}% -> {{ trigger.to_state.state }}%"
+            message: "Увлажнитель в спальне выключен: уровень воды {{ trigger.to_state.state }}%"
     
-    - alias: Humidifier 2 water low
+    - alias: Humidifier 2 speed changing
       trigger:
-        # Уровень воды ниже порога (но вода есть)
+        # Влажность > 50%
+        - platform: numeric_state
+          entity_id: sensor.bedroom_humidity
+          above: 50
+          for: "00:02:00"
+        # Влажность от 40% до 50% 
+        - platform: numeric_state
+          entity_id: sensor.bedroom_humidity
+          above: 40
+          below: 50
+          for: "00:02:00"
+        # Влажность < 40%
+        - platform: numeric_state
+          entity_id: sensor.bedroom_humidity
+          below: 40
+          for: "00:02:00"
+        # Уровень воды > 90%
         - platform: numeric_state
           entity_id: sensor.humidifier_2_water
-          above: 3
-          below: 30
-          for: "00:00:10"
+          above: 90
+          for: "00:01:00"
+        # Увлажнитель включился
+        - platform: state
+          entity_id: fan.humidifier_2
+          to: 'on'
       condition:
-        - "{{ trigger.to_state.state == 'on' }}"
-        - "{{ state_attr('fan.humidifier_2', 'speed') != 'Silent' }}"
+        # Влажность известна
+        - "{{ states('sensor.bedroom_humidity') | float(-1000) > -1000 }}"
+        - condition: or
+          conditions:
+            # Увлажнитель включен
+            - condition: state
+              entity_id: fan.humidifier_2
+              state: "on"
+            # Уровень воды > 90%
+            - condition: numeric_state
+              entity_id: sensor.humidifier_2_water
+              above: 90
       action:
-        # Установить режим low
+        # Рассчитываем нужный режим
+        - variables: 
+            target: >-
+              {%- set hum = states('sensor.bedroom_humidity') | float %}
+              {%- if hum > 50 %} 
+                High
+              {%- elif hum >= 40 %}
+                Medium
+              {%- else %}
+                Silent
+              {%- endif %}
+        # Установить режим
         - service: fan.set_speed
           entity_id: fan.humidifier_2
           data:
-            speed: silent
+            speed: "{{ target }}"
         # Сообщение в LOG
         - service: notify.log
           data_template:
-            message: "Увлажнитель в спальне переведён в тихий режим from {{ trigger.from_state.speed }}: {{ trigger.from_state.state }}% -> {{ trigger.to_state.state }}%"
-    
-    - alias: Humidifier 2 water enough
-      trigger:
-        # Уровень воды выше порога
-        - platform: numeric_state
-          entity_id: sensor.humidifier_2_water
-          above: 30
-          for: "00:00:10"
-      condition:
-        - "{{ trigger.to_state.state == 'on' }}"
-        - "{{ state_attr('fan.humidifier_2', 'speed') != 'High' }}"
-      action:
-        # Установить режим high
-        - service: fan.set_speed
-          entity_id: fan.humidifier_2
-          data:
-            speed: high
-        # Сообщение в LOG
-        - service: notify.log
-          data_template:
-            message: "Увлажнитель в спальне переведён в максимальный режим from {{ trigger.from_state.speed }}: {{ trigger.from_state.state }}% -> {{ trigger.to_state.state }}%"
+            message: "Увлажнитель в спальне переведён в режим {{ target }}"
