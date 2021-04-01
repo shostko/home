@@ -200,12 +200,12 @@ humidifier:
         - variables: 
             target: >-
               {%- set hum = states('sensor.hall_humidity') | float %}
-              {%- if hum > 50 %} 
-                High
+              {%- if hum > 50 %}
+                Silent
               {%- elif hum >= 40 %}
                 Medium
               {%- else %}
-                Silent
+                High
               {%- endif %}
         # Установить режим
         - service: fan.set_speed
@@ -299,12 +299,12 @@ humidifier:
         - variables: 
             target: >-
               {%- set hum = states('sensor.bedroom_humidity') | float %}
-              {%- if hum > 50 %} 
-                High
+              {%- if hum > 50 %}
+                Silent
               {%- elif hum >= 40 %}
                 Medium
               {%- else %}
-                Silent
+                High
               {%- endif %}
         # Установить режим
         - service: fan.set_speed
