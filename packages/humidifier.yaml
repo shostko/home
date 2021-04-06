@@ -216,7 +216,7 @@ humidifier:
                       entity_id: fan.humidifier_1
                       state: "off"
                     # Нужный режим отличается от текущего
-                    -  "{{ state_attr('fan.humidifier_1', 'speed') != target }}"
+                    - "{{ state_attr('fan.humidifier_1', 'speed') != target }}"
               sequence:
                 # Установить режим
                 - service: fan.set_speed
@@ -326,7 +326,7 @@ humidifier:
                       entity_id: fan.humidifier_2
                       state: "off"
                     # Нужный режим отличается от текущего
-                    -  "{{ state_attr('fan.humidifier_2', 'speed') != target }}"
+                    - "{{ state_attr('fan.humidifier_2', 'speed') != target }}"
               sequence:
                 # Установить режим
                 - service: fan.set_speed
