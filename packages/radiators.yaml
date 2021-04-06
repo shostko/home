@@ -5,131 +5,101 @@ radiators:
     - alias: Hall Radiator Temp Calibration
       mode: restart
       trigger:
-        - platform: template
-          value_template: >-
-            {%- set sensor = states('sensor.hall_temperature') | float %}
-            {%- set radiator = state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') | float %}
-            {{ sensor | round(1, "half") != radiator }}
+        - platform: state
+          entity_id: sensor.hall_temperature
+          for: "00:00:15"
+        - platform: state
+          entity_id: climate.moes_radiator_actuator_1_climate
+          attribute: current_temperature
           for: "00:00:15"
       condition:
         - "{{ states('sensor.hall_temperature') | float(-1000) > -1000 }}"
         - "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') | float(-1000) > -1000 }}"
         - "{{ not is_state('climate.moes_radiator_actuator_1_climate', 'unavailable') }}"
-        - condition: template
-          value_template: >-
-            {% set sensor = states('sensor.hall_temperature') | float %}
-            {% set radiator = state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') | float %}
-            {% set current = state_attr('climate.moes_radiator_actuator_1_climate', 'local_temperature_calibration') | float %}
-            {% set result = (current + sensor - radiator) | round(1, "half") %}
-            {{ (result - current) | float | abs > 0 }}
       action:
-        - service: notify.log
-          data:
-            title: "Корректировка температуры в зале"
-            message: >
-              {% set calibration = state_attr('climate.moes_radiator_actuator_1_climate', 'local_temperature_calibration') | float %}
-              {% set sensor = states('sensor.hall_temperature') | float %}
-              {% set radiator = state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') | float %}
-              Сенсор: {{ sensor }}
-              {{ "\n" }}
-              Радиатор: {{ radiator }}
-              {{ "\n" }}
-              Калибровка: {{ calibration }}
-              {{ "\n" }}
-              Результат: {{ (calibration + sensor - radiator) | round(1, "half") }}
-        - service: mqtt.publish
-          data_template:
-            topic: zigbee2mqtt/Moes_Radiator_Actuator_1/set/local_temperature_calibration
-            payload: >-
-              {% set current = state_attr('climate.moes_radiator_actuator_1_climate', 'local_temperature_calibration') | float %}
-              {% set sensor = states('sensor.hall_temperature') | float %}
-              {% set radiator = state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') | float %}
-              {{ (current + sensor - radiator) | round(1, "half") }}
+        - variables: 
+            sensor: "{{ states('sensor.hall_temperature') | float | round(1, 'half') }}"
+            radiator: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') | float }}"
+        - choose:
+            - conditions:
+                - "{{ sensor != radiator }}"
+              sequence:
+                - variables: 
+                    current: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'local_temperature_calibration') | float }}"
+                    target: "{{ current + sensor - radiator }}"
+                - service: mqtt.publish
+                  data_template:
+                    topic: zigbee2mqtt/Moes_Radiator_Actuator_1/set/local_temperature_calibration
+                    payload: "{{ target }}"
+                - service: notify.log
+                  data:
+                    title: "*Корректировка температуры в зале*"
+                    message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
 
     - alias: Bedroom Radiator Temp Calibration
       mode: restart
       trigger:
-        - platform: template
-          value_template: >-
-            {%- set sensor = states('sensor.bedroom_temperature') | float %}
-            {%- set radiator = state_attr('climate.moes_radiator_actuator_2_climate', 'current_temperature') | float %}
-            {{ sensor | round(1, "half") != radiator }}
+        - platform: state
+          entity_id: sensor.bedroom_temperature
+          for: "00:00:15"
+        - platform: state
+          entity_id: climate.moes_radiator_actuator_2_climate
+          attribute: current_temperature
           for: "00:00:15"
       condition:
         - "{{ states('sensor.bedroom_temperature') | float(-1000) > -1000 }}"
         - "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'local_temperature') | float(-1000) > -1000 }}"
         - "{{ not is_state('climate.moes_radiator_actuator_2_climate', 'unavailable') }}"
-        - condition: template
-          value_template: >-
-            {% set sensor = states('sensor.bedroom_temperature') | float %}
-            {% set radiator = state_attr('climate.moes_radiator_actuator_2_climate', 'current_temperature') | float %}
-            {% set current = state_attr('climate.moes_radiator_actuator_2_climate', 'local_temperature_calibration') | float %}
-            {% set result = (current + sensor - radiator) | round(1, "half") %}
-            {{ (result - current) | float | abs > 0 }}
       action:
-        - service: notify.log
-          data:
-            title: "Корректировка температуры в спальне"
-            message: >
-              {% set calibration = state_attr('climate.moes_radiator_actuator_2_climate', 'local_temperature_calibration') | float %}
-              {% set sensor = states('sensor.bedroom_temperature') | float %}
-              {% set radiator = state_attr('climate.moes_radiator_actuator_2_climate', 'current_temperature') | float %}
-              Сенсор: {{ sensor }}
-              {{ "\n" }}
-              Радиатор: {{ radiator }}
-              {{ "\n" }}
-              Калибровка: {{ calibration }}
-              {{ "\n" }}
-              Результат: {{ (calibration + sensor - radiator) | round(1, "half") }}
-        - service: mqtt.publish
-          data_template:
-            topic: zigbee2mqtt/Moes_Radiator_Actuator_2/set/local_temperature_calibration
-            payload: >-
-              {% set current = state_attr('climate.moes_radiator_actuator_2_climate', 'local_temperature_calibration') | float %}
-              {% set sensor = states('sensor.bedroom_temperature') | float %}
-              {% set radiator = state_attr('climate.moes_radiator_actuator_2_climate', 'local_temperature') | float %}
-              {{ (current + sensor - radiator) | round(1, "half") }}
+        - variables: 
+            sensor: "{{ states('sensor.bedroom_temperature') | float | round(1, 'half') }}"
+            radiator: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'current_temperature') | float }}"
+        - choose:
+            - conditions:
+                - "{{ sensor != radiator }}"
+              sequence:
+                - variables: 
+                    current: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'local_temperature_calibration') | float }}"
+                    target: "{{ current + sensor - radiator }}"
+                - service: mqtt.publish
+                  data_template:
+                    topic: zigbee2mqtt/Moes_Radiator_Actuator_2/set/local_temperature_calibration
+                    payload: "{{ target }}"
+                - service: notify.log
+                  data:
+                    title: "*Корректировка температуры в спальне*"
+                    message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
 
     - alias: Kitchen Radiator Temp Calibration
       mode: restart
       trigger:
-        - platform: template
-          value_template: >-
-            {%- set sensor = states('sensor.kitchen_temperature') | float %}
-            {%- set radiator = state_attr('climate.moes_radiator_actuator_3_climate', 'current_temperature') | float %}
-            {{ sensor | round(1, "half") != radiator }}
+        - platform: state
+          entity_id: sensor.kitchen_temperature
+          for: "00:00:15"
+        - platform: state
+          entity_id: climate.moes_radiator_actuator_3_climate
+          attribute: current_temperature
           for: "00:00:15"
       condition:
         - "{{ states('sensor.kitchen_temperature') | float(-1000) > -1000 }}"
         - "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'local_temperature') | float(-1000) > -1000 }}"
         - "{{ not is_state('climate.moes_radiator_actuator_3_climate', 'unavailable') }}"
-        - condition: template
-          value_template: >-
-            {% set sensor = states('sensor.kitchen_temperature') | float %}
-            {% set radiator = state_attr('climate.moes_radiator_actuator_3_climate', 'current_temperature') | float %}
-            {% set current = state_attr('climate.moes_radiator_actuator_3_climate', 'local_temperature_calibration') | float %}
-            {% set result = (current + sensor - radiator) | round(1, "half") %}
-            {{ (result - current) | float | abs > 0 }}
       action:
-        - service: notify.log
-          data:
-            title: "Корректировка температуры на кухне"
-            message: >
-              {% set calibration = state_attr('climate.moes_radiator_actuator_3_climate', 'local_temperature_calibration') | float %}
-              {% set sensor = states('sensor.kitchen_temperature') | float %}
-              {% set radiator = state_attr('climate.moes_radiator_actuator_3_climate', 'current_temperature') | float %}
-              Сенсор: {{ sensor }}
-              {{ "\n" }}
-              Радиатор: {{ radiator }}
-              {{ "\n" }}
-              Калибровка: {{ calibration }}
-              {{ "\n" }}
-              Результат: {{ (calibration + sensor - radiator) | round(1, "half") }}
-        - service: mqtt.publish
-          data_template:
-            topic: zigbee2mqtt/Moes_Radiator_Actuator_3/set/local_temperature_calibration
-            payload: >-
-              {% set current = state_attr('climate.moes_radiator_actuator_3_climate', 'local_temperature_calibration') | float %}
-              {% set sensor = states('sensor.kitchen_temperature') | float %}
-              {% set radiator = state_attr('climate.moes_radiator_actuator_3_climate', 'local_temperature') | float %}
-              {{ (current + sensor - radiator) | round(1, "half") }}
+        - variables: 
+            sensor: "{{ states('sensor.kitchen_temperature') | float | round(1, 'half') }}"
+            radiator: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'current_temperature') | float }}"
+        - choose:
+            - conditions:
+                - "{{ sensor != radiator }}"
+              sequence:
+                - variables: 
+                    current: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'local_temperature_calibration') | float }}"
+                    target: "{{ current + sensor - radiator }}"
+                - service: mqtt.publish
+                  data_template:
+                    topic: zigbee2mqtt/Moes_Radiator_Actuator_3/set/local_temperature_calibration
+                    payload: "{{ target }}"
+                - service: notify.log
+                  data:
+                    title: "*Корректировка температуры на кухне*"
+                    message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
