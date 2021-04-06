@@ -207,15 +207,26 @@ humidifier:
               {%- else %}
                 High
               {%- endif %}
-        # Установить режим
-        - service: fan.set_speed
-          entity_id: fan.humidifier_1
-          data:
-            speed: "{{ target }}"
-        # Сообщение в LOG
-        - service: notify.log
-          data_template:
-            message: "Увлажнитель в зале переведён в режим {{ target }}"
+        - choose:
+            - conditions:
+                - condition: or
+                  conditions:
+                    # Увлажнитель выключен
+                    - condition: state
+                      entity_id: fan.humidifier_1
+                      state: "off"
+                    # Нужный режим отличается от текущего
+                    -  "{{ state_attr('fan.humidifier_1', 'speed') != target }}"
+              sequence:
+                # Установить режим
+                - service: fan.set_speed
+                  entity_id: fan.humidifier_1
+                  data:
+                    speed: "{{ target }}"
+                # Сообщение в LOG
+                - service: notify.log
+                  data_template:
+                    message: "Увлажнитель в зале переведён в режим {{ target }}"
 
     - alias: Humidifier 2 is off
       trigger:
@@ -306,12 +317,23 @@ humidifier:
               {%- else %}
                 High
               {%- endif %}
-        # Установить режим
-        - service: fan.set_speed
-          entity_id: fan.humidifier_2
-          data:
-            speed: "{{ target }}"
-        # Сообщение в LOG
-        - service: notify.log
-          data_template:
-            message: "Увлажнитель в спальне переведён в режим {{ target }}"
+        - choose:
+            - conditions:
+                - condition: or
+                  conditions:
+                    # Увлажнитель выключен
+                    - condition: state
+                      entity_id: fan.humidifier_2
+                      state: "off"
+                    # Нужный режим отличается от текущего
+                    -  "{{ state_attr('fan.humidifier_2', 'speed') != target }}"
+              sequence:
+                # Установить режим
+                - service: fan.set_speed
+                  entity_id: fan.humidifier_2
+                  data:
+                    speed: "{{ target }}"
+                # Сообщение в LOG
+                - service: notify.log
+                  data_template:
+                    message: "Увлажнитель в спальне переведён в режим {{ target }}"
