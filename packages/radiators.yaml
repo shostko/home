@@ -10,16 +10,16 @@ radiators:
           for: "00:00:15"
         - platform: state
           entity_id: climate.moes_radiator_actuator_1_climate
-          attribute: current_temperature
+          attribute: local_temperature
           for: "00:00:15"
       condition:
         - "{{ states('sensor.hall_temperature') | float(-1000) > -1000 }}"
-        - "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') | float(-1000) > -1000 }}"
+        - "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'local_temperature') | float(-1000) > -1000 }}"
         - "{{ not is_state('climate.moes_radiator_actuator_1_climate', 'unavailable') }}"
       action:
         - variables: 
             sensor: "{{ states('sensor.hall_temperature') | float | round(1, 'half') }}"
-            radiator: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'current_temperature') | float }}"
+            radiator: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'local_temperature') | float }}"
         - choose:
             - conditions:
                 - "{{ sensor != radiator }}"
@@ -33,7 +33,7 @@ radiators:
                     payload: "{{ target }}"
                 - service: notify.log
                   data:
-                    title: "*Корректировка температуры в зале*"
+                    title: "*Корректировка температуры в зале* ({{ trigger.to_state.name }})"
                     message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
 
     - alias: Bedroom Radiator Temp Calibration
@@ -44,7 +44,7 @@ radiators:
           for: "00:00:15"
         - platform: state
           entity_id: climate.moes_radiator_actuator_2_climate
-          attribute: current_temperature
+          attribute: local_temperature
           for: "00:00:15"
       condition:
         - "{{ states('sensor.bedroom_temperature') | float(-1000) > -1000 }}"
@@ -53,7 +53,7 @@ radiators:
       action:
         - variables: 
             sensor: "{{ states('sensor.bedroom_temperature') | float | round(1, 'half') }}"
-            radiator: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'current_temperature') | float }}"
+            radiator: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'local_temperature') | float }}"
         - choose:
             - conditions:
                 - "{{ sensor != radiator }}"
@@ -67,7 +67,7 @@ radiators:
                     payload: "{{ target }}"
                 - service: notify.log
                   data:
-                    title: "*Корректировка температуры в спальне*"
+                    title: "*Корректировка температуры в спальне* ({{ trigger.to_state.name }})"
                     message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
 
     - alias: Kitchen Radiator Temp Calibration
@@ -78,7 +78,7 @@ radiators:
           for: "00:00:15"
         - platform: state
           entity_id: climate.moes_radiator_actuator_3_climate
-          attribute: current_temperature
+          attribute: local_temperature
           for: "00:00:15"
       condition:
         - "{{ states('sensor.kitchen_temperature') | float(-1000) > -1000 }}"
@@ -87,7 +87,7 @@ radiators:
       action:
         - variables: 
             sensor: "{{ states('sensor.kitchen_temperature') | float | round(1, 'half') }}"
-            radiator: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'current_temperature') | float }}"
+            radiator: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'local_temperature') | float }}"
         - choose:
             - conditions:
                 - "{{ sensor != radiator }}"
@@ -101,5 +101,5 @@ radiators:
                     payload: "{{ target }}"
                 - service: notify.log
                   data:
-                    title: "*Корректировка температуры на кухне*"
+                    title: "*Корректировка температуры на кухне* ({{ trigger.to_state.name }})"
                     message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
