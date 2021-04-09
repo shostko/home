@@ -22,6 +22,7 @@ entrance_ring:
   automation:
 
     - alias: Entrance Ring Button Clicked
+      id: Entrance Ring Button Clicked
       mode: single
       max_exceeded: silent
       trigger:

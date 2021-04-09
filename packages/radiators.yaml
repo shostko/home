@@ -3,6 +3,7 @@ radiators:
   automation:
 
     - alias: Hall Radiator Temp Calibration
+      id: Hall Radiator Temp Calibration
       mode: restart
       trigger:
         - platform: state
@@ -37,6 +38,7 @@ radiators:
                     message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
 
     - alias: Bedroom Radiator Temp Calibration
+      id: Bedroom Radiator Temp Calibration
       mode: restart
       trigger:
         - platform: state
@@ -71,6 +73,7 @@ radiators:
                     message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
 
     - alias: Kitchen Radiator Temp Calibration
+      id: Kitchen Radiator Temp Calibration
       mode: restart
       trigger:
         - platform: state

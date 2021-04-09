@@ -119,6 +119,7 @@ humidifier:
   automation:
     
     - alias: Humidifier 1 is off
+      id: Humidifier 1 is off
       trigger:
         # Увлажнитель выключен
         - platform: state
@@ -136,6 +137,7 @@ humidifier:
             message: "Увлажнитель в зале выключен, хотя уровень воды {{ states('sensor.humidifier_1_water') }}%"
     
     - alias: Humidifier 1 no water
+      id: Humidifier 1 no water
       trigger:
         # Воды почти нету
         - platform: numeric_state
@@ -156,6 +158,7 @@ humidifier:
             message: "Увлажнитель в зале выключен: уровень воды {{ trigger.to_state.state }}%"
     
     - alias: Humidifier 1 speed changing
+      id: Humidifier 1 speed changing
       trigger:
         # Влажность > 50%
         - platform: numeric_state
@@ -229,6 +232,7 @@ humidifier:
                     message: "Увлажнитель в зале переведён в режим {{ target }}"
 
     - alias: Humidifier 2 is off
+      id: Humidifier 2 is off
       trigger:
         # Увлажнитель выключен
         - platform: state
@@ -246,6 +250,7 @@ humidifier:
             message: "Увлажнитель в спальне выключен, хотя уровень воды {{ states('sensor.humidifier_1_water') }}%"
 
     - alias: Humidifier 2 no water
+      id: Humidifier 2 no water
       trigger:
         # Воды почти нету
         - platform: numeric_state
@@ -266,6 +271,7 @@ humidifier:
             message: "Увлажнитель в спальне выключен: уровень воды {{ trigger.to_state.state }}%"
     
     - alias: Humidifier 2 speed changing
+      id: Humidifier 2 speed changing
       trigger:
         # Влажность > 50%
         - platform: numeric_state

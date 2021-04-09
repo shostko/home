@@ -3,6 +3,7 @@ alice_intents:
   automation:
 
     - alias: 'YandexIntent: logging'
+      id: 'YandexIntent: logging'
       trigger:
         - platform: event
           event_type: yandex_intent
@@ -12,6 +13,7 @@ alice_intents:
             message: 'YandexIntent: {{trigger.event.data.text}}'
 
     - alias: 'YandexIntent: Goodbye'
+      id: 'YandexIntent: Goodbye'
       mode: single
       max_exceeded: silent
       trigger:

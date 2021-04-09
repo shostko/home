@@ -25,6 +25,7 @@ hall_lights:
   automation:
 
     - alias: Hall Ceiling Lights TOGGLE
+      id: Hall Ceiling Lights TOGGLE
       trigger:
         # Правая кнопка выключателя (одинарный клик)
         - platform: state
@@ -50,6 +51,7 @@ hall_lights:
                 entity_id: group.hall_ceiling_lights
 
     - alias: Hall Bra Lights TOGGLE
+      id: Hall Bra Lights TOGGLE
       trigger:
         # Левая кнопка выключателя (одинарный клик)
         - platform: state
@@ -75,6 +77,7 @@ hall_lights:
                 entity_id: group.hall_bra_lights
 
     - alias: Hall Lights TOGGLE
+      id: Hall Lights TOGGLE
       trigger:
         # Обе кнопка выключателя (одинарный клик)
         - platform: state
@@ -112,6 +115,7 @@ hall_lights:
                 entity_id: group.hall_ceiling_lights
 
     - alias: Hall Bra 1 TOGGLE
+      id: Hall Bra 1 TOGGLE
       trigger:
         # Выключатель под бра
         - platform: state

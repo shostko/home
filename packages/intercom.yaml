@@ -2,7 +2,8 @@ intercom:
 
   automation:
 
-    - alias: 'Intercom incoming call notification'
+    - alias: 'Intercom: incoming call notification'
+      id: 'Intercom: incoming call notification'
       trigger:
         # Обнаружен звонок
         - platform: state
@@ -45,6 +46,7 @@ intercom:
                     - "{{ 'Открыть:/intercom_open, Сбросить:/intercom_reject' }}"
 
     - alias: 'Intercom: open from Telegram'
+      id: 'Intercom: open from Telegram'
       trigger:
         # Из телеграмма пришла команда Открыть
         - platform: event
@@ -75,6 +77,7 @@ intercom:
                 message: "Нет входящего звонка"
 
     - alias: 'Intercom: reject from Telegram'
+      id: 'Intercom: reject from Telegram'
       trigger:
         # Из телеграмма пришла команда Сбросить
         - platform: event

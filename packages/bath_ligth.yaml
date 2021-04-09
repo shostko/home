@@ -175,6 +175,7 @@ bath_ligth:
     # Toilet
 
     - alias: Toilet light timer reload
+      id: Toilet light timer reload
       trigger:
         # Таймер должен быть включен
         - platform: state
@@ -193,6 +194,7 @@ bath_ligth:
               {%- endif -%}
   
     - alias: Toilet light timer cancel
+      id: Toilet light timer cancel
       trigger:
         # Таймер должен быть выключен
         - platform: state
@@ -204,6 +206,7 @@ bath_ligth:
           entity_id: timer.toilet_light
     
     - alias: Toilet light ON (via sensors)
+      id: Toilet light ON (via sensors)
       trigger:
         - platform: state
           entity_id: binary_sensor.toilet_light_motion_trigger
@@ -227,6 +230,7 @@ bath_ligth:
         - service: script.toilet_lights_turn_on
     
     - alias: Toilet light OFF (via timer)
+      id: Toilet light OFF (via timer)
       trigger:
         # Таймер
         - platform: event
@@ -243,6 +247,7 @@ bath_ligth:
         - service: script.toilet_lights_turn_off
 
     - alias: Toilet lights TOGGLE (via button)
+      id: Toilet lights TOGGLE (via button)
       trigger:
         # Правая кнопка выключателя (одинарный клик)
         - platform: state
@@ -266,6 +271,7 @@ bath_ligth:
         - service: script.toilet_lights_toggle
 
     - alias: Toilet occupancy force ON
+      id: Toilet occupancy force ON
       trigger:
         # Правая кнопка выключателя (двойной клик)
         - platform: state
@@ -287,6 +293,7 @@ bath_ligth:
             entity_id: input_boolean.toilet_occupied
 
     - alias: Toilet occupancy ON
+      id: Toilet occupancy ON
       trigger:
         # Обнаружено начало движения
         - platform: state
@@ -317,6 +324,7 @@ bath_ligth:
             entity_id: input_boolean.toilet_occupied
 
     - alias: Toilet occupancy OFF
+      id: Toilet occupancy OFF
       trigger:
         # Дверь открылась
         - platform: state
@@ -336,6 +344,7 @@ bath_ligth:
     # Bath
 
     - alias: Bath light timer reload
+      id: Bath light timer reload
       trigger:
         # Таймер должен быть включен
         - platform: state
@@ -354,6 +363,7 @@ bath_ligth:
               {%- endif -%}
   
     - alias: Bath light timer cancel
+      id: Bath light timer cancel
       trigger:
         # Таймер должен быть выключен
         - platform: state
@@ -365,6 +375,7 @@ bath_ligth:
           entity_id: timer.bath_light
     
     - alias: Bath light ON (via sensors)
+      id: Bath light ON (via sensors)
       trigger:
         - platform: state
           entity_id: binary_sensor.bath_light_motion_trigger
@@ -388,6 +399,7 @@ bath_ligth:
         - service: script.bath_lights_turn_on
     
     - alias: Bath light OFF (via timer)
+      id: Bath light OFF (via timer)
       trigger:
         # Таймер
         - platform: event
@@ -404,6 +416,7 @@ bath_ligth:
         - service: script.bath_lights_turn_off
 
     - alias: Bath lights TOGGLE (via button)
+      id: Bath lights TOGGLE (via button)
       trigger:
         # Левая кнопка выключателя (одинарный клик)
         - platform: state
@@ -427,6 +440,7 @@ bath_ligth:
         - service: script.bath_lights_toggle
 
     - alias: Bath occupancyforce ON
+      id: Bath occupancyforce ON
       trigger:
         # Левая кнопка выключателя (двойной клик)
         - platform: state
@@ -448,6 +462,7 @@ bath_ligth:
             entity_id: input_boolean.bath_occupied
 
     - alias: Bath occupancy ON
+      id: Bath occupancy ON
       trigger:
         # Обнаружено начало движения
         - platform: state
@@ -478,6 +493,7 @@ bath_ligth:
             entity_id: input_boolean.bath_occupied
 
     - alias: Bath occupancy OFF
+      id: Bath occupancy OFF
       trigger:
         # Дверь открылась
         - platform: state

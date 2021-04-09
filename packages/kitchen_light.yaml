@@ -122,6 +122,7 @@ kitchen_light:
     automation:
 
       - alias: Kitchen light timer reload
+        id: Kitchen light timer reload
         trigger:
           # Таймер должен быть включен
           - platform: state
@@ -151,6 +152,7 @@ kitchen_light:
                 {% endif %}
     
       - alias: Kitchen light timer cancel
+        id: Kitchen light timer cancel
         trigger:
           # Таймер должен быть выключен
           - platform: state
@@ -162,6 +164,7 @@ kitchen_light:
             entity_id: timer.kitchen_light
     
       - alias: Kitchen light ON (via sensors)
+        id: Kitchen light ON (via sensors)
         trigger:
           # Датчики движения & режим Auto
           - platform: state
@@ -177,6 +180,7 @@ kitchen_light:
           - service: script.kitchen_lights_turn_on
     
       - alias: Kitchen light ON (manualy)
+        id: Kitchen light ON (manualy)
         trigger:
           # Выключатель на входе
           - platform: state
@@ -195,6 +199,7 @@ kitchen_light:
                   light.kitchen_ceiling
     
       - alias: Kitchen light OFF (via timer)
+        id: Kitchen light OFF (via timer)
         trigger:
           # Таймер
           - platform: event
@@ -213,6 +218,7 @@ kitchen_light:
               - group.kitchen_lights
     
       - alias: Kitchen light OFF (manualy)
+        id: Kitchen light OFF (manualy)
         mode: restart
         trigger:
           # Выключатель на входе
@@ -241,6 +247,7 @@ kitchen_light:
               entity_id: automation.kitchen_light_on_via_sensors
     
       - alias: Kitchen light started recording
+        id: Kitchen light started recording
         trigger:
           # Любой свет включился
           - platform: state
@@ -259,6 +266,7 @@ kitchen_light:
               timestamp: "{{ now().timestamp() }}"
 
       - alias: Kitchen light started hardcoded
+        id: Kitchen light started hardcoded
         trigger:
           # Беспроводная кнопка (двойной клик)
           - platform: state
@@ -293,6 +301,7 @@ kitchen_light:
                   - service: script.kitchen_lights_turn_on
 
       - alias: Kitchen light stopped recording
+        id: Kitchen light stopped recording
         trigger:
           # Весь свет выключился на 20 секунд
           - platform: state
@@ -308,6 +317,7 @@ kitchen_light:
               timestamp: 1
 
       - alias: Kitchen switch double click
+        id: Kitchen switch double click
         trigger:
           # Выключатель на входе (двойной клик)
           - platform: state
@@ -335,6 +345,7 @@ kitchen_light:
               entity_id: automation.kitchen_light_on_via_sensors
 
       - alias: Kitchen Work ON (via button)
+        id: Kitchen Work ON (via button)
         trigger:
           # Беспроводная кнопка (одинарный клик)
           - platform: state

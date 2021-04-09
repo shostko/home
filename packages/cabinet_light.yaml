@@ -22,6 +22,7 @@ cabinet_light:
     automation:
     
       - alias: Cabinet Lights OFF (via button)
+        id: Cabinet Lights OFF (via button)
         trigger:
           # Выключатель на входе (правая кнопка)
           - platform: state
@@ -40,6 +41,7 @@ cabinet_light:
               - group.cabinet_lights
     
       - alias: Cabinet Lights OFF (separately)
+        id: Cabinet Lights OFF (separately)
         trigger:
           # Выключился весь свет в группе
           - platform: state
@@ -58,6 +60,7 @@ cabinet_light:
               - switch.cabinet_wall_switch_right
     
       - alias: Cabinet Lights ON (via button)
+        id: Cabinet Lights ON (via button)
         trigger:
           # Выключатель на входе (правая кнопка)
           - platform: state
@@ -81,6 +84,7 @@ cabinet_light:
                 {% endif %}
     
       - alias: Cabinet Lights ON (separately)
+        id: Cabinet Lights ON (separately)
         trigger:
           # Включился любой свет в группе
           - platform: state

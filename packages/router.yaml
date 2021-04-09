@@ -73,6 +73,7 @@ router:
   automation:
     
     - alias: "Guest Wifi Process: Reset"
+      id: "Guest Wifi Process: Reset"
       trigger:
         - platform: state
           entity_id: input_select.guest_wifi_process

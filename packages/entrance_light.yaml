@@ -43,6 +43,7 @@ entrance_light:
   automation:
   
     - alias: Entrance light timer reload
+      id: Entrance light timer reload
       trigger:
         # Таймер должен быть включен
         - platform: state
@@ -65,6 +66,7 @@ entrance_light:
               {%- endif -%}
   
     - alias: Entrance light timer cancel
+      id: Entrance light timer cancel
       trigger:
         # Таймер должен быть выключен
         - platform: state
@@ -76,6 +78,7 @@ entrance_light:
           entity_id: timer.entrance_light
   
     - alias: Entrance lights OFF (via timer)
+      id: Entrance lights OFF (via timer)
       trigger:
         # Таймер
         - platform: event
@@ -94,6 +97,7 @@ entrance_light:
             - group.entrance_lights
 
     - alias: Entrance puck ON (via sensor)
+      id: Entrance puck ON (via sensor)
       trigger:
         # Появилось движение
         - platform: state
@@ -117,6 +121,7 @@ entrance_light:
             brightness: 64
     
     - alias: Entrance top light finished recording
+      id: Entrance top light finished recording
       trigger:
         # Верхний свет выключился
         - platform: state
@@ -143,6 +148,7 @@ entrance_light:
             timestamp: "{{ now().timestamp() }}"
 
     - alias: Entrance light ON (via door)
+      id: Entrance light ON (via door)
       trigger:
         # Открылась дверь
         - platform: state

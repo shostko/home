@@ -2,6 +2,7 @@
 # Bedroom
 
 - alias: Toggle Bedroom Mirror with Switch
+  id: Toggle Bedroom Mirror with Switch
   trigger:
     - platform: state
       entity_id: binary_sensor.bedroom_mirror_switch
@@ -16,6 +17,7 @@
       entity_id: switch.xiaomi_socket_2
 
 - alias: Bedroom Switch Both
+  id: Bedroom Switch Both
   trigger:
     - platform: state
       entity_id: sensor.bedroom_wall_switch_action
@@ -31,7 +33,8 @@
 
 # Telegram
 
-- alias: 'Telegram start'
+- alias: Telegram start
+  id: Telegram start
   trigger:
     - platform: event
       event_type: telegram_command
@@ -45,6 +48,7 @@
         keyboard: '/ping, /test, /alarm'
 
 - alias: 'Telegram ping/pong'
+  id: 'Telegram ping/pong'
   trigger:
     - platform: event
       event_type: telegram_command
@@ -62,6 +66,7 @@
 # Log
 
 - alias: 'Log: Entrance door opened'
+  id: 'Log: Entrance door opened'
   mode: single
   max_exceeded: silent
   trigger:
@@ -80,6 +85,7 @@
     - delay: 5
 
 - alias: 'Log: Entrance door opened to long'
+  id: 'Log: Entrance door opened to long'
   trigger:
     - platform: state
       entity_id: binary_sensor.entance_door_button
@@ -102,7 +108,8 @@
 
 # Kitchen Water Leak Sensor
 
-- alias: 'Notify about Kitchen Water Leak'
+- alias: Notify about Kitchen Water Leak
+  id: Notify about Kitchen Water Leak
   trigger:
     - platform: state
       entity_id: binary_sensor.kitchen_water_leak
@@ -113,7 +120,8 @@
       data:
         message: "Протечка на кухне!"
 
-- alias: 'Notify about Kitchen Water Leak Stop'
+- alias: Notify about Kitchen Water Leak Stop
+  id: Notify about Kitchen Water Leak Stop
   trigger:
     - platform: state
       entity_id: binary_sensor.kitchen_water_leak

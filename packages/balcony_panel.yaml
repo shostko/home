@@ -71,6 +71,7 @@ balcony_panel:
 
     automation:
       - alias: Balcony panel effect with MQTT
+        id: Balcony panel effect with MQTT
         trigger:
           - platform: state
             entity_id: input_select.balcony_panel_effect
@@ -90,6 +91,7 @@ balcony_panel:
                   {%- endif %}
                 {%- endfor -%}
       - alias: Balcony panel effect from MQTT
+        id: Balcony panel effect from MQTT
         trigger:
           - platform: mqtt
             topic: "BalconyPanel-0/nfo"
