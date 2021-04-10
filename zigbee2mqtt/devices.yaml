@@ -66,11 +66,11 @@
   retain: true
 '0x00158d000669576d':
   friendly_name: Toilet_Motion
-  occupancy_timeout: 10
+  occupancy_timeout: 1
 '0x00124b002265cc24':
   friendly_name: Kitchen_Work
 '0x00158d000659d624':
   friendly_name: Bath_Motion
-  occupancy_timeout: 10
+  occupancy_timeout: 1
 '0x00158d0001e4be7c':
   friendly_name: Kitchen_Motion_2
