@@ -34,7 +34,7 @@ radiators:
                     payload: "{{ target }}"
                 - service: notify.log
                   data:
-                    title: "*Корректировка температуры в зале* ({{ trigger.to_state.name }})"
+                    title: "*Корректировка температуры в зале* ({{ trigger.description }})"
                     message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
 
     - alias: Bedroom Radiator Temp Calibration
@@ -69,7 +69,7 @@ radiators:
                     payload: "{{ target }}"
                 - service: notify.log
                   data:
-                    title: "*Корректировка температуры в спальне* ({{ trigger.to_state.name }})"
+                    title: "*Корректировка температуры в спальне* ({{ trigger.description }})"
                     message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
 
     - alias: Kitchen Radiator Temp Calibration
@@ -104,5 +104,5 @@ radiators:
                     payload: "{{ target }}"
                 - service: notify.log
                   data:
-                    title: "*Корректировка температуры на кухне* ({{ trigger.to_state.name }})"
+                    title: "*Корректировка температуры на кухне* ({{ trigger.description }})"
                     message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
