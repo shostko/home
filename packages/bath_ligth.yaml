@@ -144,48 +144,12 @@ bath_ligth:
         - platform: state
           entity_id: light.toilet_lights
           to: 'on'
+      condition:
+        # Cвет включен
+        - condition: state
+          entity_id: light.toilet_lights
+          state: 'on'
       action:
-        # Включить свет, если выключен
-        - choose:
-            - conditions:
-                # Свет выключен
-                - condition: state
-                  entity_id: light.toilet_lights
-                  state: 'off'
-              sequence:
-                # Завершить скрипты по туалету
-                - service: homeassistant.turn_off
-                  entity_id: script.toilet_lights_turn_off
-                - service: homeassistant.turn_off
-                  entity_id: script.toilet_lights_toggle
-                # Включить свет
-                - service: script.toilet_lights_turn_on
-        # Актуализировать параметр занятости
-        - choose:
-            - conditions:
-                # Дверь закрыта
-                - condition: state
-                  entity_id: binary_sensor.toilet_door
-                  state: 'off'
-                # Есть движение
-                - condition: state
-                  entity_id: binary_sensor.toilet_motion
-                  state: 'on'
-              sequence:
-                # Отметить занятость туалета
-                - service: input_boolean.turn_on
-                  target:
-                    entity_id: input_boolean.toilet_occupied
-            - conditions:
-                # Дверь открыта
-                - condition: state
-                  entity_id: binary_sensor.toilet_door
-                  state: 'on'
-              sequence:
-                # Убрать занятость туалета
-                - service: input_boolean.turn_off
-                  target:
-                    entity_id: input_boolean.toilet_occupied
         # (Пере)Запустить таймер
         - service: timer.start
           entity_id: timer.toilet_light
@@ -196,7 +160,7 @@ bath_ligth:
               {%- elif is_state('binary_sensor.toilet_door', 'on') -%}
                 00:01:00
               {%- else -%}
-                00:00:30
+                00:00:20
               {%- endif -%}
   
     - alias: Toilet light timer cancel
@@ -215,6 +179,37 @@ bath_ligth:
         # Выключить таймер
         - service: timer.cancel
           entity_id: timer.toilet_light
+    
+    - alias: Toilet light ON (via sensors)
+      id: Toilet light ON (via sensors)
+      mode: restart
+      trigger:
+        # Дверь открылась
+        - platform: state
+          entity_id: binary_sensor.toilet_door
+          from: 'off'
+          to: 'on'
+        # Обнаружено движение
+        - platform: state
+          entity_id: binary_sensor.toilet_motion
+          to: 'on'
+        # Включена переменная занятости
+        - platform: state
+          entity_id: input_boolean.toilet_occupied
+          to: 'on'
+      condition:
+        # Cвет выключен
+        - condition: state
+          entity_id: light.toilet_lights
+          state: 'off'
+      action:
+        # Завершить скрипты по туалету
+        - service: homeassistant.turn_off
+          entity_id: script.toilet_lights_turn_off
+        - service: homeassistant.turn_off
+          entity_id: script.toilet_lights_toggle
+        # Включить свет
+        - service: script.toilet_lights_turn_on
     
     - alias: Toilet light OFF (via timer)
       id: Toilet light OFF (via timer)
@@ -279,6 +274,46 @@ bath_ligth:
           target:
             entity_id: input_boolean.toilet_occupied
 
+    - alias: Toilet occupancy ON
+      id: Toilet occupancy ON
+      trigger:
+        # Обнаружено начало движения
+        - platform: state
+          entity_id: binary_sensor.toilet_motion
+          to: 'on'
+      condition:
+        # Дверь закрыта
+        - condition: state
+          entity_id: binary_sensor.toilet_door
+          state: 'off'
+        # Переменная занятости = не занято
+        - condition: state
+          entity_id: input_boolean.toilet_occupied
+          state: 'off'
+      action:
+        # Отметить занятость туалета
+        - service: input_boolean.turn_on
+          target:
+            entity_id: input_boolean.toilet_occupied
+
+    - alias: Toilet occupancy OFF
+      id: Toilet occupancy OFF
+      trigger:
+        # Дверь открылась
+        - platform: state
+          entity_id: binary_sensor.toilet_door
+          to: 'on'
+      condition:
+        # Переменная занятости = занято
+        - condition: state
+          entity_id: input_boolean.toilet_occupied
+          state: 'on'
+      action:
+        # Убрать занятость туалета
+        - service: input_boolean.turn_off
+          target:
+            entity_id: input_boolean.toilet_occupied
+
     # Bath
 
     - alias: Bath light timer reload
@@ -312,47 +347,6 @@ bath_ligth:
           entity_id: light.bath_lights
           to: 'on'
       action:
-        # Включить свет, если выключен
-        - choose:
-            - conditions:
-                # Свет выключен
-                - condition: state
-                  entity_id: light.bath_lights
-                  state: 'off'
-              sequence:
-                # Завершить скрипты по ванной
-                - service: homeassistant.turn_off
-                  entity_id: script.bath_lights_turn_off
-                - service: homeassistant.turn_off
-                  entity_id: script.bath_lights_toggle
-                # Включить свет
-                - service: script.bath_lights_turn_on
-        # Актуализировать параметр занятости
-        - choose:
-            - conditions:
-                # Дверь закрыта
-                - condition: state
-                  entity_id: binary_sensor.bath_door
-                  state: 'off'
-                # Есть движение
-                - condition: state
-                  entity_id: binary_sensor.bath_motion
-                  state: 'on'
-              sequence:
-                # Отметить занятость ванной
-                - service: input_boolean.turn_on
-                  target:
-                    entity_id: input_boolean.bath_occupied
-            - conditions:
-                # Дверь открыта
-                - condition: state
-                  entity_id: binary_sensor.bath_door
-                  state: 'on'
-              sequence:
-                # Убрать занятость ванной
-                - service: input_boolean.turn_off
-                  target:
-                    entity_id: input_boolean.bath_occupied
         # (Пере)Запустить таймер
         - service: timer.start
           entity_id: timer.bath_light
@@ -363,7 +357,7 @@ bath_ligth:
               {%- elif is_state('binary_sensor.bath_door', 'on') -%}
                 00:01:00
               {%- else -%}
-                00:00:30
+                00:00:20
               {%- endif -%}
   
     - alias: Bath light timer cancel
@@ -382,6 +376,36 @@ bath_ligth:
         # Выключить таймер
         - service: timer.cancel
           entity_id: timer.bath_light
+    
+    - alias: Bath light ON (via sensors)
+      id: Bath light ON (via sensors)
+      trigger:
+        # Дверь открылась
+        - platform: state
+          entity_id: binary_sensor.bath_door
+          from: 'off'
+          to: 'on'
+        # Обнаружено движение
+        - platform: state
+          entity_id: binary_sensor.bath_motion
+          to: 'on'
+        # Включена переменная занятости
+        - platform: state
+          entity_id: input_boolean.bath_occupied
+          to: 'on'
+      condition:
+        # Весь свет выключен
+        - condition: state
+          entity_id: light.bath_lights
+          state: 'off'
+      action:
+        # Завершить скрипты по ванне
+        - service: homeassistant.turn_off
+          entity_id: script.bath_lights_turn_off
+        - service: homeassistant.turn_off
+          entity_id: script.bath_lights_toggle
+        # Включить свет
+        - service: script.bath_lights_turn_on
 
     - alias: Bath light OFF (via timer)
       id: Bath light OFF (via timer)
@@ -443,5 +467,45 @@ bath_ligth:
       action:
         # Отметить занятость ванны
         - service: input_boolean.turn_on
+          target:
+            entity_id: input_boolean.bath_occupied
+
+    - alias: Bath occupancy ON
+      id: Bath occupancy ON
+      trigger:
+        # Обнаружено начало движения
+        - platform: state
+          entity_id: binary_sensor.bath_motion
+          to: 'on'
+      condition:
+        # Дверь закрыта
+        - condition: state
+          entity_id: binary_sensor.bath_door
+          state: 'off'
+        # Переменная занятости = не занято
+        - condition: state
+          entity_id: input_boolean.bath_occupied
+          state: 'off'
+      action:
+        # Отметить занятость ванны
+        - service: input_boolean.turn_on
+          target:
+            entity_id: input_boolean.bath_occupied
+
+    - alias: Bath occupancy OFF
+      id: Bath occupancy OFF
+      trigger:
+        # Дверь открылась
+        - platform: state
+          entity_id: binary_sensor.bath_door
+          to: 'on'
+      condition:
+        # Переменная занятости = занято
+        - condition: state
+          entity_id: input_boolean.bath_occupied
+          state: 'on'
+      action:
+        # Убрать занятость ванной
+        - service: input_boolean.turn_off
           target:
             entity_id: input_boolean.bath_occupied
