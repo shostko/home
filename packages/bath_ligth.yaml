@@ -346,6 +346,11 @@ bath_ligth:
         - platform: state
           entity_id: light.bath_lights
           to: 'on'
+      condition:
+        # Cвет включен
+        - condition: state
+          entity_id: light.bath_lights
+          state: 'on'
       action:
         # (Пере)Запустить таймер
         - service: timer.start
