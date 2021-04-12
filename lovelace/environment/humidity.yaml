@@ -7,6 +7,20 @@ cards:
   - type: custom:vertical-stack-in-card
     cards:
       - type: history-graph
+        title: Комнаты
+        hours_to_show: 24
+        entities:
+          - entity: sensor.hall_humidity
+            name: Зал
+          - entity: sensor.bedroom_humidity
+            name: Спальня
+          - entity: sensor.kitchen_humidity
+            name: Кухня
+          - entity: sensor.xiaomi_mijia_4a07_humidity_2
+            name: Ванна
+          - entity: sensor.xiaomi_mijia_cb5b_humidity
+            name: Кабинет
+      - type: history-graph
         title: Зал
         hours_to_show: 24
         entities:

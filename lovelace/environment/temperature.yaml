@@ -7,6 +7,20 @@ cards:
   - type: custom:vertical-stack-in-card
     cards:
       - type: history-graph
+        title: Комнаты
+        hours_to_show: 24
+        entities:
+          - entity: sensor.hall_temperature
+            name: Зал
+          - entity: sensor.bedroom_temperature
+            name: Спальня
+          - entity: sensor.kitchen_temperature
+            name: Кухня
+          - entity: sensor.xiaomi_mijia_4a07_temperature_2
+            name: Ванна
+          - entity: sensor.xiaomi_mijia_cb5b_temperature
+            name: Кабинет
+      - type: history-graph
         title: Зал
         hours_to_show: 24
         entities:
@@ -40,12 +54,6 @@ cards:
             name: Стол
           - entity: sensor.kitchen_temperature
             name: Среднее
-      - type: history-graph
-        title: Ванна
-        hours_to_show: 24
-        entities:
-          - entity: sensor.xiaomi_mijia_4a07_temperature_2
-            name: Датчик
       - type: history-graph
         title: Ванна
         hours_to_show: 24
