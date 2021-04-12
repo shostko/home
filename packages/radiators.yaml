@@ -34,8 +34,13 @@ radiators:
                     payload: "{{ target }}"
                 - service: notify.log
                   data:
-                    title: "*Корректировка температуры в зале* ({{ trigger.description }})"
-                    message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
+                    title: "*Корректировка температуры в зале*"
+                    message: |-
+                      Тригер: {{ trigger.description | replace("_","\_") }}
+                      Сенсор: _{{ sensor }}_
+                      Радиатор: _{{ radiator }}_
+                      Текущая калибровка: _{{ current }}_
+                      Новая калибровка: _{{ target }}_
 
     - alias: Bedroom Radiator Temp Calibration
       id: Bedroom Radiator Temp Calibration
@@ -69,8 +74,13 @@ radiators:
                     payload: "{{ target }}"
                 - service: notify.log
                   data:
-                    title: "*Корректировка температуры в спальне* ({{ trigger.description }})"
-                    message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
+                    title: "*Корректировка температуры в спальне*"
+                    message: |-
+                      Тригер: {{ trigger.description | replace("_","\_") }}
+                      Сенсор: _{{ sensor }}_
+                      Радиатор: _{{ radiator }}_
+                      Текущая калибровка: _{{ current }}_
+                      Новая калибровка: _{{ target }}_
 
     - alias: Kitchen Radiator Temp Calibration
       id: Kitchen Radiator Temp Calibration
@@ -104,5 +114,10 @@ radiators:
                     payload: "{{ target }}"
                 - service: notify.log
                   data:
-                    title: "*Корректировка температуры на кухне* ({{ trigger.description }})"
-                    message: "Сенсор: _{{ sensor }}_\nРадиатор: _{{ radiator }}_\nТекущая калибровка: _{{ current }}_\nНовая калибровка: _{{ target }}_"
+                    title: "*Корректировка температуры на кухне*"
+                    message: |-
+                      Тригер: {{ trigger.description | replace("_","\_") }}
+                      Сенсор: _{{ sensor }}_
+                      Радиатор: _{{ radiator }}_
+                      Текущая калибровка: _{{ current }}_
+                      Новая калибровка: _{{ target }}_
