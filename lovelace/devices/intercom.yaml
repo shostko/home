@@ -11,9 +11,9 @@ cards:
       - entity: binary_sensor.intercom_incoming_call
         name: Звонок
       - entity: switch.intercom_accept_call
-        name: Сбросить
+        name: Открыть
       - entity: switch.intercom_reject_call
-        name: Отбой
+        name: Сбросить
       - entity: switch.intercom_mute_sound
         name: Режим "Без звука"
       - entity: switch.intercom_mute_sound_once
