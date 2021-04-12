@@ -5,119 +5,32 @@ radiators:
     - alias: Hall Radiator Temp Calibration
       id: Hall Radiator Temp Calibration
       mode: restart
-      trigger:
-        - platform: state
-          entity_id: sensor.hall_temperature
-          for: "00:00:15"
-        - platform: state
-          entity_id: climate.moes_radiator_actuator_1_climate
-          attribute: local_temperature
-          for: "00:00:15"
-      condition:
-        - "{{ states('sensor.hall_temperature') | float(-1000) > -1000 }}"
-        - "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'local_temperature') | float(-1000) > -1000 }}"
-        - "{{ not is_state('climate.moes_radiator_actuator_1_climate', 'unavailable') }}"
-      action:
-        - variables: 
-            sensor: "{{ states('sensor.hall_temperature') | float | round(1, 'half') }}"
-            radiator: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'local_temperature') | float }}"
-        - choose:
-            - conditions:
-                - "{{ sensor != radiator }}"
-              sequence:
-                - variables: 
-                    current: "{{ state_attr('climate.moes_radiator_actuator_1_climate', 'local_temperature_calibration') | float }}"
-                    target: "{{ current + sensor - radiator }}"
-                - service: mqtt.publish
-                  data_template:
-                    topic: zigbee2mqtt/Moes_Radiator_Actuator_1/set/local_temperature_calibration
-                    payload: "{{ target }}"
-                - service: notify.log
-                  data:
-                    title: "*Корректировка температуры в зале*"
-                    message: |-
-                      Тригер: {{ trigger.description | replace("_","\_") }}
-                      Сенсор: _{{ sensor }}_
-                      Радиатор: _{{ radiator }}_
-                      Текущая калибровка: _{{ current }}_
-                      Новая калибровка: _{{ target }}_
+      use_blueprint:
+        path: radiator_temp_calibration.yaml
+        input:
+          source_sensor: sensor.hall_temperature
+          target_climate: climate.moes_radiator_actuator_1_climate
+          mqtt_name: "Moes_Radiator_Actuator_1"
+          log_area: "в зале"
 
     - alias: Bedroom Radiator Temp Calibration
       id: Bedroom Radiator Temp Calibration
       mode: restart
-      trigger:
-        - platform: state
-          entity_id: sensor.bedroom_temperature
-          for: "00:00:15"
-        - platform: state
-          entity_id: climate.moes_radiator_actuator_2_climate
-          attribute: local_temperature
-          for: "00:00:15"
-      condition:
-        - "{{ states('sensor.bedroom_temperature') | float(-1000) > -1000 }}"
-        - "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'local_temperature') | float(-1000) > -1000 }}"
-        - "{{ not is_state('climate.moes_radiator_actuator_2_climate', 'unavailable') }}"
-      action:
-        - variables: 
-            sensor: "{{ states('sensor.bedroom_temperature') | float | round(1, 'half') }}"
-            radiator: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'local_temperature') | float }}"
-        - choose:
-            - conditions:
-                - "{{ sensor != radiator }}"
-              sequence:
-                - variables: 
-                    current: "{{ state_attr('climate.moes_radiator_actuator_2_climate', 'local_temperature_calibration') | float }}"
-                    target: "{{ current + sensor - radiator }}"
-                - service: mqtt.publish
-                  data_template:
-                    topic: zigbee2mqtt/Moes_Radiator_Actuator_2/set/local_temperature_calibration
-                    payload: "{{ target }}"
-                - service: notify.log
-                  data:
-                    title: "*Корректировка температуры в спальне*"
-                    message: |-
-                      Тригер: {{ trigger.description | replace("_","\_") }}
-                      Сенсор: _{{ sensor }}_
-                      Радиатор: _{{ radiator }}_
-                      Текущая калибровка: _{{ current }}_
-                      Новая калибровка: _{{ target }}_
+      use_blueprint:
+        path: radiator_temp_calibration.yaml
+        input:
+          source_sensor: sensor.bedroom_temperature
+          target_climate: climate.moes_radiator_actuator_2_climate
+          mqtt_name: "Moes_Radiator_Actuator_2"
+          log_area: "в спальне"
 
     - alias: Kitchen Radiator Temp Calibration
       id: Kitchen Radiator Temp Calibration
       mode: restart
-      trigger:
-        - platform: state
-          entity_id: sensor.kitchen_temperature
-          for: "00:00:15"
-        - platform: state
-          entity_id: climate.moes_radiator_actuator_3_climate
-          attribute: local_temperature
-          for: "00:00:15"
-      condition:
-        - "{{ states('sensor.kitchen_temperature') | float(-1000) > -1000 }}"
-        - "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'local_temperature') | float(-1000) > -1000 }}"
-        - "{{ not is_state('climate.moes_radiator_actuator_3_climate', 'unavailable') }}"
-      action:
-        - variables: 
-            sensor: "{{ states('sensor.kitchen_temperature') | float | round(1, 'half') }}"
-            radiator: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'local_temperature') | float }}"
-        - choose:
-            - conditions:
-                - "{{ sensor != radiator }}"
-              sequence:
-                - variables: 
-                    current: "{{ state_attr('climate.moes_radiator_actuator_3_climate', 'local_temperature_calibration') | float }}"
-                    target: "{{ current + sensor - radiator }}"
-                - service: mqtt.publish
-                  data_template:
-                    topic: zigbee2mqtt/Moes_Radiator_Actuator_3/set/local_temperature_calibration
-                    payload: "{{ target }}"
-                - service: notify.log
-                  data:
-                    title: "*Корректировка температуры на кухне*"
-                    message: |-
-                      Тригер: {{ trigger.description | replace("_","\_") }}
-                      Сенсор: _{{ sensor }}_
-                      Радиатор: _{{ radiator }}_
-                      Текущая калибровка: _{{ current }}_
-                      Новая калибровка: _{{ target }}_
+      use_blueprint:
+        path: radiator_temp_calibration.yaml
+        input:
+          source_sensor: sensor.kitchen_temperature
+          target_climate: climate.moes_radiator_actuator_3_climate
+          mqtt_name: "Moes_Radiator_Actuator_3"
+          log_area: "на кухне"
