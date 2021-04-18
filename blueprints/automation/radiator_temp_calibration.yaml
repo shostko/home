@@ -31,11 +31,11 @@ mode: restart
 trigger:
   - platform: state
     entity_id: !input source_sensor
-    for: "00:00:15"
+    for: "00:01:00"
   - platform: state
     entity_id: !input target_climate
     attribute: local_temperature
-    for: "00:00:15"
+    for: "00:01:00"
 
 variables:
   source_sensor: !input source_sensor
