@@ -58,6 +58,7 @@ include:
     - sensor.moes_radiator_actuator_2_position
     - sensor.moes_radiator_actuator_3_position
     - binary_sensor.kitchen_floor_relay
+    - sensor.kitchen_floor_relay_fake
     # Entrance Ring
     - binary_sensor.entrance_ring_button
     # Energy Meter
