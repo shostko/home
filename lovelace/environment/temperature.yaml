@@ -48,6 +48,8 @@ cards:
         title: Кухня
         hours_to_show: 24
         entities:
+          - entity: sensor.kitchen_floor_temp
+            name: Пол
           - entity: sensor.xiaomi_mijia_cb15_temperature
             name: Датчик
           - entity: sensor.xiaomi_mijia_a810_temperature_2

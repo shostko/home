@@ -78,6 +78,19 @@ cards:
       - type: thermostat
         name: ' '
         entity: climate.moes_radiator_actuator_3_climate
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: entity
+        name: Тёплый пол
+        entity: binary_sensor.kitchen_floor_relay
+      - type: thermostat
+        name: ' '
+        entity: climate.lytko_kitchen
+      - type: entities
+        entities: []
+        footer:
+            type: graph
+            entity: sensor.kitchen_floor_temp
   - type: entities
     title: Фильтры
     entities:

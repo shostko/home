@@ -1,0 +1,123 @@
+kitchen_floor:
+
+  sensor:
+    - name: "Kitchen Floor Temp"
+      unique_id: kitchen_floor_temp
+      platform: mqtt
+      state_topic: "climate/lytko/10763110/state"
+      value_template: "{{ value_json.temp }}"
+      availability_topic: "climate/lytko/10763110/available"
+      payload_available: "online"
+      payload_not_available: "offline"
+      device_class: "temperature"
+      unit_of_measurement: "°C"
+
+  binary_sensor:
+    - name: "Kitchen Floor Relay"
+      unique_id: kitchen_floor_relay
+      platform: mqtt
+      state_topic: "climate/lytko/10763110/state"
+      value_template: "{{ value_json.relay }}"
+      payload_on: "1"
+      payload_off: "0"
+      availability_topic: "climate/lytko/10763110/available"
+      payload_available: "online"
+      payload_not_available: "offline"
+      device_class: "heat"
+    - platform: tod
+      name: kitchen_floor_on_morning
+      after: '08:00'
+      before: '10:00'
+    - platform: tod
+      name: kitchen_floor_on_day
+      after: '12:00'
+      before: '13:00'
+    - platform: tod
+      name: kitchen_floor_on_evening
+      after: '17:30'
+      before: '19:00'
+
+  automation:
+
+    - alias: Kitchen floor adjust target
+      id: Kitchen floor adjust target
+      trigger:
+        # Запущен HA
+        - platform: homeassistant
+          event: start
+        # Перезагружены автоматизации
+        - platform: event
+          event_type: automation_reloaded
+        # Утреннее включение
+        - platform: state
+          entity_id: binary_sensor.kitchen_floor_on_morning
+          from: 'on'
+          to: 'off'
+        # Утреннее выключение
+        - platform: state
+          entity_id: binary_sensor.kitchen_floor_on_morning
+          from: 'off'
+          to: 'on'
+        # Дневное включение
+        - platform: state
+          entity_id: binary_sensor.kitchen_floor_on_day
+          from: 'on'
+          to: 'off'
+        # Дневное выключение
+        - platform: state
+          entity_id: binary_sensor.kitchen_floor_on_day
+          from: 'off'
+          to: 'on'
+        # Вечернее включение
+        - platform: state
+          entity_id: binary_sensor.kitchen_floor_on_evening
+          from: 'on'
+          to: 'off'
+        # Вечернее выключение
+        - platform: state
+          entity_id: binary_sensor.kitchen_floor_on_evening
+          from: 'off'
+          to: 'on'
+        # Термостат стал доступен
+        - platform: state
+          entity_id: climate.lytko_kitchen
+          from: 'unavailable'
+      condition:
+        # Термостат доступен
+        - "{{ not is_state('climate.lytko_kitchen', 'unavailable') }}"
+      action:
+      - variables: 
+          # Текущая установленная целевая температура
+          current: "{{ state_attr('climate.lytko_kitchen', 'temperature') | float }}"
+          # Необходимая целевая температура
+          target: >-
+            {% if
+              is_state('binary_sensor.kitchen_floor_on_morning', 'on')
+            or
+              is_state('binary_sensor.kitchen_floor_on_day', 'on')
+            or
+              is_state('binary_sensor.kitchen_floor_on_evening', 'on')
+            %}
+              25
+            {% else %}
+              18
+            {% endif %}
+      - choose:
+        - conditions:
+            # Текущая и требуемая целевые температуры отличаются
+            - "{{ current != target }}"
+          sequence:
+            # Установить новую целевую температуру
+            - service: climate.set_temperature
+              target:
+                entity_id: climate.lytko_kitchen
+              data_template:
+                temperature: "{{ target }}"
+            # Отправить сообщение в log
+            - service: notify.log
+              data:
+                title: "*Изменена температура тёплого пола на кухе*"
+                message: |-
+                  Тригер: {{ trigger.description | replace("_","\_") }}
+                  Текущая: _{{ states('sensor.kitchen_floor_temp') | float }}_°C
+                  Целевая: _{{ current }}_°C -> _{{ target }}_°C
