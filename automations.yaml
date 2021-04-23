@@ -1,6 +1,15 @@
 
 # Bedroom
 
+- alias: Bedroom morning music
+  id: Bedroom morning music
+  trigger:
+    - platform: time
+      at: "08:00:00"
+  action:
+    - service: script.turn_on
+      entity_id: script.good_morning
+
 - alias: Toggle Bedroom Mirror with Switch
   id: Toggle Bedroom Mirror with Switch
   trigger:

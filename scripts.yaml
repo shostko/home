@@ -1,3 +1,42 @@
+good_morning:
+  sequence:
+    - choose:
+        - conditions:
+            - condition: not
+              conditions:
+                - condition: state
+                  entity_id: media_player.yandex_station_ff98f02997470e7b4ca9be2f
+                  state: 'playing'
+                - condition: state
+                  entity_id: media_player.yandex_station_ff98f02997470e7b4ca9be2f
+                  state: 'unavailable'
+          sequence:
+            - service: media_player.volume_set
+              entity_id: media_player.yandex_station_ff98f02997470e7b4ca9be2f
+              data:
+                volume_level: 0.0
+            - delay: 2
+            - service: media_player.play_media
+              entity_id: media_player.yandex_station_ff98f02997470e7b4ca9be2f
+              data:
+                media_content_id: Включи плейлист дня
+                media_content_type: command
+            - delay: 5
+            - service: media_player.volume_set
+              entity_id: media_player.yandex_station_ff98f02997470e7b4ca9be2f
+              data:
+                volume_level: 0.1
+            - delay: 3
+            - service: media_player.volume_set
+              entity_id: media_player.yandex_station_ff98f02997470e7b4ca9be2f
+              data:
+                volume_level: 0.2
+            - delay: 3
+            - service: media_player.volume_set
+              entity_id: media_player.yandex_station_ff98f02997470e7b4ca9be2f
+              data:
+                volume_level: 0.3
+
 good_night:
   sequence:
     # Выключить весь свет в спальне
