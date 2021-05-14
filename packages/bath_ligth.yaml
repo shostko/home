@@ -356,7 +356,7 @@ bath_ligth:
           state: 'on'
         # --- temp
         - condition: state
-          entity_id: light.bath_motion_1
+          entity_id: binary_sensor.bath_motion_1
           state: 'off'
         # --- temp
       action:
