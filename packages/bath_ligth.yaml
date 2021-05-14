@@ -332,8 +332,11 @@ bath_ligth:
           to: 'off'
         # Обнаружено движение
         - platform: state
-          entity_id: binary_sensor.bath_motion
-          to: 'on'
+          entity_id: binary_sensor.bath_motion_1
+        # --- temp
+          #to: 'on'
+          to: 'off'
+        # --- temp
         # Включена переменная занятости
         - platform: state
           entity_id: input_boolean.bath_occupied
@@ -351,6 +354,11 @@ bath_ligth:
         - condition: state
           entity_id: light.bath_lights
           state: 'on'
+        # --- temp
+        - condition: state
+          entity_id: light.bath_motion_1
+          state: 'off'
+        # --- temp
       action:
         # (Пере)Запустить таймер
         - service: timer.start
@@ -372,6 +380,11 @@ bath_ligth:
         - platform: state
           entity_id: light.bath_lights
           to: 'off'
+        # --- temp
+        - platform: state
+          entity_id: binary_sensor.bath_motion_1
+          to: 'on'
+        # --- temp
       condition:
         # Таймер включён
         - condition: state
@@ -392,7 +405,7 @@ bath_ligth:
           to: 'on'
         # Обнаружено движение
         - platform: state
-          entity_id: binary_sensor.bath_motion
+          entity_id: binary_sensor.bath_motion_1
           to: 'on'
         # Включена переменная занятости
         - platform: state
@@ -480,7 +493,7 @@ bath_ligth:
       trigger:
         # Обнаружено начало движения
         - platform: state
-          entity_id: binary_sensor.bath_motion
+          entity_id: binary_sensor.bath_motion_1
           to: 'on'
       condition:
         # Дверь закрыта

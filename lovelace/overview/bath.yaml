@@ -43,7 +43,7 @@ cards:
           - entity: binary_sensor.bath_door
             name: Дверь
             show_last_changed: true
-          - entity: binary_sensor.bath_motion
+          - entity: binary_sensor.bath_motion_1
             name: Движение
           - entity: input_boolean.bath_occupied
             name: Занятость
@@ -59,7 +59,7 @@ cards:
       - type: divider
       - type: sensor
         name: Освещенность
-        entity: sensor.bath_motion_illuminance
+        entity: sensor.bath_motion_1_illuminance
   - type: custom:vertical-stack-in-card
     title: Туалет
     cards:

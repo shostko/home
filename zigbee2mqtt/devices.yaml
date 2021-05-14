@@ -74,3 +74,5 @@
   occupancy_timeout: 1
 '0x00158d0001e4be7c':
   friendly_name: Kitchen_Motion_2
+'0x00158d0006692e2a':
+  friendly_name: Bath_Motion_1

@@ -34,7 +34,7 @@ cards:
         title: Ванна
         hours_to_show: 24
         entities:
-          - entity: binary_sensor.bath_motion
+          - entity: binary_sensor.bath_motion_1
             name: движение
           - entity: input_boolean.bath_occupied
             name: занятость

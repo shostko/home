@@ -18,7 +18,7 @@ cards:
             name: Корридор
           - entity: sensor.toilet_motion_illuminance
             name: Туалет
-          - entity: sensor.bath_motion_illuminance
+          - entity: sensor.bath_motion_1_illuminance
             name: Ванна
           - entity: sensor.xiaomi_gateway_illuminance
             name: Прихожая
