@@ -97,7 +97,7 @@ bath_ligth:
     toilet_lights_toggle:
       sequence:
         - choose:
-            # Весь свет в ванной выключен
+            # Весь свет в туалете выключен
             - conditions:
                 - condition: state
                   entity_id: light.toilet_lights
@@ -105,7 +105,7 @@ bath_ligth:
               sequence:
                 # Включить свет
                 - service: script.toilet_lights_turn_on
-          # Любой свет в ванной включен
+          # Любой свет в туалете включен
           default:
             # Выключить весь свет
             - service: script.toilet_lights_turn_off
@@ -156,7 +156,7 @@ bath_ligth:
           data_template: 
             duration: >
               {%- if is_state('input_boolean.toilet_occupied', 'on') -%}
-                01:00:00
+                00:30:00
               {%- elif is_state('binary_sensor.toilet_door', 'on') -%}
                 00:01:00
               {%- else -%}
@@ -240,17 +240,35 @@ bath_ligth:
           entity_id: sensor.xiaomi_wriless_switch_2_action
           to: 'single_both'
       condition:
-        # Недавно не было команды на включение света
-        - condition: state
-          entity_id: script.toilet_lights_turn_on
-          state: 'off'
-        # Туалет не занят
-        - condition: state
-          entity_id: input_boolean.toilet_occupied
-          state: 'off'
+        - condition: or
+          conditions:
+            # Свет выключен
+            - condition: state
+              entity_id: light.toilet_lights
+              state: 'off'
+            - condition: and
+              conditions:
+                # Недавно не было команды на включение света
+                - condition: state
+                  entity_id: script.toilet_lights_turn_on
+                  state: 'off'
+                - condition: or
+                  conditions:
+                    # Туалет не занят
+                    - condition: state
+                      entity_id: input_boolean.toilet_occupied
+                      state: 'off'
+                    # Дверь открыта
+                    - condition: state
+                      entity_id: binary_sensor.toilet_door
+                      state: 'on'
       action:
         # Переключить свет
         - service: script.toilet_lights_toggle
+        # Убрать занятость туалета
+        - service: input_boolean.turn_off
+          target:
+            entity_id: input_boolean.toilet_occupied
 
     - alias: Toilet occupancy force ON
       id: Toilet occupancy force ON
@@ -366,7 +384,7 @@ bath_ligth:
           data_template: 
             duration: >
               {%- if is_state('input_boolean.bath_occupied', 'on') -%}
-                01:00:00
+                00:30:00
               {%- elif is_state('binary_sensor.bath_door', 'on') -%}
                 00:01:00
               {%- else -%}
@@ -454,17 +472,35 @@ bath_ligth:
           entity_id: sensor.xiaomi_wriless_switch_2_action
           to: 'single_both'
       condition:
-        # Недавно не было команды на включение света
-        - condition: state
-          entity_id: script.bath_lights_turn_on
-          state: 'off'
-        # Ванна не занята
-        - condition: state
-          entity_id: input_boolean.bath_occupied
-          state: 'off'
+        - condition: or
+          conditions:
+            # Свет выключен
+            - condition: state
+              entity_id: light.bath_lights
+              state: 'off'
+            - condition: and
+              conditions:
+                # Недавно не было команды на включение света
+                - condition: state
+                  entity_id: script.bath_lights_turn_on
+                  state: 'off'
+                - condition: or
+                  conditions:
+                    # Ванна не занята
+                    - condition: state
+                      entity_id: input_boolean.bath_occupied
+                      state: 'off'
+                    # Дверь открыта
+                    - condition: state
+                      entity_id: binary_sensor.bath_door
+                      state: 'on'
       action:
         # Переключить свет
         - service: script.bath_lights_toggle
+        # Убрать занятость ванной
+        - service: input_boolean.turn_off
+          target:
+            entity_id: input_boolean.bath_occupied
 
     - alias: Bath occupancy force ON
       id: Bath occupancy force ON
