@@ -18,3 +18,20 @@ virtual_motion:
           device_class: motion
           value_template: "{{ is_state('binary_sensor.motion_203e_occupancy', 'on') }}"
           availability_template: "{{ not is_state('binary_sensor.motion_203e_occupancy', 'unavailable') }}"
+        
+        kitchen_motion:
+          unique_id: kitchen_motion
+          friendly_name: "Kitchen Motion"
+          device_class: motion
+          value_template: >-
+            {{ 
+              is_state('binary_sensor.rf_motion_0', 'on')
+            or
+              is_state('binary_sensor.kitchen_motion_2', 'on')
+            }}
+          availability_template: >-
+            {{ 
+              not is_state('binary_sensor.rf_motion_0', 'unavailable')
+            or
+              not is_state('binary_sensor.kitchen_motion_2', 'unavailable')
+            }}
