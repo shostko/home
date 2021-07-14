@@ -74,7 +74,3 @@ cards:
           - entity: input_boolean.toilet_occupied
             name: Занятость
             show_last_changed: true
-      - type: divider
-      - type: sensor
-        name: Освещенность
-        entity: sensor.toilet_motion_illuminance

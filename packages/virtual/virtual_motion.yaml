@@ -1,0 +1,20 @@
+virtual_motion:
+
+  binary_sensor:
+  
+    - platform: template
+      sensors:
+
+        entrance_motion:
+          unique_id: entrance_motion
+          friendly_name: "Entrance Motion"
+          device_class: motion
+          value_template: "{{ is_state('binary_sensor.motion_576d_occupancy', 'on') }}"
+          availability_template: "{{ not is_state('binary_sensor.motion_576d_occupancy', 'unavailable') }}"
+        
+        toilet_motion:
+          unique_id: toilet_motion
+          friendly_name: "Toilet Motion"
+          device_class: motion
+          value_template: "{{ is_state('binary_sensor.motion_203e_occupancy', 'on') }}"
+          availability_template: "{{ not is_state('binary_sensor.motion_203e_occupancy', 'unavailable') }}"
