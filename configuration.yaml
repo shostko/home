@@ -14,6 +14,11 @@ homeassistant:
   customize: !include customize.yaml
   packages: !include_dir_merge_named packages
 
+http: 
+  use_x_forwarded_for: true 
+  trusted_proxies: 
+    - 172.30.33.0/24
+
 # Text to speech
 #tts:
 #  - platform: google_translate
