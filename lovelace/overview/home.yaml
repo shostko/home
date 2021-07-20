@@ -12,6 +12,8 @@ badges:
     name: Солнце
   - entity: binary_sensor.rpi_power_status
     name: Raspberry
+  - entity: sensor.cert_expiry_timestamp
+    name: Cert
   - entity: sensor.hacs
     name: HACS
 cards:
