@@ -1,0 +1,15 @@
+title: Будильник
+id: alarm
+path: alarm
+icon: mdi:alarm
+cards:
+  - type: entities
+    title: Спальня - Алиса
+    show_header_toggle: false
+    entities:
+      - entity: input_boolean.bedroom_alarm_enabled
+        name: Вкл/Выкл
+      - entity: input_datetime.bedroom_alarm_time
+        name: Время
+      - entity: input_number.bedroom_alarm_skip
+        name: Пропуски

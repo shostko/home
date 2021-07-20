@@ -1,0 +1,3 @@
+title: Предпочтения
+views:
+  - !include prefs/alarm.yaml

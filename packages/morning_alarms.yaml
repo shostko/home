@@ -1,0 +1,47 @@
+morning_alarms:
+
+  input_boolean:
+
+    bedroom_alarm_enabled:
+      name: Bedroom Alarm
+      icon: mdi:alarm
+    
+  input_datetime:
+  
+    bedroom_alarm_time:
+      name: Bedroom Alarm Time
+      has_time: true
+
+  input_number:
+
+    bedroom_alarm_skip:
+      name: Bedroom Alarm Skip
+      icon: mdi:debug-step-over
+      min: 0
+      max: 7
+      step: 1
+      mode: box
+    
+  automation:
+
+    - alias: 'Bedroom Alarm: Turn-On Music'
+      id: 'Bedroom Alarm: Turn-On Music'
+      trigger:
+        - platform: time
+          at: input_datetime.bedroom_alarm_time
+      condition:
+        - condition: state
+          entity_id: input_boolean.bedroom_alarm_enabled
+          state: 'on'
+      action:
+        - choose:
+            - conditions:
+                - condition: numeric_state
+                  entity_id: input_number.bedroom_alarm_skip
+                  above: 0
+              sequence:
+                - service: input_number.decrement
+                  entity_id: input_number.bedroom_alarm_skip
+          default:
+            - service: script.turn_on
+              entity_id: script.good_morning

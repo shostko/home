@@ -46,6 +46,13 @@ lovelace:
       icon: mdi:android-studio
       show_in_sidebar: true
       require_admin: true
+    lovelace-prefs:
+      mode: yaml
+      filename: lovelace/prefs.yaml
+      title: Preferences
+      icon: mdi:account-cog-outline
+      show_in_sidebar: true
+      require_admin: false
 
 automation: !include automations.yaml
 script: !include scripts.yaml
