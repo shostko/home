@@ -1,14 +1,26 @@
 
-# Bedroom
+# Aqua
 
-- alias: Bedroom morning music
-  id: Bedroom morning music
+- alias: Turn on auqua compressor
+  id: Turn on auqua compressor
   trigger:
-    - platform: time
-      at: "08:00:00"
+    - platform: time_pattern
+      minutes: "10"
   action:
-    - service: script.turn_on
-      entity_id: script.good_morning
+    - service: switch.turn_on
+      entity_id: switch.blitzwoolf_socket_1
+
+- alias: Turn off auqua compressor
+  id: Turn off auqua compressor
+  trigger:
+    - platform: time_pattern
+      minutes: "30"
+  action:
+    - service: switch.turn_off
+      entity_id: switch.blitzwoolf_socket_1
+
+
+# Bedroom
 
 - alias: Toggle Bedroom Mirror with Switch
   id: Toggle Bedroom Mirror with Switch
