@@ -12,13 +12,13 @@ from homeassistant.helpers import entityfilter
 from .const import (
     DOMAIN, CONFIG, DATA_CONFIG, CONF_ENTITY_CONFIG, CONF_FILTER, CONF_ROOM, CONF_TYPE,
     CONF_ENTITY_PROPERTIES, CONF_ENTITY_PROPERTY_ENTITY, CONF_ENTITY_PROPERTY_ATTRIBUTE, CONF_ENTITY_PROPERTY_TYPE,
-    CONF_CHANNEL_SET_VIA_MEDIA_CONTENT_ID, CONF_RELATIVE_VOLUME_ONLY, CONF_ENTITY_RANGE, CONF_ENTITY_RANGE_MAX, 
+    CONF_CHANNEL_SET_VIA_MEDIA_CONTENT_ID, CONF_RELATIVE_VOLUME_ONLY, CONF_ENTITY_RANGE, CONF_ENTITY_RANGE_MAX,
     CONF_ENTITY_RANGE_MIN, CONF_ENTITY_RANGE_PRECISION, CONF_ENTITY_MODE_MAP,
     CONF_SETTINGS, CONF_PRESSURE_UNIT, PRESSURE_UNIT_MMHG, PRESSURE_UNITS_TO_YANDEX_UNITS,
     CONF_NOTIFIER, CONF_SKILL_OAUTH_TOKEN, CONF_SKILL_ID, CONF_NOTIFIER_USER_ID, NOTIFIER_ENABLED)
 from .helpers import Config
 from .http import async_register_http
-from .notifier import setup_notification
+from .notifier import async_setup_notifier
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -46,16 +46,18 @@ ENTITY_SCHEMA = vol.Schema({
 })
 
 NOTIFIER_SCHEMA = vol.Schema({
-    vol.Optional(CONF_SKILL_OAUTH_TOKEN): cv.string,
-    vol.Optional(CONF_SKILL_ID): cv.string,
-    vol.Optional(CONF_NOTIFIER_USER_ID): cv.string,
+    vol.Required(CONF_SKILL_OAUTH_TOKEN): cv.string,
+    vol.Required(CONF_SKILL_ID): cv.string,
+    vol.Required(CONF_NOTIFIER_USER_ID): cv.string,
 }, extra=vol.PREVENT_EXTRA)
 
+
 def pressure_unit_validate(unit):
-    if not unit in PRESSURE_UNITS_TO_YANDEX_UNITS:
+    if unit not in PRESSURE_UNITS_TO_YANDEX_UNITS:
         raise vol.Invalid(f'Pressure unit "{unit}" is not supported')
 
     return unit
+
 
 SETTINGS_SCHEMA = vol.Schema({
     vol.Optional(CONF_PRESSURE_UNIT, default=PRESSURE_UNIT_MMHG): vol.Schema(
@@ -65,7 +67,7 @@ SETTINGS_SCHEMA = vol.Schema({
 
 YANDEX_SMART_HOME_SCHEMA = vol.All(
     vol.Schema({
-        vol.Optional(CONF_NOTIFIER, default={}): NOTIFIER_SCHEMA,
+        vol.Optional(CONF_NOTIFIER, default=[]): vol.All(cv.ensure_list, [NOTIFIER_SCHEMA]),
         vol.Optional(CONF_SETTINGS, default={}): SETTINGS_SCHEMA,
         vol.Optional(CONF_FILTER, default={}): entityfilter.FILTER_SCHEMA,
         vol.Optional(CONF_ENTITY_CONFIG, default={}): {cv.entity_id: ENTITY_SCHEMA},
@@ -78,7 +80,6 @@ CONFIG_SCHEMA = vol.Schema({
 
 async def async_setup(hass: HomeAssistant, yaml_config: Dict[str, Any]):
     """Activate Yandex Smart Home component."""
-    
     hass.data[DOMAIN] = {}
     hass.data[DOMAIN][CONFIG] = yaml_config.get(DOMAIN, {})
     hass.data[DOMAIN][DATA_CONFIG] = Config(
@@ -86,8 +87,7 @@ async def async_setup(hass: HomeAssistant, yaml_config: Dict[str, Any]):
         should_expose=hass.data[DOMAIN][CONFIG].get(CONF_FILTER),
         entity_config=hass.data[DOMAIN][CONFIG].get(CONF_ENTITY_CONFIG)
     )
-    hass.data[DOMAIN][NOTIFIER_ENABLED] = False
     async_register_http(hass)
-    setup_notification(hass)
+    hass.data[DOMAIN][NOTIFIER_ENABLED] = await async_setup_notifier(hass)
 
     return True

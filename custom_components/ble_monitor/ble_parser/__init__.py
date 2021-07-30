@@ -1,6 +1,5 @@
 """Parser for BLE advertisements used by Passive BLE monitor integration."""
 import logging
-import subprocess
 
 from .atc import parse_atc
 from .brifit import parse_brifit
@@ -11,6 +10,7 @@ from .inode import parse_inode
 from .xiaomi import parse_xiaomi
 from .qingping import parse_qingping
 from .ruuvitag import parse_ruuvitag
+from .teltonika import parse_teltonika
 from .thermoplus import parse_thermoplus
 
 _LOGGER = logging.getLogger(__name__)
@@ -70,6 +70,10 @@ def ble_parser(self, data):
                 elif uuid16 == 0xFEAA:  # UUID16 = Ruuvitag V2/V4
                     sensor_data = parse_ruuvitag(self, adstruct, mac, rssi)
                     break
+                elif uuid16 == 0x2A6E or uuid16 == 0x2A6F:  # UUID16 = Teltonika
+                    # Teltonika can contain multiple sevice data payloads in one advertisement
+                    sensor_data = parse_teltonika(self, data[adpayload_start:], mac, rssi)
+                    break
             elif adstuct_type == 0xFF:
                 # AD type 'Manufacturer Specific Data' with company identifier
                 # https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers/
@@ -81,8 +85,21 @@ def ble_parser(self, data):
                 if adstruct[0] == 0x15 and (comp_id == 0x0010 or comp_id == 0x0011):  # Thermoplus
                     sensor_data = parse_thermoplus(self, adstruct, mac, rssi)
                     break
-                # if adstruct[0] == 0x0A and comp_id == 0xEC88:  # Govee
-                    # sensor_data = parse_govee(self, adstruct, mac, rssi)
+                if adstruct[0] == 0x0A and comp_id == 0xEC88:  # Govee H5051/H5074
+                    sensor_data = parse_govee(self, adstruct, mac, rssi)
+                    break
+                if adstruct[0] == 0x09 and comp_id == 0xEC88:  # Govee H5072/H5075
+                    sensor_data = parse_govee(self, adstruct, mac, rssi)
+                    break
+                if adstruct[0] == 0x09 and comp_id == 0x0001:  # Govee H5101/H5102/H5177
+                    sensor_data = parse_govee(self, adstruct, mac, rssi)
+                    break
+                if adstruct[0] == 0x0C and comp_id == 0x0001:  # Govee H5178
+                    sensor_data = parse_govee(self, adstruct, mac, rssi)
+                    break
+                if adstruct[0] == 0x0C and comp_id == 0x8801:  # Govee H5179
+                    sensor_data = parse_govee(self, adstruct, mac, rssi)
+                    break
                 if comp_id == 0x0499:  # Ruuvitag V3/V5
                     sensor_data = parse_ruuvitag(self, adstruct, mac, rssi)
                     break
@@ -92,12 +109,9 @@ def ble_parser(self, data):
                 if adstruct[0] == 0x0E and adstruct[3] == 0x82:  # iNode
                     sensor_data = parse_inode(self, adstruct, mac, rssi)
                     break
-            elif adstuct_type > 0x3D:
-                # AD type not standard
+            else:
                 if self.report_unknown == "Other":
                     _LOGGER.info("Unknown advertisement received: %s", data.hex())
-                sensor_data = None
-            else:
                 sensor_data = None
         adpayload_size -= adstuct_size
         adpayload_start += adstuct_size
@@ -113,22 +127,3 @@ def ble_parser(self, data):
         tracker_data = None
 
     return sensor_data, tracker_data
-
-
-def hci_get_mac(interface_list=[0]):
-    # Get dict of available bluetooth interfaces, returns hci and mac
-    btaddress_dict = {}
-    output = subprocess.run(["hciconfig"], stdout=subprocess.PIPE).stdout.decode("utf-8")
-
-    for interface in interface_list:
-        hci_id = "hci{}".format(interface)
-        try:
-            btaddress_dict[interface] = (
-                output.split("{}:".format(hci_id))[1]
-                .split("BD Address: ")[1]
-                .split(" ")[0]
-                .strip()
-            )
-        except IndexError:
-            pass
-    return btaddress_dict

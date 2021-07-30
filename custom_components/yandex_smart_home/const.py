@@ -19,6 +19,8 @@ from homeassistant.components import (
     vacuum,
     water_heater
 )
+
+
 DOMAIN = 'yandex_smart_home'
 
 CONFIG = 'yaml_config'
@@ -42,12 +44,13 @@ CONF_ENTITY_RANGE_MAX = 'max'
 CONF_ENTITY_RANGE_PRECISION = 'precision'
 CONF_ENTITY_MODE_MAP = 'modes'
 
-#notifier
+# Notifier
 CONF_NOTIFIER = 'notifier'
 CONF_SKILL_OAUTH_TOKEN = 'oauth_token'
 CONF_SKILL_ID = 'skill_id'
-CONF_NOTIFIER_USER_ID = 'user_id'  
-NOTIFIER_ENABLED = 'notifier_enabled'    
+CONF_NOTIFIER_USER_ID = 'user_id'
+NOTIFIER_ENABLED = 'notifier_enabled'
+NOTIFIERS = 'notifiers'
 
 # https://yandex.ru/dev/dialogs/alice/doc/smart-home/concepts/device-types.html/
 PREFIX_TYPES = 'devices.types.'
@@ -75,10 +78,16 @@ TYPE_IRON = PREFIX_TYPES + 'iron'
 TYPE_SENSOR = PREFIX_TYPES + 'sensor'
 TYPE_OTHER = PREFIX_TYPES + 'other'
 
+# Integration xiaomi_airpurifier
+ATTR_TARGET_HUMIDITY = 'target_humidity'
+DOMAIN_XIAOMI_AIRPURIFIER = 'xiaomi_miio_airpurifier'
+MODEL_PREFIX_XIAOMI_AIRPURIFIER = 'zhimi.'
+SERVICE_FAN_SET_TARGET_HUMIDITY = 'fan_set_target_humidity'
+
 # Error codes
 # https://yandex.ru/dev/dialogs/alice/doc/smart-home/concepts/response-codes-docpage/
-ERR_DEVICE_UNREACHABLE = "DEVICE_UNREACHABLE"
-ERR_DEVICE_NOT_FOUND = "DEVICE_NOT_FOUND"
+ERR_DEVICE_UNREACHABLE = 'DEVICE_UNREACHABLE'
+ERR_DEVICE_NOT_FOUND = 'DEVICE_NOT_FOUND'
 ERR_INTERNAL_ERROR = 'INTERNAL_ERROR'
 ERR_INVALID_ACTION = 'INVALID_ACTION'
 ERR_INVALID_VALUE = 'INVALID_VALUE'
@@ -117,6 +126,9 @@ PRESSURE_TO_PASCAL = {
     PRESSURE_UNIT_BAR: 100000,
     PRESSURE_UNIT_MBAR: 0.01
 }
+
+# Additional states
+STATE_NONE = 'none'
 
 # Multiplier to convert from pascal to given pressure unit
 PRESSURE_FROM_PASCAL = {
