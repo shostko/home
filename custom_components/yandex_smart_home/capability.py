@@ -2,8 +2,9 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Optional
+from typing import Any, Optional, Type
 
+from homeassistant.core import HomeAssistant, State
 from homeassistant.components import (
     climate,
     cover,
@@ -44,7 +45,7 @@ from .const import (
     DOMAIN,
     ERR_INVALID_VALUE,
     ERR_NOT_SUPPORTED_IN_CURRENT_MODE,
-    CONF_CHANNEL_SET_VIA_MEDIA_CONTENT_ID, CONF_RELATIVE_VOLUME_ONLY,
+    CONF_CHANNEL_SET_VIA_MEDIA_CONTENT_ID,
     CONF_ENTITY_RANGE_MAX, CONF_ENTITY_RANGE_MIN,
     CONF_ENTITY_RANGE_PRECISION, CONF_ENTITY_RANGE,
     CONF_ENTITY_MODE_MAP, NOTIFIER_ENABLED,
@@ -62,7 +63,7 @@ CAPABILITIES_RANGE = PREFIX_CAPABILITIES + 'range'
 CAPABILITIES_MODE = PREFIX_CAPABILITIES + 'mode'
 CAPABILITIES_COLOR_SETTING = PREFIX_CAPABILITIES + 'color_setting'
 
-CAPABILITIES = []
+CAPABILITIES: list[Type[_Capability]] = []
 
 
 def register_capability(capability):
@@ -78,7 +79,7 @@ class _Capability:
     instance = ''
     reportable = False
 
-    def __init__(self, hass, state, entity_config):
+    def __init__(self, hass: HomeAssistant, state: State, entity_config: dict[str, Any]):
         """Initialize a trait for a state."""
         self.hass = hass
         self.state = state
@@ -86,8 +87,8 @@ class _Capability:
         self.retrievable = True
         self.reportable = hass.data[DOMAIN][NOTIFIER_ENABLED]
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         raise NotImplementedError
 
     def description(self):
@@ -150,16 +151,15 @@ class OnOffCapability(_Capability):
             if not self.state.attributes.get(ATTR_SUPPORTED_FEATURES) & cover.SUPPORT_SET_POSITION:
                 self.retrievable = False
 
-    @staticmethod
-    def get_water_heater_operation(required_mode, operations_list):
-        for operation in OnOffCapability.water_heater_operations[required_mode]:
+    def get_water_heater_operation(self, required_mode, operations_list):
+        for operation in self.water_heater_operations[required_mode]:
             if operation in operations_list:
                 return operation
+
         return None
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         if domain == media_player.DOMAIN:
             return features & media_player.SUPPORT_TURN_ON and features & media_player.SUPPORT_TURN_OFF
 
@@ -170,9 +170,9 @@ class OnOffCapability(_Capability):
 
         if domain == water_heater.DOMAIN and features & water_heater.SUPPORT_OPERATION_MODE:
             operation_list = attributes.get(water_heater.ATTR_OPERATION_LIST)
-            if OnOffCapability.get_water_heater_operation(STATE_ON, operation_list) is None:
+            if self.get_water_heater_operation(STATE_ON, operation_list) is None:
                 return False
-            if OnOffCapability.get_water_heater_operation(STATE_OFF, operation_list) is None:
+            if self.get_water_heater_operation(STATE_OFF, operation_list) is None:
                 return False
             return True
 
@@ -213,7 +213,7 @@ class OnOffCapability(_Capability):
         elif self.state.domain == water_heater.DOMAIN:
             operation_mode = self.state.attributes.get(water_heater.ATTR_OPERATION_MODE)
             operation_list = self.state.attributes.get(water_heater.ATTR_OPERATION_LIST)
-            return operation_mode != OnOffCapability.get_water_heater_operation(STATE_OFF, operation_list)
+            return operation_mode != self.get_water_heater_operation(STATE_OFF, operation_list)
         else:
             return self.state.state != STATE_OFF
 
@@ -258,12 +258,25 @@ class OnOffCapability(_Capability):
             service = SERVICE_SET_OPERATION_MODE
             if state['value']:
                 service_data[water_heater.ATTR_OPERATION_MODE] = \
-                    OnOffCapability.get_water_heater_operation(STATE_ON, operation_list)
+                    self.get_water_heater_operation(STATE_ON, operation_list)
             else:
                 service_data[water_heater.ATTR_OPERATION_MODE] = \
-                    OnOffCapability.get_water_heater_operation(STATE_OFF, operation_list)
+                    self.get_water_heater_operation(STATE_OFF, operation_list)
         else:
             service = SERVICE_TURN_ON if state['value'] else SERVICE_TURN_OFF
+
+        if self.state.domain == climate.DOMAIN and state['value']:
+            hvac_modes = self.state.attributes.get(climate.ATTR_HVAC_MODES)
+            for mode in (climate.const.HVAC_MODE_HEAT_COOL,
+                         climate.const.HVAC_MODE_AUTO,
+                         climate.const.HVAC_MODE_HEAT,
+                         climate.const.HVAC_MODE_COOL):
+                if mode not in hvac_modes:
+                    continue
+
+                service_data[climate.ATTR_HVAC_MODE] = mode
+                service = climate.SERVICE_SET_HVAC_MODE
+                break
 
         await self.hass.services.async_call(service_domain, service, service_data,
                                             blocking=self.state.domain != script.DOMAIN, context=data.context)
@@ -291,9 +304,8 @@ class MuteCapability(_ToggleCapability):
 
     instance = 'mute'
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         return domain == media_player.DOMAIN and features & media_player.SUPPORT_VOLUME_MUTE
 
     def get_value(self):
@@ -326,9 +338,8 @@ class PauseCapability(_ToggleCapability):
 
     instance = 'pause'
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         if domain == media_player.DOMAIN:
             return features & media_player.SUPPORT_PAUSE and features & media_player.SUPPORT_PLAY
         elif domain == vacuum.DOMAIN:
@@ -382,9 +393,8 @@ class OscillationCapability(_ToggleCapability):
 
     instance = 'oscillation'
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         return domain == fan.DOMAIN and features & fan.SUPPORT_OSCILLATE
 
     def get_value(self):
@@ -413,40 +423,94 @@ class _ModeCapability(_Capability):
     """
 
     type = CAPABILITIES_MODE
-    modes_map = {}
+    modes_map_default: dict[str, list[str]] = {}
+    modes_map_index_fallback: dict[int, str] = {}
 
-    def get_modes_map_from_config(self):
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
+        return bool(self.supported_yandex_modes)
+
+    def parameters(self) -> dict[str, Any]:
+        """Return parameters for a devices request."""
+
+        return {
+            'instance': self.instance,
+            'modes': [{'value': v} for v in self.supported_yandex_modes],
+        }
+
+    @property
+    def supported_yandex_modes(self):
+        """Returns list of supported Yandex modes for this entity."""
+        modes = []
+
+        for ha_value in self.state.attributes.get(self.modes_list_attribute, []):
+            value = self.get_yandex_mode_by_ha_mode(ha_value)
+            if value is not None and value not in modes:
+                modes.append(value)
+
+        return modes
+
+    @property
+    def modes_map(self) -> dict[str, list[str]]:
+        """Return modes mapping between Yandex and HA."""
         if CONF_ENTITY_MODE_MAP in self.entity_config:
             modes = self.entity_config.get(CONF_ENTITY_MODE_MAP)
             if self.instance in modes:
                 return modes.get(self.instance)
 
+        return self.modes_map_default
+
+    @property
+    def modes_list_attribute(self) -> Optional[str]:
+        """Return HA attribute contains modes list for this entity."""
+        raise NotImplementedError
+
+    @property
+    def state_value_attribute(self) -> Optional[str]:
+        """Return HA attribute for state of this entity."""
         return None
 
-    def get_yandex_mode_by_ha_mode(self, ha_mode):
-        modes = self.get_modes_map_from_config()
-        if modes is None:
-            modes = self.modes_map
-
-        for yandex_mode, names in modes.items():
+    def get_yandex_mode_by_ha_mode(self, ha_mode: str) -> Optional[str]:
+        for yandex_mode, names in self.modes_map.items():
             lower_names = [str(n).lower() for n in names]
             if str(ha_mode).lower() in lower_names:
                 return yandex_mode
 
+        if self.modes_map_index_fallback:
+            available_modes = self.state.attributes.get(self.modes_list_attribute, [])
+            try:
+                return self.modes_map_index_fallback[available_modes.index(ha_mode)]
+            except (IndexError, ValueError, KeyError):
+                pass
+
         return None
 
-    def get_ha_mode_by_yandex_mode(self, yandex_mode, available_modes):
-        modes = self.get_modes_map_from_config()
-        if modes is None:
-            modes = self.modes_map
+    def get_ha_mode_by_yandex_mode(self, yandex_mode: str, available_modes: Optional[list[str]] = None) -> str:
+        if available_modes is None:
+            available_modes = self.state.attributes.get(self.modes_list_attribute, [])
 
-        ha_modes = modes[yandex_mode]
+        ha_modes = self.modes_map.get(yandex_mode, [])
         for ha_mode in ha_modes:
             for am in available_modes:
                 if str(am).lower() == str(ha_mode).lower():
                     return am
 
-        return None
+        for ha_idx, yandex_mode_idx in self.modes_map_index_fallback.items():
+            if yandex_mode_idx == yandex_mode:
+                return available_modes[ha_idx]
+
+        raise SmartHomeError(
+            ERR_INVALID_VALUE,
+            f'Unknown mode "{yandex_mode}" for {self.state.entity_id} ({self.instance})'
+        )
+
+    def get_value(self):
+        """Return the state value of this capability for this entity."""
+        ha_mode = self.state.state
+        if self.state_value_attribute:
+            ha_mode = self.state.attributes.get(self.state_value_attribute)
+
+        return self.get_yandex_mode_by_ha_mode(ha_mode)
 
 
 @register_capability
@@ -454,7 +518,7 @@ class ThermostatCapability(_ModeCapability):
     """Thermostat functionality"""
 
     instance = 'thermostat'
-    modes_map = {
+    modes_map_default = {
         'heat': [climate.const.HVAC_MODE_HEAT],
         'cool': [climate.const.HVAC_MODE_COOL],
         'auto': [climate.const.HVAC_MODE_HEAT_COOL],
@@ -462,59 +526,26 @@ class ThermostatCapability(_ModeCapability):
         'fan_only': [climate.const.HVAC_MODE_FAN_ONLY],
     }
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         if domain == climate.DOMAIN:
-            operation_list = attributes.get(climate.ATTR_HVAC_MODES)
-            for operation in operation_list:
-                if operation in ThermostatCapability.modes_map:
-                    return True
+            return super().supported(domain, features, entity_config, attributes)
+
         return False
 
-    def parameters(self):
-        """Return parameters for a devices request."""
-        operation_list = self.state.attributes.get(climate.ATTR_HVAC_MODES)
-        modes = []
-        added = []
-
-        for ha_value in operation_list:
-            value = self.get_yandex_mode_by_ha_mode(ha_value)
-            if value is not None and value not in added:
-                modes.append({'value': value})
-                added.append(value)
-
-        return {
-            'instance': self.instance,
-            'modes': modes,
-            'ordered': False
-        }
-
-    def get_value(self):
-        """Return the state value of this capability for this entity."""
-        operation = self.state.state
-
-        if operation is not None:
-            yandex_value = self.get_yandex_mode_by_ha_mode(operation)
-            if yandex_value is not None:
-                return yandex_value
-
-        modes = self.parameters()['modes']
-
-        return modes[0]['value'] if len(modes) > 0 else 'auto'
+    @property
+    def modes_list_attribute(self) -> Optional[str]:
+        """Return HA attribute contains modes list for this entity."""
+        if self.state.domain == climate.DOMAIN:
+            return climate.ATTR_HVAC_MODES
 
     async def set_state(self, data, state):
         """Set device state."""
-        value = self.get_ha_mode_by_yandex_mode(state['value'], self.state.attributes.get(climate.ATTR_HVAC_MODES))
-
-        if value is None:
-            raise SmartHomeError(ERR_INVALID_VALUE, 'Unacceptable value')
-
         await self.hass.services.async_call(
             climate.DOMAIN,
             climate.SERVICE_SET_HVAC_MODE, {
                 ATTR_ENTITY_ID: self.state.entity_id,
-                climate.ATTR_HVAC_MODE: value
+                climate.ATTR_HVAC_MODE: self.get_ha_mode_by_yandex_mode(state['value'])
             }, blocking=True, context=data.context)
 
 
@@ -523,64 +554,39 @@ class SwingCapability(_ModeCapability):
     """Swing functionality"""
 
     instance = 'swing'
-    modes_map = {
+    modes_map_default = {
         'vertical': [climate.const.SWING_VERTICAL],
         'horizontal': [climate.const.SWING_HORIZONTAL],
         'stationary': [climate.const.SWING_OFF],
         'auto': [climate.const.SWING_BOTH]
     }
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
-        if domain == climate.DOMAIN:
-            return features & climate.SUPPORT_SWING_MODE
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
+        if domain == climate.DOMAIN and features & climate.SUPPORT_SWING_MODE:
+            return super().supported(domain, features, entity_config, attributes)
 
         return False
 
-    def parameters(self):
-        """Return parameters for a devices request."""
-        operation_list = self.state.attributes.get(climate.ATTR_SWING_MODES)
-        modes = []
-        added = []
+    @property
+    def modes_list_attribute(self) -> Optional[str]:
+        """Return HA attribute contains modes list for this entity."""
+        if self.state.domain == climate.DOMAIN:
+            return climate.ATTR_SWING_MODES
 
-        for ha_value in operation_list:
-            value = self.get_yandex_mode_by_ha_mode(ha_value)
-            if value is not None and value not in added:
-                modes.append({'value': value})
-                added.append(value)
-
-        return {
-            'instance': self.instance,
-            'modes': modes,
-            'ordered': False
-        }
-
-    def get_value(self):
-        """Return the state value of this capability for this entity."""
-        operation = self.state.attributes.get(climate.ATTR_SWING_MODE)
-
-        if operation is not None:
-            yandex_value = self.get_yandex_mode_by_ha_mode(operation)
-            if yandex_value is not None:
-                return yandex_value
-
-        modes = self.parameters()['modes']
-
-        return modes[0]['value'] if len(modes) > 0 else 'auto'
+    @property
+    def state_value_attribute(self) -> Optional[str]:
+        """Return HA attribute for state of this entity."""
+        if self.state.domain == climate.DOMAIN:
+            return climate.ATTR_SWING_MODE
 
     async def set_state(self, data, state):
         """Set device state."""
-        value = self.get_ha_mode_by_yandex_mode(state['value'], self.state.attributes.get(climate.ATTR_SWING_MODES))
-
-        if value is None:
-            raise SmartHomeError(ERR_INVALID_VALUE, 'Unacceptable value')
-
         await self.hass.services.async_call(
             climate.DOMAIN,
             climate.SERVICE_SET_SWING_MODE, {
                 ATTR_ENTITY_ID: self.state.entity_id,
-                climate.ATTR_SWING_MODE: value
+                climate.ATTR_SWING_MODE: self.get_ha_mode_by_yandex_mode(state['value'])
             }, blocking=True, context=data.context)
 
 
@@ -589,10 +595,7 @@ class ProgramCapability(_ModeCapability):
     """Program functionality"""
 
     instance = 'program'
-
-    # Because there is no 1 to 1 compatibility between default humidifier modes and yandex modes,
-    # we just chose what is closest or at least not too confusing
-    modes_map = {
+    modes_map_default = {
         'normal': [humidifier.const.MODE_NORMAL],
         'eco': [humidifier.const.MODE_ECO],
         'min': [humidifier.const.MODE_AWAY],
@@ -603,9 +606,7 @@ class ProgramCapability(_ModeCapability):
         'auto': [humidifier.const.MODE_AUTO],
         'high': [humidifier.const.MODE_BABY],
     }
-
-    # For custom modes we fallback to its number
-    fallback_program_map = {
+    modes_map_index_fallback = {
         0: 'one',
         1: 'two',
         2: 'three',
@@ -618,83 +619,28 @@ class ProgramCapability(_ModeCapability):
         9: 'ten',
     }
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
-        if domain == humidifier.DOMAIN:
-            return features & humidifier.SUPPORT_MODES
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
+        if domain == humidifier.DOMAIN and features & humidifier.SUPPORT_MODES:
+            return super().supported(domain, features, entity_config, attributes)
 
         return False
 
-    def parameters(self):
-        """Return parameters for a devices request."""
+    @property
+    def modes_list_attribute(self) -> Optional[str]:
+        """Return HA attribute contains modes list for this entity."""
         if self.state.domain == humidifier.DOMAIN:
-            mode_list = self.state.attributes.get(humidifier.ATTR_AVAILABLE_MODES)
-            modes = []
-            for mode in mode_list:
-                value = self.get_yandex_mode_by_ha_mode(mode)
-                if value is not None:
-                    modes.append({'value': value})
-                # If mapping not found in configuration or default map,
-                # enumerate the mode by its position in the mode list
-                else:
-                    mode_index = mode_list.index(mode)
-                    if mode_index <= 10:
-                        modes.append({'value': self.fallback_program_map[mode_index]})
-        else:
-            raise SmartHomeError(ERR_INVALID_VALUE, 'Unsupported domain')
-
-        return {'instance': self.instance, 'modes': modes, 'ordered': False}
-
-    def get_value(self):
-        """Return the state value of this capability for this entity."""
-        if self.state.domain == humidifier.DOMAIN:
-            mode = self.state.attributes.get(humidifier.ATTR_MODE)
-            if mode is not None:
-                ya_mode = self.get_yandex_mode_by_ha_mode(mode)
-                if ya_mode is not None:
-                    return ya_mode
-
-                # Fallback into numeric mode
-                mode_list = self.state.attributes.get(humidifier.ATTR_AVAILABLE_MODES)
-                mode_index = mode_list.index(mode)
-                if mode_index <= 10:
-                    return self.fallback_program_map[mode_index]
-        else:
-            raise SmartHomeError(ERR_INVALID_VALUE, 'Unsupported domain')
-
-        return 'auto'
+            return humidifier.ATTR_AVAILABLE_MODES
 
     async def set_state(self, data, state):
         """Set device state."""
-        value = None
-        if self.state.domain == humidifier.DOMAIN:
-            service = humidifier.SERVICE_SET_MODE
-            attr = humidifier.ATTR_MODE
-
-            mode_list = self.state.attributes.get(humidifier.ATTR_AVAILABLE_MODES)
-            try:
-                value = self.get_ha_mode_by_yandex_mode(state['value'], mode_list)
-            except KeyError:
-                pass
-
-            if value is None:
-                for humidifier_value, yandex_value in self.fallback_program_map.items():
-                    if yandex_value == state['value']:
-                        value = mode_list[humidifier_value]
-                        break
-        else:
-            raise SmartHomeError(ERR_INVALID_VALUE, 'Unsupported domain')
-
-        if value is None or value not in mode_list:
-            raise SmartHomeError(ERR_INVALID_VALUE, 'Unacceptable value')
-
         await self.hass.services.async_call(
-            self.state.domain,
-            service,
-            {ATTR_ENTITY_ID: self.state.entity_id, attr: value},
-            blocking=True,
-            context=data.context,
+            humidifier.DOMAIN,
+            humidifier.SERVICE_SET_MODE, {
+                ATTR_ENTITY_ID: self.state.entity_id,
+                humidifier.ATTR_MODE: self.get_ha_mode_by_yandex_mode(state['value'])
+            },
+            blocking=True, context=data.context,
         )
 
 
@@ -703,67 +649,45 @@ class InputSourceCapability(_ModeCapability):
     """Input Source functionality"""
 
     instance = 'input_source'
-    media_player_source_map = {
-        1: 'one',
-        2: 'two',
-        3: 'three',
-        4: 'four',
-        5: 'five',
-        6: 'six',
-        7: 'seven',
-        8: 'eight',
-        9: 'nine',
-        10: 'ten'
+    modes_map_index_fallback = {
+        0: 'one',
+        1: 'two',
+        2: 'three',
+        3: 'four',
+        4: 'five',
+        5: 'six',
+        6: 'seven',
+        7: 'eight',
+        8: 'nine',
+        9: 'ten'
     }
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
-        return domain == media_player.DOMAIN \
-            and features & media_player.SUPPORT_SELECT_SOURCE \
-            and attributes.get(media_player.ATTR_INPUT_SOURCE_LIST) is not None
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
+        if domain == media_player.DOMAIN and features & media_player.SUPPORT_SELECT_SOURCE:
+            return super().supported(domain, features, entity_config, attributes)
 
-    def parameters(self):
-        """Return parameters for a devices request."""
-        source_list = self.state.attributes.get(media_player.ATTR_INPUT_SOURCE_LIST)
-        modes = []
-        if source_list is not None:
-            for i in range(0, min(len(source_list), 10)):
-                modes.append({'value': self.media_player_source_map[i + 1]})
+        return False
 
-        return {
-            'instance': self.instance,
-            'modes': modes,
-            'ordered': True
-        }
+    @property
+    def modes_list_attribute(self) -> Optional[str]:
+        """Return HA attribute contains modes list for this entity."""
+        if self.state.domain == media_player.DOMAIN:
+            return media_player.ATTR_INPUT_SOURCE_LIST
 
-    def get_value(self):
-        """Return the state value of this capability for this entity."""
-        source = self.state.attributes.get(media_player.ATTR_INPUT_SOURCE)
-        source_list = self.state.attributes.get(media_player.ATTR_INPUT_SOURCE_LIST)
-        if source_list is not None and source in source_list:
-            return self.media_player_source_map[min(source_list.index(source) + 1, 10)]
-
-        return self.media_player_source_map[1]
+    @property
+    def state_value_attribute(self) -> Optional[str]:
+        """Return HA attribute for state of this entity."""
+        if self.state.domain == media_player.DOMAIN:
+            return media_player.ATTR_INPUT_SOURCE
 
     async def set_state(self, data, state):
         """Set device state."""
-        value = None
-        source_list = self.state.attributes.get(media_player.ATTR_INPUT_SOURCE_LIST)
-        for index, yandex_value in self.media_player_source_map.items():
-            if yandex_value == state['value']:
-                if index <= len(source_list):
-                    value = source_list[index - 1]
-                break
-
-        if value is None:
-            raise SmartHomeError(ERR_INVALID_VALUE, 'Unacceptable value')
-
         await self.hass.services.async_call(
             media_player.DOMAIN,
             media_player.SERVICE_SELECT_SOURCE, {
                 ATTR_ENTITY_ID: self.state.entity_id,
-                media_player.const.ATTR_INPUT_SOURCE: value,
+                media_player.const.ATTR_INPUT_SOURCE: self.get_ha_mode_by_yandex_mode(state['value']),
             }, blocking=True, context=data.context)
 
 
@@ -772,7 +696,7 @@ class FanSpeedCapability(_ModeCapability):
     """Fan speed functionality."""
 
     instance = 'fan_speed'
-    modes_map = {
+    modes_map_default = {
         'auto': [climate.const.FAN_AUTO, climate.const.FAN_ON],
         'quiet': [fan.SPEED_OFF, climate.const.FAN_OFF, 'silent', 'level 1'],
         'low': [fan.SPEED_LOW, climate.const.FAN_LOW, 'min', 'level 2'],
@@ -781,94 +705,47 @@ class FanSpeedCapability(_ModeCapability):
         'turbo': [climate.const.FAN_FOCUS, 'max', 'level 5'],
     }
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
-        if domain == climate.DOMAIN:
-            return features & climate.SUPPORT_FAN_MODE
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
+        if domain == climate.DOMAIN and features & climate.SUPPORT_FAN_MODE:
+            return super().supported(domain, features, entity_config, attributes)
         elif domain == fan.DOMAIN:
-            return features & fan.SUPPORT_PRESET_MODE or features & fan.SUPPORT_SET_SPEED
+            if features & fan.SUPPORT_PRESET_MODE or features & fan.SUPPORT_SET_SPEED:
+                return super().supported(domain, features, entity_config, attributes)
 
         return False
 
-    def parameters(self):
-        """Return parameters for a devices request."""
+    @property
+    def modes_list_attribute(self) -> Optional[str]:
+        """Return HA attribute contains modes list for this entity."""
         if self.state.domain == climate.DOMAIN:
-            speed_list = self.state.attributes.get(climate.ATTR_FAN_MODES)
+            return climate.ATTR_FAN_MODES
         elif self.state.domain == fan.DOMAIN:
-            speed_list = self.state.attributes.get(fan.ATTR_PRESET_MODES, []) or \
-                         self.state.attributes.get(fan.ATTR_SPEED_LIST, [])
-        else:
-            speed_list = []
-
-        speeds = []
-        added = []
-        for ha_value in speed_list:
-            value = self.get_yandex_mode_by_ha_mode(ha_value)
-            if value is not None and value not in added:
-                speeds.append({'value': value})
-                added.append(value)
-
-        return {
-            'instance': self.instance,
-            'modes': speeds,
-            'ordered': True
-        }
-
-    def get_ha_by_yandex_value(self, yandex_value):
-        if self.state.domain == climate.DOMAIN:
-            speed_list = self.state.attributes.get(climate.ATTR_FAN_MODES)
-        elif self.state.domain == fan.DOMAIN:
-            speed_list = self.state.attributes.get(fan.ATTR_PRESET_MODES, []) or \
-                         self.state.attributes.get(fan.ATTR_SPEED_LIST, [])
-        else:
-            return None
-
-        return self.get_ha_mode_by_yandex_mode(yandex_value, speed_list)
-
-    def get_value(self):
-        """Return the state value of this capability for this entity."""
-        if self.state.domain == climate.DOMAIN:
-            ha_value = self.state.attributes.get(climate.ATTR_FAN_MODE)
-        elif self.state.domain == fan.DOMAIN:
-            if fan.ATTR_PRESET_MODE in self.state.attributes:
-                ha_value = self.state.attributes.get(fan.ATTR_PRESET_MODE)
+            if self.state.attributes.get(fan.ATTR_PRESET_MODES):
+                return fan.ATTR_PRESET_MODES
             else:
-                ha_value = self.state.attributes.get(fan.ATTR_SPEED)
-        else:
-            ha_value = None
-
-        if ha_value is not None:
-            yandex_value = self.get_yandex_mode_by_ha_mode(ha_value)
-            if yandex_value is not None:
-                return yandex_value
-
-        modes = self.parameters()['modes']
-
-        return modes[0]['value'] if len(modes) > 0 else 'auto'
+                return fan.ATTR_SPEED_LIST
 
     async def set_state(self, data, state):
         """Set device state."""
-        yandex_value = state['value']
-        value = self.get_ha_by_yandex_value(yandex_value)
-        if value is None:
-            raise SmartHomeError(ERR_INVALID_VALUE, f'Unsupported value: {yandex_value} -> {value!r}')
+        value = self.get_ha_mode_by_yandex_mode(state['value'])
 
         if self.state.domain == climate.DOMAIN:
             service = climate.SERVICE_SET_FAN_MODE
             attr = climate.ATTR_FAN_MODE
         elif self.state.domain == fan.DOMAIN:
-            if value in self.state.attributes.get(fan.ATTR_PRESET_MODES, []):
+            if self.modes_list_attribute == fan.ATTR_PRESET_MODES:
                 service = fan.SERVICE_SET_PRESET_MODE
                 attr = fan.ATTR_PRESET_MODE
-            elif value in self.state.attributes.get(fan.ATTR_SPEED_LIST, []):
-                _LOGGER.warning('Usage fan attribute speed_list is deprecated, use attribute preset_modes instead')
+            else:
                 service = fan.SERVICE_SET_SPEED
                 attr = fan.ATTR_SPEED
-            else:
-                raise SmartHomeError(ERR_INVALID_VALUE, f'Unsupported value: {yandex_value} -> {value!r}')
+                _LOGGER.warning('Usage fan attribute "speed_list" is deprecated, use attribute "preset_modes" instead')
         else:
-            raise SmartHomeError(ERR_INVALID_VALUE, f'Unsupported domain: {yandex_value} -> {value!r}')
+            raise SmartHomeError(
+                ERR_INVALID_VALUE,
+                f'Unsupported domain for {self.state.entity_id} ({self.instance})'
+            )
 
         await self.hass.services.async_call(
             self.state.domain,
@@ -895,9 +772,8 @@ class CoverLevelCapability(_RangeCapability):
 
     instance = 'open'
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         if domain == cover.DOMAIN:
             return features & cover.SUPPORT_SET_POSITION
 
@@ -952,9 +828,8 @@ class TemperatureCapability(_RangeCapability):
 
     instance = 'temperature'
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         if domain == water_heater.DOMAIN:
             return features & water_heater.SUPPORT_TARGET_TEMPERATURE
         elif domain == climate.DOMAIN:
@@ -1028,9 +903,8 @@ class HumidityCapability(_RangeCapability):
 
     instance = 'humidity'
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         if domain == humidifier.DOMAIN:
             return True
         elif domain == fan.DOMAIN and \
@@ -1099,9 +973,8 @@ class BrightnessCapability(_RangeCapability):
 
     instance = 'brightness'
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         return domain == light.DOMAIN and (
             features & light.SUPPORT_BRIGHTNESS or
             light.brightness_supported(attributes.get(light.ATTR_SUPPORTED_COLOR_MODES))
@@ -1148,18 +1021,21 @@ class VolumeCapability(_RangeCapability):
 
     def __init__(self, hass, state, config):
         super().__init__(hass, state, config)
-        features = self.state.attributes.get(ATTR_SUPPORTED_FEATURES, 0)
-        self.retrievable = features & media_player.SUPPORT_VOLUME_SET != 0
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
-        return domain == media_player.DOMAIN and (
-                    features & media_player.SUPPORT_VOLUME_STEP or features & media_player.SUPPORT_VOLUME_SET)
+        features = self.state.attributes.get(ATTR_SUPPORTED_FEATURES, 0)
+        self.relative_volume = bool(
+            features & media_player.SUPPORT_VOLUME_STEP and not features & media_player.SUPPORT_VOLUME_SET
+        )
+        self.retrievable = not self.relative_volume
+
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
+        if domain == media_player.DOMAIN:
+            return features & media_player.SUPPORT_VOLUME_STEP or features & media_player.SUPPORT_VOLUME_SET
 
     def parameters(self):
         """Return parameters for a devices request."""
-        if self.is_relative_volume_only():
+        if self.relative_volume:
             return {
                 'instance': self.instance
             }
@@ -1182,12 +1058,6 @@ class VolumeCapability(_RangeCapability):
                 }
             }
 
-    def is_relative_volume_only(self):
-        _LOGGER.debug('CONF_RELATIVE_VOLUME_ONLY: %r' % self.entity_config.get(
-            CONF_RELATIVE_VOLUME_ONLY))
-        return not self.retrievable or self.entity_config.get(
-            CONF_RELATIVE_VOLUME_ONLY)
-
     def get_entity_range_value(self, range_entity, default_values):
         if CONF_ENTITY_RANGE in self.entity_config and range_entity in self.entity_config.get(CONF_ENTITY_RANGE):
             return int(self.entity_config.get(CONF_ENTITY_RANGE).get(range_entity))
@@ -1201,42 +1071,42 @@ class VolumeCapability(_RangeCapability):
 
     def get_value(self):
         """Return the state value of this capability for this entity."""
-        level = self.state.attributes.get(
-            media_player.ATTR_MEDIA_VOLUME_LEVEL)
+        level = self.state.attributes.get(media_player.ATTR_MEDIA_VOLUME_LEVEL)
 
-        if level is None:
-            return 0
-        else:
+        if level is not None:
             return int(level * 100)
 
     async def set_state(self, data, state):
         """Set device state."""
-        set_volume_level = None
-        if 'relative' in state and state['relative']:
-            features = self.state.attributes.get(ATTR_SUPPORTED_FEATURES)
-            if features & media_player.SUPPORT_VOLUME_STEP:
-                if state['value'] > 0:
-                    service = media_player.SERVICE_VOLUME_UP
-                else:
-                    service = media_player.SERVICE_VOLUME_DOWN
-                for i in range(abs(state['value'])):
-                    await self.hass.services.async_call(
-                        media_player.DOMAIN,
-                        service, {
-                            ATTR_ENTITY_ID: self.state.entity_id
-                        }, blocking=True, context=data.context)
-            else:
-                set_volume_level = (self.get_value() + state['value']) / 100
-        else:
-            set_volume_level = state['value'] / 100
+        if self.relative_volume and state.get('relative'):
+            volume_step = self.get_entity_range_value(CONF_ENTITY_RANGE_PRECISION, 1)
 
-        if set_volume_level is not None:
-            await self.hass.services.async_call(
-                media_player.DOMAIN,
-                media_player.SERVICE_VOLUME_SET, {
-                    ATTR_ENTITY_ID: self.state.entity_id,
-                    media_player.const.ATTR_MEDIA_VOLUME_LEVEL: set_volume_level,
-                }, blocking=True, context=data.context)
+            if state['value'] > 0:
+                service = media_player.SERVICE_VOLUME_UP
+            else:
+                service = media_player.SERVICE_VOLUME_DOWN
+
+            for _ in range(volume_step):
+                await self.hass.services.async_call(
+                    media_player.DOMAIN,
+                    service, {
+                        ATTR_ENTITY_ID: self.state.entity_id
+                    }, blocking=True, context=data.context
+                )
+
+            return
+
+        target_volume_level = state['value'] / 100
+        if state.get('relative'):
+            target_volume_level = (self.get_value() + state['value']) / 100
+
+        await self.hass.services.async_call(
+            media_player.DOMAIN,
+            media_player.SERVICE_VOLUME_SET, {
+                ATTR_ENTITY_ID: self.state.entity_id,
+                media_player.const.ATTR_MEDIA_VOLUME_LEVEL: target_volume_level,
+            }, blocking=True, context=data.context
+        )
 
 
 @register_capability
@@ -1251,9 +1121,8 @@ class ChannelCapability(_RangeCapability):
         self.retrievable = features & media_player.SUPPORT_PLAY_MEDIA != 0 and \
             self.entity_config.get(CONF_CHANNEL_SET_VIA_MEDIA_CONTENT_ID)
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         return domain == media_player.DOMAIN and (
                 (features & media_player.SUPPORT_PLAY_MEDIA and
                     entity_config.get(CONF_CHANNEL_SET_VIA_MEDIA_CONTENT_ID)) or (
@@ -1437,9 +1306,8 @@ class RgbCapability(_ColorSettingCapability):
 
     instance = 'rgb'
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         if domain == light.DOMAIN:
             supported_color_modes = attributes.get(light.ATTR_SUPPORTED_COLOR_MODES, [])
 
@@ -1484,9 +1352,8 @@ class TemperatureKCapability(_ColorSettingCapability):
 
     instance = 'temperature_k'
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         return domain == light.DOMAIN and (
             features & light.SUPPORT_COLOR_TEMP or
             light.color_temp_supported(attributes.get(light.ATTR_SUPPORTED_COLOR_MODES))
@@ -1515,9 +1382,8 @@ class ColorSceneCapability(_ColorSettingCapability):
 
     instance = 'scene'
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
         if domain == light.DOMAIN and features & light.SUPPORT_EFFECT:
             return bool(
                 ColorSceneCapability.get_supported_scenes(
@@ -1545,84 +1411,40 @@ class CleanupModeCapability(_ModeCapability):
     """Vacuum cleanup mode functionality."""
 
     instance = 'cleanup_mode'
-    modes_map = {
-        'auto': {'auto', 'automatic', '102'},
-        'turbo': {'turbo', 'high', 'performance', '104'},
-        'min': {'min', 'mop'},
-        'max': {'max', 'strong'},
-        'express': {'express', '105'},
-        'normal': {'normal', 'medium', 'middle', 'standard', '103'},
-        'quiet': {'quiet', 'low', 'min', 'silent', 'eco', '101'},
+    modes_map_default = {
+        'auto': ['auto', 'automatic', '102'],
+        'turbo': ['turbo', 'high', 'performance', '104'],
+        'min': ['min', 'mop'],
+        'max': ['max', 'strong'],
+        'express': ['express', '105'],
+        'normal': ['normal', 'medium', 'middle', 'standard', '103'],
+        'quiet': ['quiet', 'low', 'min', 'silent', 'eco', '101'],
     }
 
-    @staticmethod
-    def supported(domain, features, entity_config, attributes):
-        """Test if state is supported."""
-        if domain == vacuum.DOMAIN:
-            return features & vacuum.SUPPORT_FAN_SPEED
+    def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
+        """Test if capability is supported."""
+        if domain == vacuum.DOMAIN and features & vacuum.SUPPORT_FAN_SPEED:
+            return super().supported(domain, features, entity_config, attributes)
 
         return False
 
-    def parameters(self):
-        """Return parameters for a devices request."""
+    @property
+    def modes_list_attribute(self) -> Optional[str]:
+        """Return HA attribute contains modes list for this entity."""
         if self.state.domain == vacuum.DOMAIN:
-            speed_list = self.state.attributes.get(vacuum.ATTR_FAN_SPEED_LIST)
-        else:
-            speed_list = []
+            return vacuum.ATTR_FAN_SPEED_LIST
 
-        speeds = []
-        added = set()
-        for ha_value in speed_list:
-            value = self.get_yandex_mode_by_ha_mode(ha_value)
-            if value is not None and value not in added:
-                speeds.append({'value': value})
-                added.add(value)
-
-        return {
-            'instance': self.instance,
-            'modes': speeds
-        }
-
-    def get_ha_by_yandex_value(self, yandex_value):
+    @property
+    def state_value_attribute(self) -> Optional[str]:
+        """Return HA attribute for state of this entity."""
         if self.state.domain == vacuum.DOMAIN:
-            instance_speeds = self.state.attributes.get(vacuum.ATTR_FAN_SPEED_LIST)
-        else:
-            return None
-
-        return self.get_ha_mode_by_yandex_mode(yandex_value, instance_speeds)
-
-    def get_value(self):
-        """Return the state value of this capability for this entity."""
-        if self.state.domain == vacuum.DOMAIN:
-            ha_value = self.state.attributes.get(vacuum.ATTR_FAN_SPEED)
-        else:
-            ha_value = None
-
-        if ha_value is not None:
-            yandex_value = self.get_yandex_mode_by_ha_mode(ha_value)
-            if yandex_value is not None:
-                return yandex_value
-
-        modes = self.parameters()['modes']
-
-        return modes[0]['value'] if len(modes) > 0 else 'auto'
+            return vacuum.ATTR_FAN_SPEED
 
     async def set_state(self, data, state):
         """Set device state."""
-        value = self.get_ha_by_yandex_value(state['value'])
-
-        if value is None:
-            raise SmartHomeError(ERR_INVALID_VALUE, 'Unsupported value')
-
-        if self.state.domain == vacuum.DOMAIN:
-            service = vacuum.SERVICE_SET_FAN_SPEED
-            attr = vacuum.ATTR_FAN_SPEED
-        else:
-            raise SmartHomeError(ERR_INVALID_VALUE, 'Unsupported domain')
-
         await self.hass.services.async_call(
             self.state.domain,
-            service, {
+            vacuum.SERVICE_SET_FAN_SPEED, {
                 ATTR_ENTITY_ID: self.state.entity_id,
-                attr: value
+                vacuum.ATTR_FAN_SPEED: self.get_ha_mode_by_yandex_mode(state['value'])
             }, blocking=True, context=data.context)
