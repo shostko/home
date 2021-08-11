@@ -1,7 +1,9 @@
 """Implement the Yandex Smart Home properties."""
+from __future__ import annotations
 import logging
-from typing import Any
+from typing import Any, Optional
 
+from homeassistant.core import HomeAssistant, State
 from homeassistant.components import (
     climate,
     binary_sensor,
@@ -10,7 +12,6 @@ from homeassistant.components import (
     light,
     sensor,
     switch,
-    vacuum,
     air_quality,
 )
 from homeassistant.const import (
@@ -18,6 +19,11 @@ from homeassistant.const import (
     ATTR_BATTERY_LEVEL,
     ATTR_VOLTAGE,
     ATTR_UNIT_OF_MEASUREMENT,
+    CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+    CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER,
+    CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT,
+    CONCENTRATION_PARTS_PER_MILLION,
+    CONCENTRATION_PARTS_PER_BILLION,
     DEVICE_CLASS_BATTERY,
     DEVICE_CLASS_CO2,
     DEVICE_CLASS_CURRENT,
@@ -33,6 +39,7 @@ from homeassistant.const import (
     STATE_UNKNOWN,
 )
 
+from . import const
 from .error import SmartHomeError
 from .const import (
     DOMAIN,
@@ -40,11 +47,15 @@ from .const import (
     ERR_INVALID_VALUE,
     ERR_NOT_SUPPORTED_IN_CURRENT_MODE,
     STATE_NONE,
-    DATA_CONFIG,
+    STATE_NONE_UI,
+    CONFIG,
     CONF_PRESSURE_UNIT,
     CONF_ENTITY_PROPERTY_TYPE,
     CONF_ENTITY_PROPERTY_ENTITY,
     CONF_ENTITY_PROPERTY_ATTRIBUTE,
+    CONF_ENTITY_PROPERTY_UNIT_OF_MEASUREMENT,
+    PROPERTY_TYPE_TO_UNITS,
+    PROPERTY_TYPE_EVENT_VALUES,
     PRESSURE_UNITS_TO_YANDEX_UNITS,
     PRESSURE_FROM_PASCAL,
     PRESSURE_TO_PASCAL,
@@ -56,18 +67,7 @@ _LOGGER = logging.getLogger(__name__)
 PREFIX_PROPERTIES = 'devices.properties.'
 PROPERTY_FLOAT = PREFIX_PROPERTIES + 'float'
 PROPERTY_EVENT = PREFIX_PROPERTIES + 'event'
-
-EVENTS_VALUES = {
-    'vibration': ['vibration', 'tilt', 'fall'],
-    'open': ['opened', 'closed'],
-    'button': ['click', 'double', 'long_press'],
-    'motion ': ['detected', 'not_detected'],
-    'smoke': ['detected', 'not_detected', 'high'],
-    'gas ': ['detected', 'not_detected', 'high'],
-    'battery_level': ['low', 'normal'],
-    'water_level': ['low', 'normal'],
-    'water_leak': ['leak', 'dry']
-}
+EVENTS_VALUES = PROPERTY_TYPE_EVENT_VALUES
 
 PROPERTIES = []
 
@@ -85,14 +85,14 @@ class _Property:
     instance = ''
     values = []
     reportable = False
+    retrievable = True
 
-    def __init__(self, hass, state, entity_config):
+    def __init__(self, hass: HomeAssistant, state: State, entity_config: dict[str, Any]):
         """Initialize a trait for a state."""
         self.hass = hass
         self.state = state
-        self.config = hass.data[DOMAIN][DATA_CONFIG]
+        self.config = hass.data[DOMAIN][CONFIG]
         self.entity_config = entity_config
-        self.retrievable = True
         self.reportable = hass.data[DOMAIN][NOTIFIER_ENABLED]
 
     @staticmethod
@@ -147,28 +147,79 @@ class _Property:
         elif self.instance in ['water_leak']:
             return 'leak' if self.bool_value(value) else 'dry'
         elif self.instance in ['button']:
+            if not value:
+                if 'last_action' in self.state.attributes:
+                    value = self.state.attributes.get('last_action')
+                elif 'action' in self.state.attributes:
+                    value = self.state.attributes.get('action')
             if value in ['single', 'click']:
                 return 'click'
             elif value in ['double', 'double_click']:
                 return 'double_click'
-            elif value in ['long', 'long_click', 'long_click_press', 'long_click_release', 'hold']:
+            elif value in ['long', 'long_click', 'long_click_press', 'hold']:
                 return 'long_press'
         elif self.instance in ['vibration']:
-            if value == 'vibrate':
+            if not value:
+                if 'last_action' in self.state.attributes:
+                    value = self.state.attributes.get('last_action')
+                elif 'action' in self.state.attributes:
+                    value = self.state.attributes.get('action')
+            if value in ['vibrate', 'vibration', 'actively', 'move',
+                         'tap_twice', 'shake_air', 'swing'] or self.bool_value(value):
                 return 'vibration'
-            elif value == 'tilt':
+            elif value in ['tilt', 'flip90', 'flip180', 'rotate']:
                 return 'tilt'
-            elif value == 'free_fall':
+            elif value in ['free_fall', 'drop']:
                 return 'fall'
 
-    def float_value(self, value: Any) -> float:
+        if str(value).lower() in (STATE_UNAVAILABLE, STATE_UNKNOWN, STATE_NONE) and self.retrievable:
+            raise SmartHomeError(
+                ERR_INVALID_VALUE,
+                f'Invalid {self.instance} property value: {value!r}'
+            )
+
+    def float_value(self, value: Any) -> Optional[float]:
+        if str(value).lower() in (STATE_UNAVAILABLE, STATE_UNKNOWN, STATE_NONE, STATE_NONE_UI):
+            return None
+
         try:
             return float(value)
         except (ValueError, TypeError):
             raise SmartHomeError(
                 ERR_NOT_SUPPORTED_IN_CURRENT_MODE,
-                f'Invalid {self.instance} property value: {value!r}'
+                f'Unsupported value {value!r} for instance {self.instance} of {self.state.entity_id}'
             )
+
+    def convert_value(self, value: Any, from_unit: Optional[str]):
+        float_value = self.float_value(value)
+        if float_value is None:
+            return None
+
+        if self.instance == const.PROPERTY_TYPE_PRESSURE:
+            if from_unit not in PRESSURE_TO_PASCAL:
+                raise SmartHomeError(
+                    ERR_NOT_SUPPORTED_IN_CURRENT_MODE,
+                    f'Unsupported pressure unit "{from_unit}" '
+                    f'for {self.instance} instance of {self.state.entity_id}'
+                )
+
+            return round(
+                float_value * PRESSURE_TO_PASCAL[from_unit] *
+                PRESSURE_FROM_PASCAL[self.config.settings[CONF_PRESSURE_UNIT]], 2
+            )
+        elif self.instance == const.PROPERTY_TYPE_TVOC:
+            # average molecular weight of tVOC = 110 g/mol
+            CONCENTRATION_TO_MCG_M3 = {
+                CONCENTRATION_PARTS_PER_BILLION: 4.49629381184,
+                CONCENTRATION_PARTS_PER_MILLION: 4496.29381184,
+                CONCENTRATION_MICROGRAMS_PER_CUBIC_FOOT: 35.3146667215,
+                CONCENTRATION_MILLIGRAMS_PER_CUBIC_METER: 1000,
+                CONCENTRATION_MICROGRAMS_PER_CUBIC_METER: 1
+            }
+
+            return round(float_value * CONCENTRATION_TO_MCG_M3.get(from_unit, 1), 2)
+
+        return value
 
 
 class _EventProperty(_Property):
@@ -192,79 +243,77 @@ class _EventProperty(_Property):
         if self.state.domain == binary_sensor.DOMAIN:
             value = self.state.state
 
-        if str(value).lower() in (STATE_UNAVAILABLE, STATE_UNKNOWN, STATE_NONE):
+        if str(value).lower() in (STATE_UNAVAILABLE, STATE_UNKNOWN, STATE_NONE) and self.retrievable:
             raise SmartHomeError(
                 ERR_NOT_SUPPORTED_IN_CURRENT_MODE,
-                f'Invalid {self.instance} property value: {value!r}'
+                f'Unsupported value {value!r} for instance {self.instance} of {self.state.entity_id}'
             )
 
         return self.event_value(value)
 
 
-@register_property
-class TemperatureProperty(_Property):
+# noinspection PyAbstractClass
+class _FloatProperty(_Property):
     type = PROPERTY_FLOAT
-    instance = 'temperature'
+
+    def parameters(self):
+        return {
+            'instance': self.instance,
+            'unit': const.PROPERTY_TYPE_TO_UNITS[self.instance]
+        }
+
+
+@register_property
+class TemperatureProperty(_FloatProperty):
+    instance = const.PROPERTY_TYPE_TEMPERATURE
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
         if domain == sensor.DOMAIN:
             return attributes.get(ATTR_DEVICE_CLASS) == DEVICE_CLASS_TEMPERATURE
+        elif domain == air_quality.DOMAIN:
+            return attributes.get(climate.ATTR_TEMPERATURE) is not None
         elif domain in (climate.DOMAIN, fan.DOMAIN, humidifier.DOMAIN):
             return attributes.get(climate.ATTR_CURRENT_TEMPERATURE) is not None
 
         return False
 
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.temperature.celsius'
-        }
-
     def get_value(self):
-        value = 0.0
         if self.state.domain == sensor.DOMAIN:
-            value = self.state.state
+            return self.float_value(self.state.state)
+        elif self.state.domain == air_quality.DOMAIN:
+            return self.float_value(self.state.attributes.get(climate.ATTR_TEMPERATURE))
         elif self.state.domain in (climate.DOMAIN, fan.DOMAIN, humidifier.DOMAIN):
-            value = self.state.attributes.get(climate.ATTR_CURRENT_TEMPERATURE)
-
-        return self.float_value(value)
+            return self.float_value(self.state.attributes.get(climate.ATTR_CURRENT_TEMPERATURE))
 
 
 @register_property
-class HumidityProperty(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'humidity'
+class HumidityProperty(_FloatProperty):
+    instance = const.PROPERTY_TYPE_HUMIDITY
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
         if domain == sensor.DOMAIN:
             return attributes.get(ATTR_DEVICE_CLASS) == DEVICE_CLASS_HUMIDITY
+        elif domain == air_quality.DOMAIN:
+            return attributes.get(climate.ATTR_HUMIDITY) is not None
         elif domain in (climate.DOMAIN, fan.DOMAIN, humidifier.DOMAIN):
             return attributes.get(climate.ATTR_CURRENT_HUMIDITY) is not None
 
         return False
 
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.percent'
-        }
-
     def get_value(self):
-        value = 0
         if self.state.domain == sensor.DOMAIN:
-            value = self.state.state
+            return self.float_value(self.state.state)
+        elif self.state.domain == air_quality.DOMAIN:
+            return self.float_value(self.state.attributes.get(climate.ATTR_HUMIDITY))
         elif self.state.domain in (climate.DOMAIN, fan.DOMAIN, humidifier.DOMAIN):
-            value = self.state.attributes.get(climate.ATTR_CURRENT_HUMIDITY)
-
-        return self.float_value(value)
+            return self.float_value(self.state.attributes.get(climate.ATTR_CURRENT_HUMIDITY))
 
 
 @register_property
-class PressureProperty(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'pressure'
+class PressureProperty(_FloatProperty):
+    instance = const.PROPERTY_TYPE_PRESSURE
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
@@ -280,28 +329,12 @@ class PressureProperty(_Property):
         }
 
     def get_value(self):
-        value = 0.0
-        if self.state.domain == sensor.DOMAIN:
-            value = self.state.state
-
-        # Get a conversion multiplier to pascal
-        unit = self.state.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
-        if unit not in PRESSURE_TO_PASCAL:
-            raise SmartHomeError(
-                ERR_NOT_SUPPORTED_IN_CURRENT_MODE,
-                f'Unsupported pressure unit: {unit}'
-            )
-
-        # Convert the value to pascal and then to the chosen Yandex unit
-        val = self.float_value(value) * PRESSURE_TO_PASCAL[unit] * \
-            PRESSURE_FROM_PASCAL[self.config.settings[CONF_PRESSURE_UNIT]]
-        return round(val, 2)
+        return self.convert_value(self.state.state, self.state.attributes.get(ATTR_UNIT_OF_MEASUREMENT))
 
 
 @register_property
-class IlluminanceProperty(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'illumination'
+class IlluminanceProperty(_FloatProperty):
+    instance = const.PROPERTY_TYPE_ILLUMINATION
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
@@ -310,26 +343,16 @@ class IlluminanceProperty(_Property):
 
         return False
 
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.illumination.lux'
-        }
-
     def get_value(self):
-        value = 0
         if self.state.domain == sensor.DOMAIN:
-            value = self.state.state
+            return self.float_value(self.state.state)
         elif self.state.domain in (light.DOMAIN, fan.DOMAIN):
-            value = self.state.attributes.get('illuminance')
-
-        return self.float_value(value)
+            return self.float_value(self.state.attributes.get('illuminance'))
 
 
 @register_property
-class WaterLevelProperty(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'water_level'
+class WaterLevelProperty(_FloatProperty):
+    instance = const.PROPERTY_TYPE_WATER_LEVEL
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
@@ -338,24 +361,14 @@ class WaterLevelProperty(_Property):
 
         return False
 
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.percent'
-        }
-
     def get_value(self):
-        value = 0
         if self.state.domain in (fan.DOMAIN, humidifier.DOMAIN):
-            value = self.state.attributes.get('water_level')
-
-        return self.float_value(value)
+            return self.float_value(self.state.attributes.get('water_level'))
 
 
 @register_property
-class CO2Property(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'co2_level'
+class CO2Property(_FloatProperty):
+    instance = const.PROPERTY_TYPE_CO2_LEVEL
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
@@ -366,26 +379,16 @@ class CO2Property(_Property):
 
         return False
 
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.ppm'
-        }
-
     def get_value(self):
-        value = 0
         if self.state.domain == sensor.DOMAIN:
-            value = self.state.state
+            return self.float_value(self.state.state)
         elif self.state.domain in (air_quality.DOMAIN, fan.DOMAIN):
-            value = self.state.attributes.get(air_quality.ATTR_CO2)
-
-        return self.float_value(value)
+            return self.float_value(self.state.attributes.get(air_quality.ATTR_CO2))
 
 
 @register_property
-class PM1Property(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'pm1_density'
+class PM1Property(_FloatProperty):
+    instance = const.PROPERTY_TYPE_PM1_DENSITY
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
@@ -394,24 +397,14 @@ class PM1Property(_Property):
 
         return False
 
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.density.mcg_m3'
-        }
-
     def get_value(self):
-        value = 0
         if self.state.domain == air_quality.DOMAIN:
-            value = self.state.attributes.get(air_quality.ATTR_PM_0_1)
-
-        return self.float_value(value)
+            return self.float_value(self.state.attributes.get(air_quality.ATTR_PM_0_1))
 
 
 @register_property
-class PM25Property(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'pm2.5_density'
+class PM25Property(_FloatProperty):
+    instance = const.PROPERTY_TYPE_PM2_5_DENSITY
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
@@ -419,12 +412,6 @@ class PM25Property(_Property):
             return air_quality.ATTR_PM_2_5 in attributes
 
         return False
-
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.density.mcg_m3'
-        }
 
     def get_value(self):
         value = 0
@@ -435,9 +422,8 @@ class PM25Property(_Property):
 
 
 @register_property
-class PM10Property(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'pm10_density'
+class PM10Property(_FloatProperty):
+    instance = const.PROPERTY_TYPE_PM10_DENSITY
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
@@ -446,24 +432,14 @@ class PM10Property(_Property):
 
         return False
 
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.density.mcg_m3'
-        }
-
     def get_value(self):
-        value = 0
         if self.state.domain == air_quality.DOMAIN:
-            value = self.state.attributes.get(air_quality.ATTR_PM_10)
-
-        return self.float_value(value)
+            return self.float_value(self.state.attributes.get(air_quality.ATTR_PM_10))
 
 
 @register_property
-class TVOCProperty(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'tvoc'
+class TVOCProperty(_FloatProperty):
+    instance = const.PROPERTY_TYPE_TVOC
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
@@ -472,24 +448,17 @@ class TVOCProperty(_Property):
 
         return False
 
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.density.mcg_m3'
-        }
-
     def get_value(self):
-        value = 0
         if self.state.domain == air_quality.DOMAIN:
-            value = self.state.attributes.get('total_volatile_organic_compounds')
-
-        return self.float_value(value)
+            return self.convert_value(
+                self.state.attributes.get('total_volatile_organic_compounds'),
+                self.state.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
+            )
 
 
 @register_property
-class VoltageProperty(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'voltage'
+class VoltageProperty(_FloatProperty):
+    instance = const.PROPERTY_TYPE_VOLTAGE
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
@@ -500,26 +469,16 @@ class VoltageProperty(_Property):
 
         return False
 
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.volt'
-        }
-
     def get_value(self):
-        value = 0
         if self.state.domain == sensor.DOMAIN:
-            value = self.state.state
+            return self.float_value(self.state.state)
         elif self.state.domain in (switch.DOMAIN, light.DOMAIN):
-            value = self.state.attributes.get(ATTR_VOLTAGE)
-
-        return self.float_value(value)
+            return self.float_value(self.state.attributes.get(ATTR_VOLTAGE))
 
 
 @register_property
-class CurrentProperty(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'amperage'
+class CurrentProperty(_FloatProperty):
+    instance = const.PROPERTY_TYPE_AMPERAGE
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
@@ -530,26 +489,16 @@ class CurrentProperty(_Property):
 
         return False
 
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.ampere'
-        }
-
     def get_value(self):
-        value = 0
         if self.state.domain == sensor.DOMAIN:
-            value = self.state.state
+            return self.float_value(self.state.state)
         elif self.state.domain in (switch.DOMAIN, light.DOMAIN):
-            value = self.state.attributes.get('current')
-
-        return self.float_value(value)
+            return self.float_value(self.state.attributes.get('current'))
 
 
 @register_property
-class PowerProperty(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'power'
+class PowerProperty(_FloatProperty):
+    instance = const.PROPERTY_TYPE_POWER
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
@@ -560,14 +509,8 @@ class PowerProperty(_Property):
 
         return False
 
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.watt'
-        }
-
     def get_value(self):
-        value = 0
+        value = None
         if self.state.domain == sensor.DOMAIN:
             value = self.state.state
         elif self.state.domain == switch.DOMAIN:
@@ -580,47 +523,29 @@ class PowerProperty(_Property):
 
 
 @register_property
-class BatteryProperty(_Property):
-    type = PROPERTY_FLOAT
-    instance = 'battery_level'
+class BatteryLevelProperty(_FloatProperty):
+    instance = const.PROPERTY_TYPE_BATTERY_LEVEL
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
-        if domain == vacuum.DOMAIN:
-            return vacuum.ATTR_BATTERY_LEVEL in attributes
-        elif domain == sensor.DOMAIN:
-            return attributes.get(ATTR_BATTERY_LEVEL) is not None or \
-                attributes.get(ATTR_DEVICE_CLASS) == DEVICE_CLASS_BATTERY
-        elif domain == binary_sensor.DOMAIN:
-            return attributes.get(ATTR_BATTERY_LEVEL) is not None
-
-        return False
-
-    def parameters(self):
-        return {
-            'instance': self.instance,
-            'unit': 'unit.percent'
-        }
+        return ATTR_BATTERY_LEVEL in attributes or attributes.get(ATTR_DEVICE_CLASS) == DEVICE_CLASS_BATTERY
 
     def get_value(self):
-        value = 0
-        if self.state.domain == vacuum.DOMAIN:
-            value = self.state.attributes.get(vacuum.ATTR_BATTERY_LEVEL)
-        elif self.state.domain == sensor.DOMAIN:
-            if self.state.attributes.get(ATTR_DEVICE_CLASS) == DEVICE_CLASS_BATTERY:
-                value = self.state.state
-            elif self.state.attributes.get(ATTR_BATTERY_LEVEL) is not None:
-                value = self.state.attributes.get(ATTR_BATTERY_LEVEL)
-        elif self.state.domain == binary_sensor.DOMAIN:
-            if self.state.attributes.get(ATTR_BATTERY_LEVEL) is not None:
-                value = self.state.attributes.get(ATTR_BATTERY_LEVEL)
+        value = None
+        if self.state.attributes.get(ATTR_DEVICE_CLASS) == DEVICE_CLASS_BATTERY:
+            value = self.state.state
+        elif ATTR_BATTERY_LEVEL in self.state.attributes:
+            value = self.state.attributes.get(ATTR_BATTERY_LEVEL)
+
+        if value in [const.STATE_LOW, const.STATE_CHARGING]:
+            return 0
 
         return self.float_value(value)
 
 
 @register_property
 class ContactProperty(_EventProperty):
-    instance = 'open'
+    instance = const.PROPERTY_TYPE_OPEN
     values = EVENTS_VALUES.get(instance)
 
     @staticmethod
@@ -638,7 +563,7 @@ class ContactProperty(_EventProperty):
 
 @register_property
 class MotionProperty(_EventProperty):
-    instance = 'motion'
+    instance = const.PROPERTY_TYPE_MOTION
     values = EVENTS_VALUES.get(instance)
 
     @staticmethod
@@ -655,7 +580,7 @@ class MotionProperty(_EventProperty):
 
 @register_property
 class GasProperty(_EventProperty):
-    instance = 'gas'
+    instance = const.PROPERTY_TYPE_GAS
     values = EVENTS_VALUES.get(instance)
 
     @staticmethod
@@ -668,7 +593,7 @@ class GasProperty(_EventProperty):
 
 @register_property
 class SmokeProperty(_EventProperty):
-    instance = 'smoke'
+    instance = const.PROPERTY_TYPE_SMOKE
     values = EVENTS_VALUES.get(instance)
 
     @staticmethod
@@ -680,8 +605,21 @@ class SmokeProperty(_EventProperty):
 
 
 @register_property
+class BatteryLevelLowProperty(_EventProperty):
+    instance = const.PROPERTY_TYPE_BATTERY_LEVEL
+    values = EVENTS_VALUES.get(instance)
+
+    @staticmethod
+    def supported(domain, features, entity_config, attributes):
+        if domain == binary_sensor.DOMAIN:
+            return attributes.get(ATTR_DEVICE_CLASS) == binary_sensor.DEVICE_CLASS_BATTERY
+
+        return False
+
+
+@register_property
 class WaterLevelLowProperty(_EventProperty):
-    instance = 'water_level'
+    instance = const.PROPERTY_TYPE_WATER_LEVEL
     values = EVENTS_VALUES.get(instance)
 
     @staticmethod
@@ -694,7 +632,7 @@ class WaterLevelLowProperty(_EventProperty):
 
 @register_property
 class WaterLeakProperty(_EventProperty):
-    instance = 'water_leak'
+    instance = const.PROPERTY_TYPE_WATER_LEAK
     values = EVENTS_VALUES.get(instance)
 
     @staticmethod
@@ -705,97 +643,159 @@ class WaterLeakProperty(_EventProperty):
         return False
 
 
+@register_property
+class ButtonProperty(_EventProperty):
+    instance = const.PROPERTY_TYPE_BUTTON
+    retrievable = False
+    values = EVENTS_VALUES.get(instance)
+
+    @staticmethod
+    def supported(domain, features, entity_config, attributes):
+        if domain == binary_sensor.DOMAIN:  # XiaomiAqara
+            return ('last_action' in attributes and
+                    attributes.get('last_action') in [
+                        'single', 'click', 'double', 'double_click',
+                        'long', 'long_click', 'long_click_press',
+                        'long_click_release', 'hold', 'release',
+                        'triple', 'quadruple', 'many'])
+        elif domain == sensor.DOMAIN:  # XiaomiGateway3 and others
+            return ('action' in attributes and
+                    attributes.get('action') in [
+                        'single', 'click', 'double', 'double_click',
+                        'long', 'long_click', 'long_click_press',
+                        'long_click_release', 'hold', 'release',
+                        'triple', 'quadruple', 'many'])
+
+        return False
+
+
+@register_property
+class VibrationProperty(_EventProperty):
+    instance = const.PROPERTY_TYPE_VIBRATION
+    retrievable = False
+    values = EVENTS_VALUES.get(instance)
+
+    @staticmethod
+    def supported(domain, features, entity_config, attributes):
+        if domain == binary_sensor.DOMAIN:  # XiaomiAqara
+            return (('last_action' in attributes and
+                    attributes.get('last_action') in [
+                        'vibrate', 'tilt', 'free_fall', 'actively',
+                        'move', 'tap_twice', 'shake_air', 'swing',
+                        'flip90', 'flip180', 'rotate', 'drop']) or
+                    attributes.get(ATTR_DEVICE_CLASS) == binary_sensor.DEVICE_CLASS_VIBRATION)
+        elif domain == sensor.DOMAIN:  # XiaomiGateway3 and others
+            return ('action' in attributes and
+                    attributes.get('action') in [
+                        'vibrate', 'tilt', 'free_fall', 'actively',
+                        'move', 'tap_twice', 'shake_air', 'swing',
+                        'flip90', 'flip180', 'rotate', 'drop'])
+
+        return False
+
+
 class CustomEntityProperty(_Property):
     """Represents a Property."""
 
-    def __init__(self, hass, state, entity_config, property_config):
+    def __init__(self, hass: HomeAssistant, state: State,
+                 entity_config: dict[str, Any], property_config: dict[str, str]):
         super().__init__(hass, state, entity_config)
 
-        self.instance_unit = {
-            'humidity': 'unit.percent',
-            'temperature': 'unit.temperature.celsius',
-            'pressure': PRESSURE_UNITS_TO_YANDEX_UNITS[self.config.settings[CONF_PRESSURE_UNIT]],
-            'water_level': 'unit.percent',
-            'co2_level': 'unit.ppm',
-            'power': 'unit.watt',
-            'voltage': 'unit.volt',
-            'battery_level': 'unit.percent',
-            'amperage': 'unit.ampere',
-            'illumination': 'unit.illumination.lux',
-            'tvoc': 'unit.density.mcg_m3',
-            'pm1_density': 'unit.density.mcg_m3',
-            'pm2.5_density': 'unit.density.mcg_m3',
-            'pm10_density': 'unit.density.mcg_m3'
-        }
-
-        self.property_config = property_config
         self.type = PROPERTY_FLOAT
-        self.instance = property_config.get(CONF_ENTITY_PROPERTY_TYPE)
+        self.property_config = property_config
+        self.instance = property_config[CONF_ENTITY_PROPERTY_TYPE]
+        self.instance_unit: Optional[str] = None
+        self.property_state = state
 
-        if CONF_ENTITY_PROPERTY_ENTITY in self.property_config:
-            property_entity_id = self.property_config.get(CONF_ENTITY_PROPERTY_ENTITY)
-            entity = self.hass.states.get(property_entity_id)
-            if entity is None:
-                raise SmartHomeError(ERR_DEVICE_NOT_FOUND, f'Entity {property_entity_id} not found')
+        property_entity_id = self.property_config.get(CONF_ENTITY_PROPERTY_ENTITY)
+        if property_entity_id:
+            self.property_state = self.hass.states.get(property_entity_id)
+            if self.property_state is None:
+                raise SmartHomeError(
+                    ERR_DEVICE_NOT_FOUND,
+                    f'Entity {property_entity_id} not found for {self.instance} instance of {self.state.entity_id}'
+                )
 
-            if entity.domain == binary_sensor.DOMAIN and self.instance in EVENTS_VALUES.keys():
+        if self.property_state.domain == binary_sensor.DOMAIN:
+            if self.instance not in PROPERTY_TYPE_EVENT_VALUES:
+                raise SmartHomeError(
+                    ERR_DEVICE_NOT_FOUND,
+                    f'Unsupported entity {self.property_state.entity_id} for {self.instance} instance '
+                    f'of {self.state.entity_id}'
+                )
+
+            self.type = PROPERTY_EVENT
+            self.values = PROPERTY_TYPE_EVENT_VALUES.get(self.instance)
+        elif self.property_state.domain == sensor.DOMAIN:
+            if self.instance not in PROPERTY_TYPE_TO_UNITS and self.instance in PROPERTY_TYPE_EVENT_VALUES:
+                # TODO: battery_level and water_level cannot be events for sensor domain
                 self.type = PROPERTY_EVENT
-                self.values = EVENTS_VALUES.get(self.instance)
+                self.values = PROPERTY_TYPE_EVENT_VALUES.get(self.instance)
+
+        if self.instance in [const.PROPERTY_TYPE_BUTTON, const.PROPERTY_TYPE_VIBRATION]:
+            self.retrievable = False
+
+        if self.type == PROPERTY_FLOAT:
+            self.instance_unit = PROPERTY_TYPE_TO_UNITS[self.instance]
+
+            if self.instance == const.PROPERTY_TYPE_PRESSURE:
+                self.instance_unit = PRESSURE_UNITS_TO_YANDEX_UNITS[self.config.settings[CONF_PRESSURE_UNIT]]
 
     @staticmethod
     def supported(domain, features, entity_config, attributes):
         return True
 
     def parameters(self):
-        if self.instance in self.instance_unit:
-            unit = self.instance_unit[self.instance]
-            return {'instance': self.instance, 'unit': unit}
+        if self.type == PROPERTY_FLOAT:
+            return {
+                'instance': self.instance,
+                'unit': self.instance_unit
+            }
         elif self.type == PROPERTY_EVENT:
+            if not self.values:
+                raise SmartHomeError(
+                    ERR_DEVICE_NOT_FOUND,
+                    f'No values for {self.instance} instance of {self.state.entity_id}'
+                )
+
             return {
                 'instance': self.instance,
                 'events': [
                     {'value': v}
                     for v in self.values
                 ]
-            } if self.values else {}
-
-        raise SmartHomeError(ERR_NOT_SUPPORTED_IN_CURRENT_MODE, f'Unit not found for type: {self.instance}')
+            }
 
     def get_value(self):
-        value = 0
-        attribute = None
+        if not self.retrievable:
+            return None
 
-        if CONF_ENTITY_PROPERTY_ATTRIBUTE in self.property_config:
-            attribute = self.property_config.get(CONF_ENTITY_PROPERTY_ATTRIBUTE)
+        value_attribute = self.property_config.get(CONF_ENTITY_PROPERTY_ATTRIBUTE)
 
-        if attribute:
-            value = self.state.attributes.get(attribute)
+        if value_attribute:
+            if value_attribute not in self.property_state.attributes:
+                raise SmartHomeError(
+                    ERR_DEVICE_NOT_FOUND,
+                    f'Attribute {value_attribute} not found in entity {self.property_state.entity_id} '
+                    f'for {self.instance} instance of {self.state.entity_id}'
+                )
 
-        if CONF_ENTITY_PROPERTY_ENTITY in self.property_config:
-            property_entity_id = self.property_config.get(CONF_ENTITY_PROPERTY_ENTITY)
-            entity = self.hass.states.get(property_entity_id)
-            if entity is None:
-                raise SmartHomeError(ERR_DEVICE_NOT_FOUND, f'Entity {property_entity_id} not found')
+            value = self.property_state.attributes[value_attribute]
+        else:
+            value = self.property_state.state
 
-            if attribute:
-                value = entity.attributes.get(attribute)
-            else:
-                value = entity.state
+        if str(value).lower() in (STATE_UNAVAILABLE, STATE_UNKNOWN, STATE_NONE, STATE_NONE_UI):
+            if self.type == PROPERTY_FLOAT:
+                return None
 
-            if str(value).lower() in (STATE_UNAVAILABLE, STATE_UNKNOWN, STATE_NONE):
-                raise SmartHomeError(ERR_INVALID_VALUE, f'Invalid entity {property_entity_id} value: {value!r}')
+            raise SmartHomeError(
+                ERR_NOT_SUPPORTED_IN_CURRENT_MODE,
+                f'Unsupported value {value!r} for {self.instance} instance of {self.state.entity_id}'
+            )
 
-            if self.instance == 'pressure':
-                # Get a conversion multiplier to pascal
-                unit = entity.attributes.get(ATTR_UNIT_OF_MEASUREMENT)
-                if unit not in PRESSURE_TO_PASCAL:
-                    raise SmartHomeError(
-                        ERR_NOT_SUPPORTED_IN_CURRENT_MODE,
-                        f'Unsupported pressure unit: {unit}'
-                    )
-
-                # Convert the value to pascal and then to the chosen Yandex unit
-                value = round(self.float_value(value) * PRESSURE_TO_PASCAL[unit] *
-                              PRESSURE_FROM_PASCAL[self.config.settings[CONF_PRESSURE_UNIT]], 2)
+        if self.instance in [const.PROPERTY_TYPE_PRESSURE, const.PROPERTY_TYPE_TVOC]:
+            value_unit = self.property_config.get(CONF_ENTITY_PROPERTY_UNIT_OF_MEASUREMENT,
+                                                  self.property_state.attributes.get(ATTR_UNIT_OF_MEASUREMENT))
+            return self.convert_value(value, value_unit)
 
         return self.float_value(value) if self.type != PROPERTY_EVENT else self.event_value(value)
