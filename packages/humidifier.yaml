@@ -1,16 +1,35 @@
 humidifier:
 
   fan:
-    - platform: xiaomi_miio
-      host: 192.168.1.104
-      model: zhimi.humidifier.ca1
-      name: "Humidifier #1"
-      token: !secret xiaomi_humidifier1_token
-    - platform: xiaomi_miio
-      host: 192.168.1.203
-      model: zhimi.humidifier.ca1
-      name: "Humidifier #2"
-      token: !secret xiaomi_humidifier2_token
+    # Recheck https://github.com/syssi/xiaomi_airpurifier
+    # - platform: xiaomi_miio
+    #   host: 192.168.1.104
+    #   model: zhimi.humidifier.ca1
+    #   name: "Humidifier #1"
+    #   token: !secret xiaomi_humidifier1_token
+    # - platform: xiaomi_miio
+    #   host: 192.168.1.203
+    #   model: zhimi.humidifier.ca1
+    #   name: "Humidifier #2"
+    #   token: !secret xiaomi_humidifier2_token
+    - platform: template
+      fans:
+        humidifier_1:
+          friendly_name: "Humidifier Fake #1"
+          value_template: "off"
+          turn_on:
+            - delay: "00:00:01"
+          turn_off:
+            - delay: "00:00:01"
+    - platform: template
+      fans:
+        humidifier_2:
+          friendly_name: "Humidifier Fake #2"
+          value_template: "off"
+          turn_on:
+            - delay: "00:00:01"
+          turn_off:
+            - delay: "00:00:01"
 
   sensor:
     - platform: template
