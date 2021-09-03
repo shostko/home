@@ -71,10 +71,6 @@ switch.xiaomi_power_plug_1_switch:
   type: devices.types.light
   name: 'Кровать'
   room: 'Спальня'
-light.bedroom_mirror:
-  type: devices.types.light
-  name: 'Зеркало'
-  room: 'Спальня'
 light.wled_maria_bed:
   type: devices.types.light
   name: 'Ночник'
@@ -188,6 +184,10 @@ switch.entrance_wall_switch_left:
   type: devices.types.light
   name: 'Свет'
   room: 'Коридор'
+light.entrance_mirror:
+  type: devices.types.light
+  name: 'Зеркало'
+  room: 'Прихожая'
 light.xiaomi_gateway_light:
   type: devices.types.light
   name: 'Шайба'

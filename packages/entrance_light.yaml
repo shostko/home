@@ -1,5 +1,11 @@
 entrance_light:
 
+  light:
+
+    - platform: switch
+      name: entrance_mirror
+      entity_id: switch.mirror_relay
+
   group:
   
     entrance_lights:
@@ -9,6 +15,7 @@ entrance_light:
         - light.entrance_wall_switch_left
         - light.xiaomi_gateway_light
         - light.entrance_door
+        - light.entrance_mirror
     
   input_datetime:
   
@@ -55,7 +62,9 @@ entrance_light:
           entity_id: timer.entrance_light
           data_template: 
             duration: >
-              {%- if 
+              {%- if is_state('light.entrance_mirror', 'on') -%}
+                00:10:00
+              {%- elif 
                   is_state('light.entrance_wall_switch_right', 'on')
                 or 
                   is_state('light.entrance_wall_switch_left', 'on') 
@@ -132,6 +141,11 @@ entrance_light:
           entity_id: light.entrance_wall_switch_right
           from: 'on'
           to: 'off'
+        # Зеркало выключено
+        - platform: state
+          entity_id: light.entrance_mirror
+          from: 'on'
+          to: 'off'
       condition:
         # Весь верхний свет выключен
         - condition: state
@@ -139,6 +153,10 @@ entrance_light:
           state: 'off'
         - condition: state
           entity_id: light.entrance_wall_switch_right
+          state: 'off'
+        # Зеркало выключено
+        - condition: state
+          entity_id: light.entrance_mirror
           state: 'off'
       action:
         # Записать текущую дату и время
@@ -163,7 +181,11 @@ entrance_light:
         - condition: state
           entity_id: light.entrance_wall_switch_right
           state: 'off'
-        # Давно свет был выключен давно
+        # Зеркало выключено
+        - condition: state
+          entity_id: light.entrance_mirror
+          state: 'off'
+        # Cвет был выключен давно
         - "{{ ((as_timestamp(now()) - as_timestamp(states('input_datetime.entrance_top_light_finished_at'))) > 60) }}"
       action:
         # Включить свет

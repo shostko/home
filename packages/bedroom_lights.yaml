@@ -7,4 +7,3 @@ bedroom_light:
       entities:
         - light.bedroom_wall_switch_left
         - light.bedroom_bed
-        - light.bedroom_mirror
