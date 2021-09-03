@@ -158,9 +158,9 @@ bath_ligth:
               {%- if is_state('input_boolean.toilet_occupied', 'on') -%}
                 00:30:00
               {%- elif is_state('binary_sensor.toilet_door', 'on') -%}
-                00:01:00
+                00:02:00
               {%- else -%}
-                00:00:20
+                00:01:00
               {%- endif -%}
   
     - alias: Toilet light timer cancel
