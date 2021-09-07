@@ -77,5 +77,8 @@ cards:
         name: Режим "Без Звука"
       - entity: switch.entrance_ring_impulse
         name: Режим "Импульс"
-  - type: picture-entity
+  - type: 'custom:webrtc-camera'
     entity: camera.sonoff_camera_1
+    muted: false
+    ui: true
+    # background: true
