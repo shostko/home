@@ -371,6 +371,9 @@ XIAOMI_AIRPURIFIER_PRESET_STRONG = 'Strong'
 XIAOMI_AIRPURIFIER_PRESET_FAN = 'Fan'
 XIAOMI_AIRPURIFIER_PRESET_MIDDLE = 'Middle'
 
+# https://github.com/AlexxIT/YandexStation
+YANDEX_STATION_INTENTS_MEDIA_PLAYER = media_player.DOMAIN + '.yandex_intents'
+
 # Error codes
 # https://yandex.ru/dev/dialogs/alice/doc/smart-home/concepts/response-codes-docpage/
 ERR_DEVICE_UNREACHABLE = 'DEVICE_UNREACHABLE'
@@ -417,6 +420,7 @@ PRESSURE_TO_PASCAL = {
 # Additional states
 STATE_NONE = 'none'
 STATE_NONE_UI = '-'
+STATE_EMPTY = ''
 STATE_CHARGING = 'charging'
 STATE_LOW = 'low'
 

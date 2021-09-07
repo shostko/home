@@ -45,12 +45,12 @@ kitchen_floor:
       device_class: "heat"
     - platform: tod
       name: kitchen_floor_on_morning
-      after: '08:00'
-      before: '09:30'
+      after: '06:30'
+      before: '09:00'
     - platform: tod
       name: kitchen_floor_on_day
-      after: '12:00'
-      before: '13:00'
+      after: '12:30'
+      before: '13:30'
     - platform: tod
       name: kitchen_floor_on_evening
       after: '17:30'

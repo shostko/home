@@ -584,10 +584,10 @@ class SwingCapability(_ModeCapability):
 
     instance = const.MODE_INSTANCE_SWING
     modes_map_default = {
-        const.MODE_INSTANCE_MODE_VERTICAL: [climate.const.SWING_VERTICAL],
-        const.MODE_INSTANCE_MODE_HORIZONTAL: [climate.const.SWING_HORIZONTAL],
+        const.MODE_INSTANCE_MODE_VERTICAL: [climate.const.SWING_VERTICAL, 'ud'],
+        const.MODE_INSTANCE_MODE_HORIZONTAL: [climate.const.SWING_HORIZONTAL, 'lr'],
         const.MODE_INSTANCE_MODE_STATIONARY: [climate.const.SWING_OFF],
-        const.MODE_INSTANCE_MODE_AUTO: [climate.const.SWING_BOTH]
+        const.MODE_INSTANCE_MODE_AUTO: [climate.const.SWING_BOTH, 'all']
     }
 
     def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
@@ -703,6 +703,10 @@ class InputSourceCapability(_ModeCapability):
     def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
         """Test if capability is supported."""
         if domain == media_player.DOMAIN and features & media_player.SUPPORT_SELECT_SOURCE:
+            if len(self.supported_yandex_modes) == len(self.modes_map_index_fallback) and \
+                    len(self.supported_ha_modes) > len(self.modes_map_index_fallback):
+                return False
+
             return super().supported(domain, features, entity_config, attributes)
 
         return False
@@ -739,14 +743,16 @@ class FanSpeedCapability(_ModeCapability):
         const.MODE_INSTANCE_MODE_ECO: [const.XIAOMI_AIRPURIFIER_PRESET_IDLE],
         const.MODE_INSTANCE_MODE_QUIET: [fan.SPEED_OFF, climate.const.FAN_OFF, 'diffuse',
                                          const.XIAOMI_AIRPURIFIER_PRESET_SILENT, const.XIAOMI_FAN_PRESET_LEVEL_1],
-        const.MODE_INSTANCE_MODE_LOW: [fan.SPEED_LOW, climate.const.FAN_LOW, 'min',
+        const.MODE_INSTANCE_MODE_MIN: ['1'],
+        const.MODE_INSTANCE_MODE_LOW: [fan.SPEED_LOW, climate.const.FAN_LOW, 'min', '2',
                                        const.XIAOMI_FAN_PRESET_LEVEL_2],
         const.MODE_INSTANCE_MODE_MEDIUM: [fan.SPEED_MEDIUM, climate.const.FAN_MEDIUM, climate.const.FAN_MIDDLE,
-                                          'mid', const.XIAOMI_FAN_PRESET_LEVEL_3],
+                                          'mid', '3', const.XIAOMI_FAN_PRESET_LEVEL_3],
         const.MODE_INSTANCE_MODE_NORMAL: [const.XIAOMI_AIRPURIFIER_PRESET_FAVORITE],
-        const.MODE_INSTANCE_MODE_HIGH: [fan.SPEED_HIGH, climate.const.FAN_HIGH, const.XIAOMI_FAN_PRESET_LEVEL_4],
-        const.MODE_INSTANCE_MODE_TURBO: [climate.const.FAN_FOCUS, 'max',
+        const.MODE_INSTANCE_MODE_HIGH: [fan.SPEED_HIGH, climate.const.FAN_HIGH, '4', const.XIAOMI_FAN_PRESET_LEVEL_4],
+        const.MODE_INSTANCE_MODE_TURBO: [climate.const.FAN_FOCUS, 'max', '5',
                                          const.XIAOMI_AIRPURIFIER_PRESET_STRONG, const.XIAOMI_FAN_PRESET_LEVEL_5],
+        const.MODE_INSTANCE_MODE_MAX: ['6'],
     }
 
     def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
@@ -1162,23 +1168,34 @@ class ChannelCapability(_RangeCapability):
 
     def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
         """Test if capability is supported."""
-        return domain == media_player.DOMAIN and (
-                (features & media_player.SUPPORT_PLAY_MEDIA and
-                    entity_config.get(CONF_CHANNEL_SET_VIA_MEDIA_CONTENT_ID)) or (
-                    features & media_player.SUPPORT_PREVIOUS_TRACK
-                    and features & media_player.SUPPORT_NEXT_TRACK)
-        )
+        if domain == media_player.DOMAIN:
+            if features & media_player.SUPPORT_PLAY_MEDIA and entity_config.get(CONF_CHANNEL_SET_VIA_MEDIA_CONTENT_ID):
+                return True
+
+            if features & media_player.SUPPORT_PREVIOUS_TRACK and features & media_player.SUPPORT_NEXT_TRACK:
+                return True
+
+            if self.state.entity_id == const.YANDEX_STATION_INTENTS_MEDIA_PLAYER:
+                return True
+
+        return False
 
     @property
     def support_random_access(self) -> bool:
         """Test if capability supports random access."""
         features = self.state.attributes.get(ATTR_SUPPORTED_FEATURES, 0)
-        return features & media_player.SUPPORT_PLAY_MEDIA != 0 and \
-            self.entity_config.get(CONF_CHANNEL_SET_VIA_MEDIA_CONTENT_ID)
+        if features & media_player.SUPPORT_PLAY_MEDIA and self.entity_config.get(CONF_CHANNEL_SET_VIA_MEDIA_CONTENT_ID):
+            return True
+
+        if self.state.entity_id == const.YANDEX_STATION_INTENTS_MEDIA_PLAYER:
+            return True
+
+        return False
 
     def get_value(self):
         """Return the state value of this capability for this entity."""
-        return self.float_value(self.state.attributes.get(media_player.ATTR_MEDIA_CONTENT_ID))
+        if self.support_random_access and self.state.entity_id != const.YANDEX_STATION_INTENTS_MEDIA_PLAYER:
+            return self.float_value(self.state.attributes.get(media_player.ATTR_MEDIA_CONTENT_ID))
 
     async def set_state(self, data, state):
         """Set device state."""
@@ -1212,11 +1229,11 @@ class _ColorSettingCapability(_Capability):
 
     type = CAPABILITIES_COLOR_SETTING
     scenes_map_default = {
-        const.COLOR_SCENE_ALARM: ['Тревога', 'Alarm'],
-        const.COLOR_SCENE_ALICE: ['Алиса', 'Alice'],
+        const.COLOR_SCENE_ALARM: ['Тревога', 'Alarm', 'Shine'],
+        const.COLOR_SCENE_ALICE: ['Алиса', 'Alice', 'Meeting'],
         const.COLOR_SCENE_CANDLE: ['Свеча', 'Огонь', 'Candle', 'Fire'],
         const.COLOR_SCENE_DINNER: ['Ужин', 'Dinner'],
-        const.COLOR_SCENE_FANTASY: ['Фантазия', 'Fantasy'],
+        const.COLOR_SCENE_FANTASY: ['Фантазия', 'Fantasy', 'Random', 'Beautiful'],
         const.COLOR_SCENE_GARLAND: ['Гирлянда', 'Garland'],
         const.COLOR_SCENE_JUNGLE: ['Джунгли', 'Jungle'],
         const.COLOR_SCENE_MOVIE: ['Кино', 'Movie'],
@@ -1224,13 +1241,15 @@ class _ColorSettingCapability(_Capability):
         const.COLOR_SCENE_NIGHT: ['Ночь', 'Night'],
         const.COLOR_SCENE_OCEAN: ['Океан', 'Ocean'],
         const.COLOR_SCENE_PARTY: ['Вечеринка', 'Party'],
-        const.COLOR_SCENE_READING: ['Чтение', 'Reading'],
-        const.COLOR_SCENE_REST: ['Отдых', 'Rest'],
-        const.COLOR_SCENE_ROMANCE: ['Романтика', 'Romance'],
-        const.COLOR_SCENE_SIREN: ['Сирена', 'Siren'],
+        const.COLOR_SCENE_READING: ['Чтение', 'Reading', 'Read'],
+        const.COLOR_SCENE_REST: ['Отдых', 'Rest', 'Soft'],
+        const.COLOR_SCENE_ROMANCE: ['Романтика', 'Romance', 'Leasure'],
+        const.COLOR_SCENE_SIREN: ['Сирена', 'Siren', 'Rainbow'],
         const.COLOR_SCENE_SUNRISE: ['Рассвет', 'Sunrise'],
         const.COLOR_SCENE_SUNSET: ['Закат', 'Sunset']
     }
+    default_white_temperature_k = 4500
+    cold_white_temperature_k = 6500
 
     def parameters(self):
         """Return parameters for a devices request."""
@@ -1239,23 +1258,31 @@ class _ColorSettingCapability(_Capability):
         features = self.state.attributes.get(ATTR_SUPPORTED_FEATURES, 0)
         supported_color_modes = self.state.attributes.get(light.ATTR_SUPPORTED_COLOR_MODES, [])
 
-        if features & light.SUPPORT_COLOR or \
-                light.COLOR_MODE_RGB in supported_color_modes or \
-                light.COLOR_MODE_HS in supported_color_modes:
+        if self.support_color:
             result['color_model'] = 'rgb'
 
         if features & light.SUPPORT_COLOR_TEMP or light.color_temp_supported(supported_color_modes):
-            max_temp = self.state.attributes[light.ATTR_MIN_MIREDS]
-            min_temp = self.state.attributes[light.ATTR_MAX_MIREDS]
+            min_temp = self.state.attributes.get(light.ATTR_MAX_MIREDS, 153)
+            max_temp = self.state.attributes.get(light.ATTR_MIN_MIREDS, 500)
             result['temperature_k'] = {
                 'min': color_util.color_temperature_mired_to_kelvin(min_temp),
                 'max': color_util.color_temperature_mired_to_kelvin(max_temp)
+            }
+        elif light.COLOR_MODE_RGBW in supported_color_modes:
+            result['temperature_k'] = {
+                'min': self.default_white_temperature_k,
+                'max': self.cold_white_temperature_k
+            }
+        elif light.COLOR_MODE_RGB in supported_color_modes or light.COLOR_MODE_HS in supported_color_modes:
+            result['temperature_k'] = {
+                'min': self.default_white_temperature_k,
+                'max': self.default_white_temperature_k
             }
 
         if features & light.SUPPORT_EFFECT:
             supported_scenes = self.get_supported_scenes(
                 self.get_scenes_map_from_config(self.entity_config),
-                self.state.attributes[light.ATTR_EFFECT_LIST]
+                self.state.attributes.get(light.ATTR_EFFECT_LIST, [])
             )
             if supported_scenes:
                 result['color_scene'] = {
@@ -1266,6 +1293,23 @@ class _ColorSettingCapability(_Capability):
                 }
 
         return result
+
+    @property
+    def support_color(self) -> bool:
+        features = self.state.attributes.get(ATTR_SUPPORTED_FEATURES, 0)
+        supported_color_modes = self.state.attributes.get(light.ATTR_SUPPORTED_COLOR_MODES, [])
+
+        if self.state.domain != light.DOMAIN:
+            return False
+
+        if features & light.SUPPORT_COLOR:  # legacy
+            return True
+
+        for color_mode in supported_color_modes:
+            if color_mode in [light.COLOR_MODE_RGB, light.COLOR_MODE_RGBW, light.COLOR_MODE_RGBWW, light.COLOR_MODE_HS]:
+                return True
+
+        return False
 
     @staticmethod
     def get_supported_scenes(scenes_map: dict[str, list[str]],
@@ -1310,7 +1354,7 @@ class _ColorSettingCapability(_Capability):
             return None
 
         for ha_effect in ha_effects:
-            for am in self.state.attributes[light.ATTR_EFFECT_LIST]:
+            for am in self.state.attributes.get(light.ATTR_EFFECT_LIST, []):
                 if str(am) == ha_effect:
                     return ha_effect
 
@@ -1325,14 +1369,7 @@ class RgbCapability(_ColorSettingCapability):
 
     def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
         """Test if capability is supported."""
-        if domain == light.DOMAIN:
-            supported_color_modes = attributes.get(light.ATTR_SUPPORTED_COLOR_MODES, [])
-
-            return features & light.SUPPORT_COLOR or \
-                light.COLOR_MODE_RGB in supported_color_modes or \
-                light.COLOR_MODE_HS in supported_color_modes
-
-        return False
+        return self.support_color
 
     def get_value(self):
         """Return the state value of this capability for this entity."""
@@ -1343,6 +1380,9 @@ class RgbCapability(_ColorSettingCapability):
                 rgb_color = color_util.color_hs_to_RGB(*hs_color)
 
         if rgb_color is not None:
+            if rgb_color == (255, 255, 255):
+                return None
+
             value = rgb_color[0]
             value = (value << 8) + rgb_color[1]
             value = (value << 8) + rgb_color[2]
@@ -1371,26 +1411,73 @@ class TemperatureKCapability(_ColorSettingCapability):
 
     def supported(self, domain: str, features: int, entity_config: dict[str, Any], attributes: dict[str, Any]):
         """Test if capability is supported."""
-        return domain == light.DOMAIN and (
-            features & light.SUPPORT_COLOR_TEMP or
-            light.color_temp_supported(attributes.get(light.ATTR_SUPPORTED_COLOR_MODES))
-        )
+        if domain == light.DOMAIN:
+            supported_color_modes = attributes.get(light.ATTR_SUPPORTED_COLOR_MODES, [])
+
+            if features & light.SUPPORT_COLOR_TEMP or light.color_temp_supported(supported_color_modes):
+                return True
+            elif light.COLOR_MODE_RGBW in supported_color_modes:
+                return True
+            elif light.COLOR_MODE_RGB in supported_color_modes or light.COLOR_MODE_HS in supported_color_modes:
+                return True
+
+        return False
 
     def get_value(self):
         """Return the state value of this capability for this entity."""
         temperature_mired = self.state.attributes.get(light.ATTR_COLOR_TEMP)
+        supported_color_modes = self.state.attributes.get(light.ATTR_SUPPORTED_COLOR_MODES, [])
 
         if temperature_mired is not None:
             return color_util.color_temperature_mired_to_kelvin(temperature_mired)
 
+        if light.COLOR_MODE_RGBW in supported_color_modes:
+            rgbw_color = self.state.attributes.get(light.ATTR_RGBW_COLOR)
+            if rgbw_color is not None:
+                if rgbw_color[:3] == (0, 0, 0) and rgbw_color[3] > 0:
+                    return self.default_white_temperature_k
+                elif rgbw_color[:3] == (255, 255, 255):
+                    return self.cold_white_temperature_k
+
+            return None
+
+        if light.COLOR_MODE_RGB in supported_color_modes or light.COLOR_MODE_HS in supported_color_modes:
+            rgb_color = self.state.attributes.get(light.ATTR_RGB_COLOR)
+            if rgb_color is not None and rgb_color == (255, 255, 255):
+                return self.default_white_temperature_k
+
+            return None
+
     async def set_state(self, data, state):
         """Set device state."""
-        await self.hass.services.async_call(
-            light.DOMAIN,
-            light.SERVICE_TURN_ON, {
-                ATTR_ENTITY_ID: self.state.entity_id,
-                light.ATTR_KELVIN: state['value']
-            }, blocking=True, context=data.context)
+        features = self.state.attributes.get(ATTR_SUPPORTED_FEATURES, 0)
+        supported_color_modes = self.state.attributes.get(light.ATTR_SUPPORTED_COLOR_MODES, [])
+        value = state['value']
+        service_data = {}
+
+        if features & light.SUPPORT_COLOR_TEMP or \
+                light.color_temp_supported(self.state.attributes.get(light.ATTR_SUPPORTED_COLOR_MODES, [])):
+            service_data[light.ATTR_KELVIN] = value
+
+        elif light.COLOR_MODE_RGBW in supported_color_modes:
+            if value == self.default_white_temperature_k:
+                service_data[light.ATTR_RGBW_COLOR] = (0, 0, 0, self.state.attributes.get(light.ATTR_BRIGHTNESS, 255))
+            else:
+                service_data[light.ATTR_RGBW_COLOR] = (255, 255, 255, 0)
+
+        elif light.COLOR_MODE_RGB in supported_color_modes or light.COLOR_MODE_HS in supported_color_modes:
+            service_data[light.ATTR_RGB_COLOR] = (255, 255, 255)
+
+        if service_data:
+            service_data[ATTR_ENTITY_ID] = self.state.entity_id
+            await self.hass.services.async_call(
+                light.DOMAIN, light.SERVICE_TURN_ON, service_data, blocking=True, context=data.context
+            )
+        else:
+            raise SmartHomeError(
+                ERR_NOT_SUPPORTED_IN_CURRENT_MODE,
+                f'Unsupported value {value!r} for instance {self.instance} of {self.state.entity_id}'
+            )
 
 
 @register_capability
@@ -1405,7 +1492,7 @@ class ColorSceneCapability(_ColorSettingCapability):
             return bool(
                 ColorSceneCapability.get_supported_scenes(
                     ColorSceneCapability.get_scenes_map_from_config(entity_config),
-                    attributes[light.ATTR_EFFECT_LIST] or []
+                    attributes.get(light.ATTR_EFFECT_LIST, [])
                 )
             )
 
