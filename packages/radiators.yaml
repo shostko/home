@@ -9,8 +9,8 @@ radiators:
         path: radiator_temp_calibration.yaml
         input:
           source_sensor: sensor.hall_temperature
-          target_climate: climate.moes_radiator_actuator_1_climate
-          mqtt_name: "Moes_Radiator_Actuator_1"
+          target_climate: climate.moes_radiator_actuator_3_climate
+          mqtt_name: "Moes_Radiator_Actuator_3"
           log_area: "в зале"
 
     - alias: Bedroom Radiator Temp Calibration
@@ -31,6 +31,6 @@ radiators:
         path: radiator_temp_calibration.yaml
         input:
           source_sensor: sensor.kitchen_temperature
-          target_climate: climate.moes_radiator_actuator_3_climate
-          mqtt_name: "Moes_Radiator_Actuator_3"
+          target_climate: climate.moes_radiator_actuator_1_climate
+          mqtt_name: "Moes_Radiator_Actuator_1"
           log_area: "на кухне"

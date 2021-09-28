@@ -80,7 +80,7 @@ cards:
     cards:
       - type: sensor
         name: Радиатор
-        entity: sensor.moes_radiator_actuator_1_position
+        entity: sensor.moes_radiator_actuator_3_position
       - type: thermostat
         name: ' '
-        entity: climate.moes_radiator_actuator_1_climate
+        entity: climate.moes_radiator_actuator_3_climate

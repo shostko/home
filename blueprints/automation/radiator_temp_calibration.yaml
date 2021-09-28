@@ -29,9 +29,25 @@ blueprint:
 mode: restart
 
 trigger:
+  # Запущен HA
+  - platform: homeassistant
+    event: start
+  # Перезагружены автоматизации
+  - platform: event
+    event_type: automation_reloaded
+  # Сенсор температуры в комнате стал доступен
+  - platform: state
+    entity_id: !input source_sensor
+    from: 'unavailable'
+  # Радиатор стал доступен
+  - platform: state
+    entity_id: !input target_climate
+    from: 'unavailable'
+  # Изменение температуры на радиаторе
   - platform: state
     entity_id: !input source_sensor
     for: "00:01:00"
+  # Изменение температуры в комнате
   - platform: state
     entity_id: !input target_climate
     attribute: local_temperature
