@@ -14,3 +14,4 @@ id_rsa
 sftp-config.json
 zigbee2mqtt/*
 !zigbee2mqtt/devices.yaml
+home-assistant.log.*
