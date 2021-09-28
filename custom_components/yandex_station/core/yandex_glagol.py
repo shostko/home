@@ -8,9 +8,9 @@ from asyncio import Future, Task
 from typing import Callable, Optional, Dict
 
 from aiohttp import ClientWebSocketResponse, WSMsgType, ClientConnectorError
+from zeroconf import ServiceBrowser, Zeroconf, ServiceStateChange
 
 from custom_components.yandex_station.core.yandex_session import YandexSession
-from zeroconf import ServiceBrowser, Zeroconf, ServiceStateChange
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -68,20 +68,22 @@ class YandexGlagol:
             self.debug("Обновление IP-адреса устройства")
             self.url = f"wss://{self.device['host']}:{self.device['port']}"
             # force close session
-            await self.ws.close()
+            if self.ws:
+                await self.ws.close()
 
     async def stop(self):
         self.debug("Останавливаем локальное подключение")
         self.url = None
-        await self.ws.close()
+        if self.ws:
+            await self.ws.close()
 
     async def _connect(self, fails: int):
         self.debug("Локальное подключение")
 
-        if not self.device_token:
-            self.device_token = await self.get_device_token()
-
         try:
+            if not self.device_token:
+                self.device_token = await self.get_device_token()
+
             self.ws = await self.session.ws_connect(self.url, heartbeat=55,
                                                     ssl=False)
             await self.ping()
@@ -153,8 +155,8 @@ class YandexGlagol:
             return
 
         if fails:
-            # 15, 30, 60, 120, 240, 480
-            timeout = 15 * 2 ** min(fails - 1, 5)
+            # 30s, 60s, ... 5 min
+            timeout = 30 * min(fails, 10)
             self.debug(f"Таймаут до следующего подключения {timeout}")
             await asyncio.sleep(timeout)
 
