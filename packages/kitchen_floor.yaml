@@ -117,9 +117,9 @@ kitchen_floor:
             or
               is_state('binary_sensor.kitchen_floor_on_evening', 'on')
             %}
-              21
+              23
             {% else %}
-              19
+              20
             {% endif %}
       - choose:
         - conditions:
