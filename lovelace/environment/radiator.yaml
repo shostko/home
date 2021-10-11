@@ -15,11 +15,11 @@ cards:
                 entities:
                   - entity: sensor.hall_temperature
                     name: Сенсор
-                  - entity: sensor.moes_radiator_actuator_1_position
+                  - entity: sensor.moes_radiator_actuator_3_position
                     name: Положение
               - type: thermostat
                 name: ' '
-                entity: climate.moes_radiator_actuator_1_climate
+                entity: climate.moes_radiator_actuator_3_climate
               - type: entities
                 entities:
                   - entity: automation.hall_radiator_temp_calibration
@@ -47,11 +47,11 @@ cards:
                 entities:
                   - entity: sensor.kitchen_temperature
                     name: Сенсор
-                  - entity: sensor.moes_radiator_actuator_3_position
+                  - entity: sensor.moes_radiator_actuator_1_position
                     name: Положение
               - type: thermostat
                 name: ' '
-                entity: climate.moes_radiator_actuator_3_climate
+                entity: climate.moes_radiator_actuator_1_climate
               - type: entities
                 entities:
                   - entity: automation.kitchen_radiator_temp_calibration
@@ -60,9 +60,9 @@ cards:
         title: Положение
         hours_to_show: 24
         entities:
-          - entity: sensor.moes_radiator_actuator_1_position
+          - entity: sensor.moes_radiator_actuator_3_position
             name: Зал
           - entity: sensor.moes_radiator_actuator_2_position
             name: Спальня
-          - entity: sensor.moes_radiator_actuator_3_position
+          - entity: sensor.moes_radiator_actuator_1_position
             name: Кухня
