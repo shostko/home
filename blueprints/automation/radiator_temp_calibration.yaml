@@ -75,12 +75,12 @@ action:
     data_template:
       topic: zigbee2mqtt/{{ mqtt_name }}/set/local_temperature_calibration
       payload: "{{ target_calibration }}"
-  - service: notify.log
-    data:
-      title: "*Корректировка температуры {{ log_area }}*"
-      message: |-
-        Тригер: {{ trigger.description | replace("_","\_") }}
-        Сенсор: _{{ source_value }}_
-        Радиатор: _{{ target_value }}_
-        Текущая калибровка: _{{ current_calibration }}_
-        Новая калибровка: _{{ target_calibration }}_
+  # - service: notify.log
+  #   data:
+  #     title: "*Корректировка температуры {{ log_area }}*"
+  #     message: |-
+  #       Тригер: {{ trigger.description | replace("_","\_") }}
+  #       Сенсор: _{{ source_value }}_
+  #       Радиатор: _{{ target_value }}_
+  #       Текущая калибровка: _{{ current_calibration }}_
+  #       Новая калибровка: _{{ target_calibration }}_
