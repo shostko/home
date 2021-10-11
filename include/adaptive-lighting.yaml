@@ -74,7 +74,7 @@
   sunset_time: "20:00:00"
 - name: "Kitchen Work"
   lights: 
-    - light.kitchen_work
+    - light.kitchen_work_hack
   transition: 60
   initial_transition: 0
   interval: 300

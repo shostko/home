@@ -12,7 +12,7 @@ cards:
             name: Люстра
             icon: mdi:ceiling-light
           - type: light
-            entity: light.kitchen_work
+            entity: light.kitchen_work_hack
             name: Подсветка
             icon: mdi:led-strip-variant
           # - type: button

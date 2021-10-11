@@ -115,7 +115,7 @@ switch.kitchen_2_relay_l1:
   type: devices.types.light
   name: 'Гирлянда'
   room: 'Кухня'
-light.kitchen_work:
+light.kitchen_work_hack:
   type: devices.types.light
   name: 'Подсветка'
   room: 'Кухня'

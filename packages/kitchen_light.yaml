@@ -68,14 +68,56 @@ kitchen_light:
         name: Kitchen Lights
         entities:
           - light.kitchen_ceiling
-          - light.kitchen_work
+          - light.kitchen_work_hack
 
     light:
+      - platform: template
+        lights:
+          kitchen_work_hack:
+            friendly_name: "Kitchen Work Hacked"
+            unique_id: kitchen_work_hack
+            value_template: >-
+              {% 
+                if is_state('light.kitchen_work', 'on') 
+              and 
+                state_attr('light.kitchen_work', 'color_temp') | int < 370
+              %}
+                on
+              {% else %}
+                off
+              {% endif %}
+            turn_on:
+              service: light.turn_on
+              target:
+                entity_id: light.kitchen_work
+              data:
+                color_temp: 153
+                brightness: 255
+            turn_off:
+              service: light.turn_on
+              target:
+                entity_id: light.kitchen_work
+              data:
+                color_temp: 500
+                brightness: 1
+            set_level:
+              service: light.turn_on
+              target:
+                entity_id: light.kitchen_work
+              data:
+                color_temp: "{{ 365 - (brightness / 255 * (370-153)) | int }}"
+                brightness: 255
+            level_template: >-
+              {% if is_state('light.kitchen_work', 'on') %}
+                {{ ((state_attr('light.kitchen_work', 'color_temp') - 153) / (370-153) - 1) * -255 }}
+              {% else %}
+                0
+              {% endif %}
       - platform: group
         name: Kitchen Lights
         entities:
           - light.kitchen_ceiling
-          - light.kitchen_work
+          - light.kitchen_work_hack
 
     script:
       kitchen_lights_turn_on:
@@ -87,12 +129,12 @@ kitchen_light:
                 {% if is_state('input_select.kitchen_light_mode', 'Ceiling') %}
                   light.kitchen_ceiling
                 {% elif is_state('input_select.kitchen_light_mode', 'Work') %}
-                  light.kitchen_work
+                  light.kitchen_work_hack
                 {% elif is_state('input_select.kitchen_light_mode', 'Ceiling+Work') %}
                   {% if is_state('binary_sensor.tod_day', 'on') %}
                     light.kitchen_ceiling
                   {% elif is_state('binary_sensor.tod_night', 'on') %}
-                    light.kitchen_work
+                    light.kitchen_work_hack
                   {% endif %}
                 {% elif is_state('input_select.kitchen_light_mode', 'All') %}
                   light.kitchen_lights
@@ -339,4 +381,4 @@ kitchen_light:
           # Включить/выключить рабочую подсветку
           - service: light.toggle
             data_template:
-              entity_id: light.kitchen_work
+              entity_id: light.kitchen_work_hack
