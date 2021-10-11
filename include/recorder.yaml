@@ -84,3 +84,5 @@ include:
     - sensor.kitchen_filter_raw_sum
     - binary_sensor.kitchen_filter_raw_flows
     - sensor.kitchen_filter_raw_daily
+    # Time
+    - sensor.kitchen_floor_on_time

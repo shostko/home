@@ -5,16 +5,26 @@ icon: mdi:floor-plan
 panel: true
 cards:
   - type: custom:vertical-stack-in-card
-    title: Тёплый пол
     cards:
-      - type: history-graph
-        hours_to_show: 24
-        entities:
-          - entity: binary_sensor.kitchen_floor_relay
-            name: Реле
-          - entity: sensor.kitchen_floor_temp
-            name: Температура пола
-          - entity: sensor.kitchen_floor_target_temp
-            name: Температура целевая
-          - entity: sensor.kitchen_floor_relay_fake
-            name: Реле
+      - type: custom:vertical-stack-in-card
+        title: Тёплый пол
+        cards:
+          - type: history-graph
+            hours_to_show: 24
+            entities:
+              - entity: binary_sensor.kitchen_floor_relay
+                name: Реле
+              - entity: sensor.kitchen_floor_temp
+                name: Температура пола
+              - entity: sensor.kitchen_floor_target_temp
+                name: Температура целевая
+              - entity: sensor.kitchen_floor_relay_fake
+                name: Реле
+      - type: custom:vertical-stack-in-card
+        title: Время
+        cards:
+          - type: history-graph
+            hours_to_show: 24
+            entities:
+              - entity: sensor.kitchen_floor_on_time
+                name: Реле всего
