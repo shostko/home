@@ -157,10 +157,22 @@ def features_validate(features):
     return features
 
 
+def device_type_validate(device_type: str) -> str:
+    if device_type not in const.TYPES:
+        _LOGGER.error(
+            f'Device type {device_type!r} is not supported. '
+            f'See valid device types at https://yandex.ru/dev/dialogs/smart-home/doc/concepts/device-types.html'
+        )
+
+        raise vol.Invalid(f'Device type {device_type!r} is not supported.')
+
+    return device_type
+
+
 ENTITY_SCHEMA = vol.Schema({
     vol.Optional(const.CONF_NAME): cv.string,
     vol.Optional(const.CONF_ROOM): cv.string,
-    vol.Optional(const.CONF_TYPE): cv.string,
+    vol.Optional(const.CONF_TYPE): vol.All(cv.string, device_type_validate),
     vol.Optional(const.CONF_TURN_ON): cv.SERVICE_SCHEMA,
     vol.Optional(const.CONF_TURN_OFF): cv.SERVICE_SCHEMA,
     vol.Optional(const.CONF_FEATURES): vol.All(cv.ensure_list, features_validate),
@@ -197,9 +209,12 @@ SETTINGS_SCHEMA = vol.Schema({
 YANDEX_SMART_HOME_SCHEMA = vol.All(
     vol.Schema({
         vol.Optional(const.CONF_NOTIFIER, default=[]): vol.All(cv.ensure_list, [NOTIFIER_SCHEMA]),
-        vol.Optional(const.CONF_SETTINGS, default={}): SETTINGS_SCHEMA,
+        vol.Optional(const.CONF_SETTINGS, default={}): vol.All(lambda value: value or {}, SETTINGS_SCHEMA),
         vol.Optional(const.CONF_FILTER, default={}): entityfilter.FILTER_SCHEMA,
-        vol.Optional(const.CONF_ENTITY_CONFIG, default={}): {cv.entity_id: ENTITY_SCHEMA},
+        vol.Optional(const.CONF_ENTITY_CONFIG, default={}): vol.All(
+            lambda value: value or {},
+            {cv.entity_id: ENTITY_SCHEMA}
+        ),
     }, extra=vol.PREVENT_EXTRA))
 
 CONFIG_SCHEMA = vol.Schema({

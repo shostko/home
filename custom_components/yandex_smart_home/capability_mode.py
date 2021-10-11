@@ -58,17 +58,20 @@ class ModeCapability(AbstractCapability, ABC):
     @property
     def supported_ha_modes(self) -> list[str]:
         """Returns list of supported HA modes for this entity."""
-        return self.state.attributes.get(self.modes_list_attribute, [])
+        return self.state.attributes.get(self.modes_list_attribute, []) or []
 
     @property
     def modes_map(self) -> dict[str, list[str]]:
         """Return modes mapping between Yandex and HA."""
-        if CONF_ENTITY_MODE_MAP in self.entity_config:
-            modes = self.entity_config.get(CONF_ENTITY_MODE_MAP, {})
-            if self.instance in modes:
-                return modes.get(self.instance)
+        return self.modes_map_config or self.modes_map_default
 
-        return self.modes_map_default
+    @property
+    def modes_map_config(self) -> dict[str, list[str]] | None:
+        """Return modes mapping from entity configuration."""
+        if CONF_ENTITY_MODE_MAP in self.entity_config:
+            return self.entity_config[CONF_ENTITY_MODE_MAP].get(self.instance)
+
+        return None
 
     @property
     @abstractmethod
@@ -89,7 +92,7 @@ class ModeCapability(AbstractCapability, ABC):
                 rv = yandex_mode
                 break
 
-        if rv is None and self.modes_map_index_fallback:
+        if rv is None and self.modes_map_config is None and self.modes_map_index_fallback:
             try:
                 rv = self.modes_map_index_fallback[self.supported_ha_modes.index(ha_mode)]
             except (IndexError, ValueError, KeyError):
@@ -119,9 +122,10 @@ class ModeCapability(AbstractCapability, ABC):
                 if str(am).lower() == str(ha_mode).lower():
                     return am
 
-        for ha_idx, yandex_mode_idx in self.modes_map_index_fallback.items():
-            if yandex_mode_idx == yandex_mode:
-                return self.supported_ha_modes[ha_idx]
+        if self.modes_map_config is None:
+            for ha_idx, yandex_mode_idx in self.modes_map_index_fallback.items():
+                if yandex_mode_idx == yandex_mode:
+                    return self.supported_ha_modes[ha_idx]
 
         raise SmartHomeError(
             ERR_INVALID_VALUE,
@@ -408,10 +412,6 @@ class InputSourceCapability(ModeCapability):
         features = self.state.attributes.get(ATTR_SUPPORTED_FEATURES, 0)
 
         if self.state.domain == media_player.DOMAIN and features & media_player.SUPPORT_SELECT_SOURCE:
-            if len(self.supported_yandex_modes) == len(self.modes_map_index_fallback) and \
-                    len(self.supported_ha_modes) > len(self.modes_map_index_fallback):
-                return False
-
             return super().supported()
 
         return False
@@ -425,6 +425,9 @@ class InputSourceCapability(ModeCapability):
     def state_value_attribute(self) -> str | None:
         """Return HA attribute for state of this entity."""
         return media_player.ATTR_INPUT_SOURCE
+
+    def get_yandex_mode_by_ha_mode(self, ha_mode: str, hide_warnings=False) -> str | None:
+        return super().get_yandex_mode_by_ha_mode(ha_mode, hide_warnings=True)
 
     async def set_state(self, data: RequestData, state: dict[str, Any]):
         """Set device state."""
