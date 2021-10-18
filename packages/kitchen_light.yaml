@@ -91,7 +91,7 @@ kitchen_light:
               target:
                 entity_id: light.kitchen_work
               data:
-                color_temp: 153
+                color_temp: "{{ 370 - (state_attr('switch.adaptive_lighting_kitchen_work', 'brightness_pct') / 100 * (370-153)) | int }}"
                 brightness: 255
             turn_off:
               service: light.turn_on
@@ -105,7 +105,7 @@ kitchen_light:
               target:
                 entity_id: light.kitchen_work
               data:
-                color_temp: "{{ 365 - (brightness / 255 * (370-153)) | int }}"
+                color_temp: "{{ 370 - (brightness / 255 * (370-153)) | int }}"
                 brightness: 255
             level_template: >-
               {% if is_state('light.kitchen_work', 'on') %}
