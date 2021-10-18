@@ -1,35 +1,17 @@
 humidifier:
 
   fan:
-    # Recheck https://github.com/syssi/xiaomi_airpurifier
-    # - platform: xiaomi_miio
-    #   host: 192.168.1.104
-    #   model: zhimi.humidifier.ca1
-    #   name: "Humidifier #1"
-    #   token: !secret xiaomi_humidifier1_token
-    # - platform: xiaomi_miio
-    #   host: 192.168.1.203
-    #   model: zhimi.humidifier.ca1
-    #   name: "Humidifier #2"
-    #   token: !secret xiaomi_humidifier2_token
-    - platform: template
-      fans:
-        humidifier_1:
-          friendly_name: "Humidifier Fake #1"
-          value_template: "off"
-          turn_on:
-            - delay: "00:00:01"
-          turn_off:
-            - delay: "00:00:01"
-    - platform: template
-      fans:
-        humidifier_2:
-          friendly_name: "Humidifier Fake #2"
-          value_template: "off"
-          turn_on:
-            - delay: "00:00:01"
-          turn_off:
-            - delay: "00:00:01"
+    # https://github.com/syssi/xiaomi_airpurifier
+    - platform: xiaomi_miio_airpurifier
+      host: 192.168.1.104
+      model: zhimi.humidifier.ca1
+      name: "Humidifier #1"
+      token: !secret xiaomi_humidifier1_token
+    - platform: xiaomi_miio_airpurifier
+      host: 192.168.1.203
+      model: zhimi.humidifier.ca1
+      name: "Humidifier #2"
+      token: !secret xiaomi_humidifier2_token
 
   sensor:
     - platform: template
@@ -179,6 +161,16 @@ humidifier:
     - alias: Humidifier 1 speed changing
       id: Humidifier 1 speed changing
       trigger:
+        # Запущен HA
+        - platform: homeassistant
+          event: start
+        # Перезагружены автоматизации
+        - platform: event
+          event_type: automation_reloaded
+        # Сенсор температуры в комнате стал доступен
+        - platform: state
+          entity_id: fan.humidifier_1
+          from: 'unavailable'
         # Влажность > 50%
         - platform: numeric_state
           entity_id: sensor.hall_humidity
@@ -238,13 +230,14 @@ humidifier:
                       entity_id: fan.humidifier_1
                       state: "off"
                     # Нужный режим отличается от текущего
-                    - "{{ state_attr('fan.humidifier_1', 'speed') != target }}"
+                    - "{{ state_attr('fan.humidifier_1', 'preset_mode') != target }}"
               sequence:
                 # Установить режим
-                - service: fan.set_speed
-                  entity_id: fan.humidifier_1
+                - service: fan.set_preset_mode
+                  target:
+                    entity_id: fan.humidifier_1
                   data:
-                    speed: "{{ target }}"
+                    preset_mode: "{{ target }}"
                 # Сообщение в LOG
                 - service: notify.log
                   data_template:
@@ -292,6 +285,20 @@ humidifier:
     - alias: Humidifier 2 speed changing
       id: Humidifier 2 speed changing
       trigger:
+        # Запущен HA
+        - platform: homeassistant
+          event: start
+        # Перезагружены автоматизации
+        - platform: event
+          event_type: automation_reloaded
+        # Сенсор температуры в комнате стал доступен
+        - platform: state
+          entity_id: fan.humidifier_2
+          from: 'unavailable'
+        # Увлажнитель включился
+        - platform: state
+          entity_id: fan.humidifier_2
+          to: 'on'
         # Влажность > 50%
         - platform: numeric_state
           entity_id: sensor.bedroom_humidity
@@ -313,10 +320,6 @@ humidifier:
           entity_id: sensor.humidifier_2_water
           above: 90
           for: "00:01:00"
-        # Увлажнитель включился
-        - platform: state
-          entity_id: fan.humidifier_2
-          to: 'on'
       condition:
         # Влажность известна
         - "{{ states('sensor.bedroom_humidity') | float(-1000) > -1000 }}"
@@ -351,13 +354,14 @@ humidifier:
                       entity_id: fan.humidifier_2
                       state: "off"
                     # Нужный режим отличается от текущего
-                    - "{{ state_attr('fan.humidifier_2', 'speed') != target }}"
+                    - "{{ state_attr('fan.humidifier_2', 'preset_mode') != target }}"
               sequence:
                 # Установить режим
-                - service: fan.set_speed
-                  entity_id: fan.humidifier_2
+                - service: fan.set_preset_mode
+                  target:
+                    entity_id: fan.humidifier_2
                   data:
-                    speed: "{{ target }}"
+                    preset_mode: "{{ target }}"
                 # Сообщение в LOG
                 - service: notify.log
                   data_template:
