@@ -15,12 +15,6 @@ cards:
             entity: switch.cupboard_relay
             name: Шкаф
             icon: mdi:cupboard
-      - type: horizontal-stack
-        cards:
-          - type: button
-            entity: light.cabinet_desk_lamp
-            name: Настольная лампа
-            icon: mdi:desk-lamp
           - type: button
             entity: light.midesklamp1s_9133
             name: Настольная лампа

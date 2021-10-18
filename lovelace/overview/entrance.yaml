@@ -12,6 +12,10 @@ cards:
             name: Люстра
             icon: mdi:ceiling-light
           - type: button
+            entity: light.entrance_mirror
+            name: Зеркало
+            icon: mdi:account-circle-outline
+          - type: button
             entity: switch.entrance_wall_switch_left
             name: Корридор
             icon: mdi:coach-lamp

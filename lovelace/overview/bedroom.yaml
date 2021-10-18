@@ -15,10 +15,6 @@ cards:
             entity: switch.xiaomi_power_plug_1_switch
             name: Кровать
             icon: mdi:bed-king-outline
-          - type: button
-            entity: light.bedroom_mirror
-            name: Зеркало
-            icon: mdi:account-circle-outline
       - type: light
         entity: light.wled_maria_bed
         name: Кроватка
