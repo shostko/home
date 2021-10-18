@@ -7,6 +7,7 @@ import time
 import uuid
 from typing import Optional
 
+import yaml
 from homeassistant.components import shopping_list
 from homeassistant.components.media_player import SUPPORT_PAUSE, \
     SUPPORT_VOLUME_SET, SUPPORT_PREVIOUS_TRACK, \
@@ -53,8 +54,10 @@ CUSTOM = {
     'yandexstation': ['yandex:station', "Яндекс", "Станция"],
     'yandexstation_2': ['yandex:station-max', "Яндекс", "Станция Макс"],
     'yandexmini': ['yandex:station-mini', "Яндекс", "Станция Мини"],
+    'yandexmini_2': ['yandex:station-mini-2', "Яндекс", "Станция Мини 2"],
     'yandexmicro': ['yandex:station-lite', "Яндекс", "Станция Лайт"],
     'yandexmodule': ['yandex:module', "Яндекс", "Модуль"],
+    'yandexmodule_2': ['yandex:module-2', "Яндекс", "Модуль 2"],
     'lightcomm': ['yandex:dexp-smartbox', "DEXP", "Smartbox"],
     'elari_a98': ['yandex:elari-smartbeat', "Elari", "SmartBeat"],
     'linkplay_a98': ['yandex:irbis-a', "IRBIS", "A"],
@@ -508,8 +511,8 @@ class YandexStation(MediaPlayerEntity):
         })
 
     async def _set_brightness(self, value: str):
-        if self.device_platform != 'yandexstation_2':
-            _LOGGER.warning("Поддерживается только Яндекс.Станция Макс")
+        if self.device_platform not in ('yandexstation_2', 'yandexmini_2'):
+            _LOGGER.warning("Поддерживаются только станции с экраном")
             return
 
         device_config = await self.quasar.get_device_config(self.device)
@@ -548,6 +551,11 @@ class YandexStation(MediaPlayerEntity):
         self.hass.components.persistent_notification.async_create(
             f"{self.name} бета-тест: {device_config['beta']}"
         )
+
+    async def _set_settings(self, value: str):
+        data = yaml.safe_load(value)
+        for k, v in data.items():
+            await self.quasar.set_account_config(k, v)
 
     async def _shopping_list(self):
         if shopping_list.DOMAIN not in self.hass.data:
@@ -656,6 +664,9 @@ class YandexStation(MediaPlayerEntity):
             return
         elif media_type == 'beta':
             await self._set_beta(media_id)
+            return
+        elif media_type == 'settings':
+            await self._set_settings(media_id)
             return
 
         if self.local_state:
