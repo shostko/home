@@ -13,6 +13,8 @@ homeassistant:
   internal_url: http://192.168.1.2:8123
   customize: !include customize.yaml
   packages: !include_dir_merge_named packages
+  auth_providers:
+    - type: homeassistant
 
 http: 
   use_x_forwarded_for: true 
@@ -22,6 +24,11 @@ http:
 # Text to speech
 #tts:
 #  - platform: google_translate
+
+logger:
+  default: warning
+  logs:
+    homeassistant.components.mqtt: debug
 
 recorder:
   !include include/recorder.yaml
