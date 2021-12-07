@@ -37,11 +37,18 @@ DEVICES = [{
     # on/off, power measurement
     'lumi.plug': ["Xiaomi", "Plug", "ZNCZ02LM"],  # tested
     'lumi.plug.mitw01': ["Xiaomi", "Plug TW", "ZNCZ03LM"],
-    'lumi.plug.mmeu01': ["Xiaomi", "Plug EU", "ZNCZ04LM"],
     'lumi.plug.maus01': ["Xiaomi", "Plug US", "ZNCZ12LM"],
     'lumi.ctrl_86plug': ["Aqara", "Socket", "QBCZ11LM"],
     # 'lumi.plug.maeu01': ["Aqara", "Plug EU", "SP-EUC01"],
     'lumi_spec': [
+        ['0.12.85', 'load_power', 'power', 'sensor'],
+        ['0.13.85', None, 'energy', 'sensor'],
+        ['4.1.85', 'neutral_0', 'switch', 'switch'],  # or channel_0?
+    ]
+}, {
+    'lumi.plug.mmeu01': ["Xiaomi", "Plug EU", "ZNCZ04LM"],
+    'lumi_spec': [
+        ['0.11.85', 'load_voltage', 'voltage', 'sensor'],
         ['0.12.85', 'load_power', 'power', 'sensor'],
         ['0.13.85', None, 'energy', 'sensor'],
         ['4.1.85', 'neutral_0', 'switch', 'switch'],  # or channel_0?
@@ -230,7 +237,6 @@ DEVICES = [{
 }, {
     # temperature, humidity and pressure sensor
     'lumi.weather': ["Aqara", "TH Sensor", "WSDCGQ11LM"],
-    'lumi.sensor_ht.agl02': ["Aqara", "TH Sensor", "WSDCGQ12LM"],
     'lumi_spec': [
         ['0.1.85', 'temperature', 'temperature', 'sensor'],
         ['0.2.85', 'humidity', 'humidity', 'sensor'],
@@ -238,6 +244,14 @@ DEVICES = [{
         # old gateway fw v1.4.6 doesn't send voltage, only percent
         ['8.0.2001', 'battery', 'battery_percent', None],
         ['8.0.2008', 'voltage', 'battery', 'sensor'],
+    ]
+}, {
+    'lumi.sensor_ht.agl02': ["Aqara", "TH Sensor T1", "WSDCGQ12LM"],
+    'miot_spec': [
+        ['2.1', '2.1', 'temperature', 'sensor'],
+        ['2.2', '2.2', 'humidity', 'sensor'],
+        ['2.3', '2.3', 'pressure', 'sensor'],
+        ['3.1', '3.1', 'battery', 'sensor'],
     ]
 }, {
     # door window sensor
@@ -496,7 +510,7 @@ DEVICES = [{
 }]
 
 GLOBAL_PROP = {
-    # '8.0.2001': 'battery',
+    '8.0.2001': 'battery_percent',
     '8.0.2002': 'reset_cnt',
     '8.0.2003': 'send_all_cnt',
     '8.0.2004': 'send_fail_cnt',
@@ -507,6 +521,7 @@ GLOBAL_PROP = {
     '8.0.2009': 'pv_state',
     '8.0.2010': 'cur_state',
     '8.0.2011': 'pre_state',
+    '8.0.2012': 'tx_power',
     '8.0.2013': 'CCA',
     '8.0.2014': 'protect',
     '8.0.2015': 'power',
@@ -515,15 +530,21 @@ GLOBAL_PROP = {
     '8.0.2030': 'poweroff_memory',
     '8.0.2031': 'charge_protect',
     '8.0.2032': 'en_night_tip_light',
+    '8.0.2033': 'resend_succ_avg_cnt',
     '8.0.2034': 'load_s0',  # ctrl_dualchn
     '8.0.2035': 'load_s1',  # ctrl_dualchn
     '8.0.2036': 'parent',
+    '8.0.2037': 'invalid_count',
+    '8.0.2038': 'wakeup_num',
+    '8.0.2039': 'disturbance_num',
+    '8.0.2040': 'param_version',
     '8.0.2041': 'model',
     '8.0.2042': 'max_power',
     '8.0.2044': 'plug_detection',
     '8.0.2091': 'ota_progress',
     '8.0.2101': 'nl_invert',  # ctrl_86plug
     '8.0.2102': 'alive',
+    '8.0.2154': 'device_deletion_report',
     '8.0.2157': 'network_pan_id',
     '8.0.9001': 'battery_end_of_life'
 }
@@ -563,7 +584,7 @@ def get_device(zigbee_model: str) -> Optional[dict]:
             return {
                 # 'model': zigbee_model,
                 'device_manufacturer': desc[0],
-                'device_name': desc[0] + ' ' + desc[1],
+                'device_name': f"{desc[0]} {desc[1]}",
                 'device_model': (
                     zigbee_model + ' ' + desc[2]
                     if len(desc) > 2 else zigbee_model
@@ -583,7 +604,7 @@ def get_device(zigbee_model: str) -> Optional[dict]:
 def fix_xiaomi_props(model, params) -> dict:
     for k, v in params.items():
         if k in ('temperature', 'humidity', 'pressure'):
-            if model != 'lumi.airmonitor.acn01':
+            if model not in ('lumi.airmonitor.acn01', 'lumi.sensor_ht.agl02'):
                 params[k] = v / 100.0
         elif k == 'voltage' and v and v > 1000:
             # retain 'load_voltage': 234721
@@ -643,15 +664,6 @@ def get_buttons(device_model: str):
     return None
 
 
-def get_fw_ver(device: dict) -> int:
-    try:
-        # mod: 21 hw: 0 fw: 21
-        _, fw = device['fw_ver'].rsplit(' ', 1)
-        return int(fw)
-    except:
-        return 0
-
-
 async def get_ota_link(hass: HomeAssistantType, device: dict) -> Optional[str]:
     model = device['model']
     if RE_ZIGBEE_MODEL_TAIL.search(model):
@@ -660,7 +672,7 @@ async def get_ota_link(hass: HomeAssistantType, device: dict) -> Optional[str]:
     url = "https://raw.githubusercontent.com/Koenkk/zigbee-OTA/master/"
 
     # Xiaomi Plug should be updated to fw 30 before updating to latest fw
-    if model == 'lumi.plug' and get_fw_ver(device) < 30:
+    if model == 'lumi.plug' and 0 < device['fw_ver'] < 30:
         # waiting pull request https://github.com/Koenkk/zigbee-OTA/pull/49
         return url.replace('Koenkk', 'AlexxIT') + \
                'images/Xiaomi/LM15_SP_mi_V1.3.30_20170929_v30_withCRC.20180514181348.ota'

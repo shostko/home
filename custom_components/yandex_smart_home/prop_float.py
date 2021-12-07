@@ -31,7 +31,7 @@ from homeassistant.const import (
 )
 
 from . import const
-from .const import CONF_PRESSURE_UNIT, ERR_NOT_SUPPORTED_IN_CURRENT_MODE, STATE_EMPTY, STATE_NONE, STATE_NONE_UI
+from .const import ERR_NOT_SUPPORTED_IN_CURRENT_MODE, STATE_EMPTY, STATE_NONE, STATE_NONE_UI
 from .error import SmartHomeError
 from .prop import PREFIX_PROPERTIES, AbstractProperty, register_property
 
@@ -84,6 +84,19 @@ PROPERTY_FLOAT_INSTANCE_TO_UNITS = {
     const.FLOAT_INSTANCE_PM2_5_DENSITY: 'unit.density.mcg_m3',
     const.FLOAT_INSTANCE_PM10_DENSITY: 'unit.density.mcg_m3'
 }
+PROPERTY_FLOAT_VALUE_LIMITS = {
+    'unit.percent': (0, 100),
+    'unit.pressure.atm': (0, None),
+    'unit.pressure.pascal': (0, None),
+    'unit.pressure.bar': (0, None),
+    'unit.pressure.mmhg': (0, None),
+    'unit.ppm': (0, None),
+    'unit.watt': (0, None),
+    'unit.volt': (0, None),
+    'unit.ampere': (0, None),
+    'unit.illumination.lux': (0, None),
+    'unit.density.mcg_m3': (0, None),
+}
 
 
 class FloatProperty(AbstractProperty, ABC):
@@ -92,20 +105,33 @@ class FloatProperty(AbstractProperty, ABC):
     def parameters(self) -> dict[str, Any]:
         return {
             'instance': self.instance,
-            'unit': PROPERTY_FLOAT_INSTANCE_TO_UNITS[self.instance]
+            'unit': self.unit
         }
+
+    @property
+    def unit(self) -> str:
+        return PROPERTY_FLOAT_INSTANCE_TO_UNITS[self.instance]
 
     def float_value(self, value: Any) -> float | None:
         if str(value).lower() in (STATE_UNAVAILABLE, STATE_UNKNOWN, STATE_NONE, STATE_NONE_UI, STATE_EMPTY):
             return None
 
         try:
-            return float(value)
+            value = float(value)
         except (ValueError, TypeError):
             raise SmartHomeError(
                 ERR_NOT_SUPPORTED_IN_CURRENT_MODE,
                 f'Unsupported value {value!r} for instance {self.instance} of {self.state.entity_id}'
             )
+
+        if self.unit in PROPERTY_FLOAT_VALUE_LIMITS:
+            lower_limit, upper_limit = PROPERTY_FLOAT_VALUE_LIMITS.get(self.unit, (None, None))
+
+            if (lower_limit is not None and value < lower_limit) or \
+                    (upper_limit is not None and value > upper_limit):
+                return 0
+
+        return value
 
     def convert_value(self, value: Any, from_unit: str | None) -> float | None:
         float_value = self.float_value(value)
@@ -122,7 +148,7 @@ class FloatProperty(AbstractProperty, ABC):
 
             return round(
                 float_value * PRESSURE_TO_PASCAL[from_unit] *
-                PRESSURE_FROM_PASCAL[self.config.settings[CONF_PRESSURE_UNIT]], 2
+                PRESSURE_FROM_PASCAL[self.config.pressure_unit], 2
             )
         elif self.instance == const.FLOAT_INSTANCE_TVOC:
             return round(float_value * TVOC_CONCENTRATION_TO_MCG_M3.get(from_unit, 1), 2)
@@ -191,8 +217,12 @@ class PressureProperty(FloatProperty):
     def parameters(self) -> dict[str, Any]:
         return {
             'instance': self.instance,
-            'unit': PRESSURE_UNITS_TO_YANDEX_UNITS[self.config.settings[CONF_PRESSURE_UNIT]],
+            'unit': self.unit,
         }
+
+    @property
+    def unit(self) -> str:
+        return PRESSURE_UNITS_TO_YANDEX_UNITS[self.config.pressure_unit]
 
     def get_value(self) -> float | None:
         return self.convert_value(self.state.state, self.state.attributes.get(ATTR_UNIT_OF_MEASUREMENT))

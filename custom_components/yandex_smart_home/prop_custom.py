@@ -15,7 +15,6 @@ from .const import (
     CONF_ENTITY_PROPERTY_ENTITY,
     CONF_ENTITY_PROPERTY_TYPE,
     CONF_ENTITY_PROPERTY_UNIT_OF_MEASUREMENT,
-    CONF_PRESSURE_UNIT,
     ERR_DEVICE_UNREACHABLE,
     EVENT_INSTANCES,
     FLOAT_INSTANCES,
@@ -102,16 +101,12 @@ class CustomFloatEntityProperty(CustomEntityProperty, FloatProperty):
                  property_state: State, property_config: dict[str, str]):
         super().__init__(hass, config, state, property_state, property_config)
 
-        self.instance_unit = PROPERTY_FLOAT_INSTANCE_TO_UNITS[self.instance]
-
+    @property
+    def unit(self) -> str:
         if self.instance == const.FLOAT_INSTANCE_PRESSURE:
-            self.instance_unit = PRESSURE_UNITS_TO_YANDEX_UNITS[self.config.settings[CONF_PRESSURE_UNIT]]
+            return PRESSURE_UNITS_TO_YANDEX_UNITS[self.config.pressure_unit]
 
-    def parameters(self) -> dict[str, Any]:
-        return {
-            'instance': self.instance,
-            'unit': self.instance_unit
-        }
+        return PROPERTY_FLOAT_INSTANCE_TO_UNITS[self.instance]
 
     def get_value(self) -> float | None:
         value = super().get_value()
@@ -136,4 +131,4 @@ class CustomEventEntityProperty(CustomEntityProperty, EventProperty):
         return self.event_value(super().get_value())
 
     def supported(self) -> bool:
-        return bool(self.config.settings.get(const.CONF_BETA))
+        return bool(self.config.beta)
