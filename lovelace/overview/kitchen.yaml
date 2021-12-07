@@ -36,9 +36,15 @@ cards:
   - type: custom:vertical-stack-in-card
     cards:
       - type: glance
+        title: Протечка
         entities:
-          - entity: binary_sensor.kitchen_water_leak
-            name: Протечка
+          - entity: binary_sensor.lumi_wleak_9bbf
+            name: Фильтр
+          - entity: binary_sensor.lumi_wleak_dbd1
+            name: Пол
+      - type: divider
+      - type: glance
+        entities:
           - entity: binary_sensor.rf_smoke_0
             name: Задымление
           - entity: binary_sensor.kitchen_motion

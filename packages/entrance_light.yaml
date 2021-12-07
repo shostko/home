@@ -33,7 +33,7 @@ entrance_light:
             {{ 
               is_state('group.entrance_lights', 'on')
             and
-              is_state('binary_sensor.entrance_motion', 'off')
+              is_state('binary_sensor.lumi_motion_2639', 'off')
             }}
           icon_template: >-
             {% if is_state("binary_sensor.entrance_light_timer_required", "on") %}
@@ -110,7 +110,7 @@ entrance_light:
       trigger:
         # Появилось движение
         - platform: state
-          entity_id: binary_sensor.entrance_motion
+          entity_id: binary_sensor.lumi_motion_2639
           from: 'off'
           to: 'on'
       condition:

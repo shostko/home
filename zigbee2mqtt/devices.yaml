@@ -55,7 +55,7 @@
 '0x5c0272fffec242f4':
   friendly_name: Remote_2
 '0x00158d00022f9bbf':
-  friendly_name: Xiaomi_WaterLeak_1
+  friendly_name: lumi_wleak_9bbf
 '0x5c0272fffec242d7':
   friendly_name: Remote_1
 '0x00158d0002c5bee3':
@@ -76,3 +76,9 @@
   friendly_name: Kitchen_Motion_2
 '0x00158d0006692e2a':
   friendly_name: Bath_Motion_1
+'0x00158d0005802639':
+  friendly_name: lumi_motion_2639
+'0x00158d000578dbd1':
+  friendly_name: lumi_wleak_dbd1
+'0x00158d000578d9df':
+  friendly_name: lumi_wleack_d9df

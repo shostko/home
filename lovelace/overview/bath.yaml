@@ -70,7 +70,8 @@ cards:
             show_last_changed: true
           - entity: binary_sensor.toilet_motion
             name: Движение
-            show_last_changed: true
           - entity: input_boolean.toilet_occupied
             name: Занятость
             show_last_changed: true
+          - entity: binary_sensor.lumi_wleack_d9df
+            name: Протечка

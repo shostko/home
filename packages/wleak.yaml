@@ -1,0 +1,75 @@
+wleak:
+
+  automation:
+
+    - alias: Notify about Kitchen Water Leak
+      id: Notify about Kitchen Water Leak
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.lumi_wleak_9bbf
+          from: 'off'
+          to: 'on'
+      action:
+        - service: notify.family
+          data:
+            message: "Протечка на кухне!"
+
+    - alias: Notify about Kitchen Water Leak Stop
+      id: Notify about Kitchen Water Leak Stop
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.lumi_wleak_9bbf
+          from: 'on'
+          to: 'off'
+      action:
+        - service: notify.family
+          data:
+            message: "Протечка на кухне устранена..."
+
+    - alias: Notify about Kitchen Filters Leak
+      id: Notify about Kitchen Filters Leak
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.lumi_wleak_dbd1
+          from: 'off'
+          to: 'on'
+      action:
+        - service: notify.family
+          data:
+            message: "Протечка у фильтра!"
+
+    - alias: Notify about Kitchen Filters Leak Stop
+      id: Notify about Kitchen Filters Leak Stop
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.lumi_wleak_dbd1
+          from: 'on'
+          to: 'off'
+      action:
+        - service: notify.family
+          data:
+            message: "Протечка у фильтра устранена..."
+
+    - alias: Notify about Toilet Water Leak
+      id: Notify about Toilet Water Leak
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.lumi_wleack_d9df
+          from: 'off'
+          to: 'on'
+      action:
+        - service: notify.family
+          data:
+            message: "Протечка в туалете!"
+
+    - alias: Notify about Kitchen Toilet Water Stop
+      id: Notify about Toilet Water Leak Stop
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.lumi_wleack_d9df
+          from: 'on'
+          to: 'off'
+      action:
+        - service: notify.family
+          data:
+            message: "Протечка в туалете устранена..."

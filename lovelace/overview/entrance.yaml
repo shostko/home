@@ -51,7 +51,7 @@ cards:
           - entity: binary_sensor.entrance_lock_bottom
             name: Замок
             show_last_changed: true
-          - entity: binary_sensor.entrance_motion
+          - entity: binary_sensor.lumi_motion_2639
             name: Движение
             show_last_changed: true
       - type: divider

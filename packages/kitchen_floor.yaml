@@ -51,13 +51,17 @@ kitchen_floor:
       payload_not_available: "offline"
       device_class: "heat"
     - platform: tod
+      name: kitchen_floor_off_night
+      before: '06:50'
+      after: '22:00'
+    - platform: tod
       name: kitchen_floor_on_morning
-      after: '06:50'
+      after: '08:00'
       before: '09:00'
     - platform: tod
       name: kitchen_floor_on_day
-      after: '11:50'
-      before: '13:30'
+      after: '12:00'
+      before: '13:00'
     - platform: tod
       name: kitchen_floor_on_evening
       after: '17:30'
@@ -74,32 +78,38 @@ kitchen_floor:
         # Перезагружены автоматизации
         - platform: event
           event_type: automation_reloaded
-        # Утреннее включение
+        # Ночь
+        - platform: state
+          entity_id: binary_sensor.kitchen_floor_off_night
+          from: 'on'
+          to: 'off'
+        - platform: state
+          entity_id: binary_sensor.kitchen_floor_off_night
+          from: 'off'
+          to: 'on'
+        # Завтрак
         - platform: state
           entity_id: binary_sensor.kitchen_floor_on_morning
           from: 'on'
           to: 'off'
-        # Утреннее выключение
         - platform: state
           entity_id: binary_sensor.kitchen_floor_on_morning
           from: 'off'
           to: 'on'
-        # Дневное включение
+        # Обед
         - platform: state
           entity_id: binary_sensor.kitchen_floor_on_day
           from: 'on'
           to: 'off'
-        # Дневное выключение
         - platform: state
           entity_id: binary_sensor.kitchen_floor_on_day
           from: 'off'
           to: 'on'
-        # Вечернее включение
+        # Ужин
         - platform: state
           entity_id: binary_sensor.kitchen_floor_on_evening
           from: 'on'
           to: 'off'
-        # Вечернее выключение
         - platform: state
           entity_id: binary_sensor.kitchen_floor_on_evening
           from: 'off'
@@ -125,6 +135,8 @@ kitchen_floor:
               is_state('binary_sensor.kitchen_floor_on_evening', 'on')
             %}
               24
+            {% elif is_state('binary_sensor.kitchen_floor_off_night', 'on') %}
+              19
             {% else %}
               21
             {% endif %}
