@@ -15,10 +15,15 @@ cards:
             entity: switch.cupboard_relay
             name: Шкаф
             icon: mdi:cupboard
+      - type: horizontal-stack
+        cards:
           - type: button
             entity: light.midesklamp1s_9133
             name: Настольная лампа
             icon: mdi:desk-lamp
+          - type: button
+            entity: switch.xiaomi_socket_2
+            name: Грелка
       - type: entities
         entities:
           - type: section
@@ -71,4 +76,3 @@ cards:
         icon: mdi:usb-port
       - entity: switch.blinds_0
         name: Жалюзи
-

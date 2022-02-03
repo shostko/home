@@ -57,10 +57,10 @@ cards:
             entity: switch.xiaomi_power_plug_1_switch
             name: Кровать
             icon: mdi:bed-king-outline
-      - type: light
-        entity: light.wled_maria_bed
-        name: Кроватка
-        icon: mdi:led-strip-variant
+      # - type: light
+      #   entity: light.wled_maria_bed
+      #   name: Кроватка
+      #   icon: mdi:led-strip-variant
   - type: custom:vertical-stack-in-card
     title: Кухня
     cards:
@@ -104,10 +104,15 @@ cards:
             entity: switch.cupboard_relay
             name: Шкаф
             icon: mdi:cupboard
+      - type: horizontal-stack
+        cards:
           - type: button
             entity: light.midesklamp1s_9133
             name: Настольная лампа
             icon: mdi:desk-lamp
+          - type: button
+            entity: switch.xiaomi_socket_2
+            name: Грелка
   - type: custom:vertical-stack-in-card
     title: Прихожая
     cards:
