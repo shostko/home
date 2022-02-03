@@ -33,7 +33,7 @@ entrance_light:
             {{ 
               is_state('group.entrance_lights', 'on')
             and
-              is_state('binary_sensor.lumi_motion_2639', 'off')
+              is_state('binary_sensor.entrance_motion', 'off')
             }}
           icon_template: >-
             {% if is_state("binary_sensor.entrance_light_timer_required", "on") %}
@@ -108,16 +108,21 @@ entrance_light:
     - alias: Entrance puck ON (via sensor)
       id: Entrance puck ON (via sensor)
       trigger:
-        # Появилось движение
+        # Появилось движение в прихожей
         - platform: state
-          entity_id: binary_sensor.lumi_motion_2639
+          entity_id: binary_sensor.entrance_motion
+          from: 'off'
+          to: 'on'
+        # Появилось движение в корридоре
+        - platform: state
+          entity_id: binary_sensor.xiaomi_mijia_70f0_motion
           from: 'off'
           to: 'on'
       condition:
         # Освещённость ниже порога
         - condition: numeric_state
           entity_id: sensor.xiaomi_gateway_illuminance
-          below: 280
+          below: 300
         # Весь выключен
         - condition: state
           entity_id: group.entrance_lights
