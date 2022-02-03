@@ -1,20 +1,20 @@
 router:
 
-  binary_sensor:
-    - platform: rest
-      name: Guest Wifi
-      device_class: connectivity
-      resource: http://192.168.1.1/system_status_data.asp
-      authentication: basic
-      username: !secret router_user
-      password: !secret router_pwd
-      verify_ssl: false
-      value_template: >-
-        {% if value | regex_search("wifi2:\s{[a-z1-9:\s,]*guest:\s?(\d)[a-z:,]*}") %}
-          {{ value | regex_findall_index("wifi2:\s{[a-z1-9:\s,]*guest:\s?(\d)[a-z:,]*}", 0, true) }}
-        {% else %}
-          unavailable
-        {% endif %}
+  # binary_sensor:
+  #   - platform: rest
+  #     name: Guest Wifi
+  #     device_class: connectivity
+  #     resource: http://192.168.1.1/system_status_data.asp
+  #     authentication: basic
+  #     username: !secret router_user
+  #     password: !secret router_pwd
+  #     verify_ssl: false
+  #     value_template: >-
+  #       {% if value | regex_search("wifi2:\s{[a-z1-9:\s,]*guest:\s?(\d)[a-z:,]*}") %}
+  #         {{ value | regex_findall_index("wifi2:\s{[a-z1-9:\s,]*guest:\s?(\d)[a-z:,]*}", 0, true) }}
+  #       {% else %}
+  #         unavailable
+  #       {% endif %}
 
   rest_command:
     guest_wifi:
@@ -44,9 +44,9 @@ router:
               on
             {% elif is_state('input_select.guest_wifi_process', 'Disabling') %}
               off
-            {% else %}
-              {{ states('binary_sensor.guest_wifi') }}
             {% endif %}
+          # {% else %}
+          #   {{ states('binary_sensor.guest_wifi') }}
           turn_on:
             - service: rest_command.guest_wifi
               data:
