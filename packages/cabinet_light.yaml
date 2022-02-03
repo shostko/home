@@ -35,6 +35,10 @@ cabinet_light:
             entity_id: group.cabinet_lights
             state: 'on'
         action:
+          # Выключить грелку для ног в кабинете
+          - service: homeassistant.turn_off
+            data_template:
+              entity_id: switch.xiaomi_socket_2
           # Выключить весь свет
           - service: homeassistant.turn_off
             entity_id:
@@ -101,3 +105,22 @@ cabinet_light:
           - service: switch.turn_on
             entity_id:
               - switch.cabinet_wall_switch_right
+    
+      - alias: Cabinet Foot Heater OF (with Desk Lamp)
+        id: Cabinet Foot Heater OF (with Desk Lamp)
+        trigger:
+          # Выключилась настольная лампа
+          - platform: state
+            entity_id: light.midesklamp1s_9133
+            from: 'on'
+            to: 'off'
+        condition:
+          # Грелка включена
+          - condition: state
+            entity_id: switch.xiaomi_socket_2
+            state: 'on'
+        action:
+          # Выключить грелку для ног в кабинете
+          - service: homeassistant.turn_off
+            data_template:
+              entity_id: switch.xiaomi_socket_2
