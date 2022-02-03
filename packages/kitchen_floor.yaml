@@ -38,6 +38,10 @@ kitchen_floor:
       start: "{{ now().replace(hour=0, minute=0, second=0) }}"
       end: "{{ now() }}"
 
+  rest_command:
+    restart_lytko:
+      url: "http://192.168.1.170/reset"
+
   binary_sensor:
     - name: "Kitchen Floor Relay"
       unique_id: kitchen_floor_relay
@@ -51,23 +55,49 @@ kitchen_floor:
       payload_not_available: "offline"
       device_class: "heat"
     - platform: tod
-      name: kitchen_floor_off_night
-      before: '06:50'
-      after: '22:00'
+      name: kitchen_floor_off_night1
+      after: '21:30'
+      before: '00:00'
+    - platform: tod
+      name: kitchen_floor_off_night2
+      after: '00:00'
+      before: '07:00'
     - platform: tod
       name: kitchen_floor_on_morning
       after: '08:00'
-      before: '09:00'
+      before: '9:30'
     - platform: tod
       name: kitchen_floor_on_day
-      after: '12:00'
-      before: '13:00'
+      after: '12:30'
+      before: '13:30'
     - platform: tod
       name: kitchen_floor_on_evening
       after: '17:30'
-      before: '18:30'
+      before: '19:00'
 
   automation:
+    
+    - alias: "Kitchen floor: Restart"
+      id: "Kitchen floor: Restart"
+      trigger:
+        # Термостат недоступен в течении 5 минут
+        - platform: state
+          entity_id: climate.lytko_kitchen
+          to: 'unavailable'
+          for:
+            minutes: 5
+      action:
+        # Перезагрузить термостат
+        - service: rest_command.restart_lytko
+        # Подождать 30 секунд (загрузки термостата)
+        - delay: 30
+        # Сообщение
+        - service: notify.sergey
+          data:
+            title: "Термостат тёплого пола на кухне *перезагружен*!"
+            message: |-
+              Текущая: _{{ states('sensor.kitchen_floor_temp') | float }}_°C
+              Целевая: _{{ state_attr('climate.lytko_kitchen', 'temperature') | float }}_°C
 
     - alias: Kitchen floor adjust target
       id: Kitchen floor adjust target
@@ -80,11 +110,20 @@ kitchen_floor:
           event_type: automation_reloaded
         # Ночь
         - platform: state
-          entity_id: binary_sensor.kitchen_floor_off_night
+          entity_id: binary_sensor.kitchen_floor_off_night1
           from: 'on'
           to: 'off'
         - platform: state
-          entity_id: binary_sensor.kitchen_floor_off_night
+          entity_id: binary_sensor.kitchen_floor_off_night1
+          from: 'off'
+          to: 'on'
+        # Ночь
+        - platform: state
+          entity_id: binary_sensor.kitchen_floor_off_night2
+          from: 'on'
+          to: 'off'
+        - platform: state
+          entity_id: binary_sensor.kitchen_floor_off_night2
           from: 'off'
           to: 'on'
         # Завтрак
@@ -134,11 +173,15 @@ kitchen_floor:
             or
               is_state('binary_sensor.kitchen_floor_on_evening', 'on')
             %}
-              24
-            {% elif is_state('binary_sensor.kitchen_floor_off_night', 'on') %}
-              19
+              22
+            {% elif 
+              is_state('binary_sensor.kitchen_floor_off_night1', 'on') 
+            or
+              is_state('binary_sensor.kitchen_floor_off_night2', 'on') 
+            %}
+              20
             {% else %}
-              21
+              22
             {% endif %}
       - choose:
         - conditions:
