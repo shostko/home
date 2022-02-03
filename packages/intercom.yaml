@@ -23,7 +23,7 @@ intercom:
                       state: 'on'
               sequence:
                 # Отправить уведомление текстом
-                - service: notify.sergey
+                - service: notify.family
                   data:
                     message: "Звонок в домофон (откроется автоматически)"
             # Включён автосброс
@@ -33,12 +33,12 @@ intercom:
                   state: 'on'
               sequence:
                 # Отправить уведомление текстом
-                - service: notify.sergey
+                - service: notify.family
                   data:
                     message: "Звонок в домофон (сбросится автоматически)"
           default:
             # Отправить уведомление с кнопками Открыть/Сбросить
-            - service: notify.sergey
+            - service: notify.family
               data:
                 message: "Звонок в домофон"
                 data:

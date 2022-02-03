@@ -78,13 +78,24 @@
       for:
         minutes: 1
   action:
-    - service: notify.sergey
+    - service: notify.family
       data:
         message: "Входная дверь открыта дольше минуты"
     - wait_for_trigger:
         - platform: state
           entity_id: binary_sensor.entance_door_button
           to: 'off'
-    - service: notify.sergey
+    - service: notify.family
       data:
         message: "Входная дверь закрыта"
+
+- alias: 'Log: HA started'
+  id: 'Log: HA started'
+  trigger:
+    # Запущен HA
+    - platform: homeassistant
+      event: start
+  action:
+    - service: notify.sergey
+      data:
+        message: "Запущен HA"
