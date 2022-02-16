@@ -37,14 +37,30 @@ uart:
 
 esp32_ble_tracker:
 
+switch:
+  - platform: template
+    name: "MH-Z19 (1) Automatic Baseline Calibration"
+    optimistic: true
+    on_turn_on:
+      mhz19.abc_enable: mhz19_1
+    on_turn_off:
+      mhz19.abc_disable: mhz19_1
+
+button:
+  - platform: template
+    name: "MH-Z19 (1) Calibrate Zero"
+    id: mh_z19_1_calibration_zero
+    disabled_by_default: false
+    on_press:
+      - mhz19.calibrate_zero: mhz19_1
+
 sensor:
   - platform: mhz19
+    id: mhz19_1
     co2:
       name: "MH-Z19 (1) CO2"
     temperature:
       name: "MH-Z19 (1) Temperature"
-    update_interval: 30s
-    automatic_baseline_calibration: false
   - platform: xiaomi_lywsdcgq
     mac_address: 58:2D:34:35:D1:07
     temperature:
