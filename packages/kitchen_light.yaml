@@ -30,7 +30,7 @@ kitchen_light:
               and
                 is_state('binary_sensor.kitchen_motion', 'off')
               and
-                is_state('binary_sensor.kitchen_filter_drink_flows', 'off')
+                not is_state('binary_sensor.kitchen_filter_drink_flows', 'on')
               and
                 not is_state('input_select.kitchen_light_mode', 'None')
               }}
