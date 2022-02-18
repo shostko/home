@@ -35,7 +35,7 @@ cards:
     cards:
       - type: glance
         entities:
-          - entity: binary_sensor.ble_motion_hall
+          - entity: binary_sensor.qingping_motion_detector
             name: Движение 
             show_last_changed: true
       - type: divider
@@ -71,7 +71,7 @@ cards:
       - type: divider
       - type: sensor
         name: Освещённость
-        entity: sensor.ble_illuminance_hall
+        entity: sensor.qingping_motion_illuminance
   - type: entities
     entities:
       - entity: fan.humidifier_1

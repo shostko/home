@@ -114,3 +114,15 @@ sensor:
       name: "Xiaomi MiJia CB5B Humidity"
     battery_level:
       name: "Xiaomi MiJia CB5B Battery Level"
+
+binary_sensor:
+  - platform: xiaomi_cgpr1
+    name: "Qingping Motion Detector"
+    mac_address: 58:2D:34:60:2D:86
+    bindkey: "765ff054861658ecab62e4e7f827a650"
+    idle_time:
+      name: "Qingping Motion Idle Time"
+    battery_level:
+      name: "Qingping Motion Battery Level"
+    illuminance:
+      name: "Qingping Motion Illuminance"

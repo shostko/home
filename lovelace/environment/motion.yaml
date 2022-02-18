@@ -10,8 +10,10 @@ cards:
         title: Зал
         hours_to_show: 24
         entities:
-          - entity: binary_sensor.ble_motion_hall
+          - entity: binary_sensor.qingping_motion_detector
             name: qingping
+          - entity: sensor.qingping_motion_idle_time
+            name: idle
       - type: history-graph
         title: Кухня
         hours_to_show: 24
