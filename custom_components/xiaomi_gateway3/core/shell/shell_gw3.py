@@ -47,7 +47,7 @@ def sed(app: str, pattern: str, repl: str):
 # grep output to cloud and send it to MQTT, use awk because buffer
 PATCH_MIIO_MQTT = sed(
     "miio", "^ +miio_client .+$",
-    "pkill -f log/miio\nmiio_client -l 0 -o FILE_STORE -d $MIIO_PATH -n 128 | awk '/ot_agent_recv_handler_one.+(ble_event|properties_changed|heartbeat)|record_offline/{print $0;fflush()}' | mosquitto_pub -t log/miio -l &"
+    "pkill -f log/miio\nmiio_client -l 0 -o FILE_STORE -d $MIIO_PATH -n 128 | awk '/ot_agent_recv_handler_one.+(ble_event|properties_changed|heartbeat)|ot_agent_recv_handler_one.+?app_url/{print $0;fflush()}' | mosquitto_pub -t log/miio -l &"
 )
 # use patched silabs_ncp_bt from sourceforge and send stderr to MQTT
 PATCH_BLETOOTH_MQTT = sed(
@@ -182,7 +182,9 @@ class ShellGw3(TelnetShell):
         if md5 in await self.exec("md5sum /data/" + filename):
             return True
         elif url:
-            await self.exec(WGET.format(url, filename))
+            # files from sourceforge.net can take up to 3 minutes to download
+            # for Chinese users
+            await self.exec(WGET.format(url, filename), timeout=300)
             return await self.check_bin(filename, md5)
         else:
             return False

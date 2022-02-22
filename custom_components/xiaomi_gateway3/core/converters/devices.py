@@ -85,7 +85,6 @@ Support levels:
 Nice project with MIoT spec description: https://home.miot-spec.com/
 """
 from .base import *
-from .const import *
 from .mibeacon import *
 from .stats import *
 from .zigbee import *
@@ -108,7 +107,7 @@ DEVICES = [{
         Converter("discovered_mac", mi="8.0.2110", parent="data"),
         Converter("pair_command", mi="8.0.2111", parent="data"),
         Converter("added_device", mi="8.0.2084", parent="data"),
-        Converter("remove_did", mi="8.0.2082", parent="data"),
+        RemoveDIDConv("remove_did", mi="8.0.2082", parent="data"),
 
         # also updated from child devices OTAConv
         Converter("ota_progress", parent="data"),
@@ -120,7 +119,9 @@ DEVICES = [{
         MapConv("command", "select", map=GW3_COMMANDS),
         Converter("data", "select"),
 
-        CloudLinkConv("cloud_link", "binary_sensor", enabled=False),
+        CloudLinkConv(
+            "cloud_link", "binary_sensor", mi="8.0.2155", enabled=False
+        ),
         BoolConv("led", "switch", mi="6.p.6", enabled=False),
 
         GatewayStats,
@@ -929,7 +930,7 @@ DEVICES += [{
         ZTuyaPowerOnConv("power_on_state", "select", enabled=False),
         ZTuyaLEDModeConv("led", "select", enabled=False),
         ZTuyaChildModeConv("child_mode", "switch", enabled=False),
-        ZTuyaModeConv("mode", "select", enabled=False)
+        ZTuyaPlugModeConv("mode", "select", enabled=False)
     ],
 }, {
     # tuya relay with neutral, 1 gang
@@ -946,7 +947,19 @@ DEVICES += [{
     "spec": [
         ZOnOffConv("channel_1", "switch", ep=1, bind=True),
         ZOnOffConv("channel_2", "switch", ep=2, bind=True),
-        ZTuyaPowerOn, ZTuyaMode,
+        ZTuyaPowerOn,
+        ZTuyaPlugModeConv("mode", "select", enabled=False),
+    ],
+}, {
+    "TS004F": ["Tuya", "Wireless Four Button", "RSH-Zigbee-SC04"],
+    "spec": [
+        ZTuyaButtonConfig("action", "sensor"),
+        ZTuyaButtonConv("button_1", ep=1, bind=True),
+        ZTuyaButtonConv("button_2", ep=2, bind=True),
+        ZTuyaButtonConv("button_3", ep=3, bind=True),
+        ZTuyaButtonConv("button_4", ep=4, bind=True),
+        ZBatteryConv("battery", "sensor", bind=True),
+        ZTuyaButtonModeConv("mode", "select", enabled=False),
     ],
 }, {
     # very simple relays
