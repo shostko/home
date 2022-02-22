@@ -25,11 +25,9 @@ humidifier:
             {{ 
               is_state('fan.humidifier_1', 'on') 
             and
-              (
-                state_attr('fan.humidifier_1', 'motor_speed') > 0
-              or
-                state_attr('fan.humidifier_1', 'depth') > 125
-              )
+              state_attr('fan.humidifier_1', 'motor_speed') > 0
+            and
+              not state_attr('fan.humidifier_1', 'water_tank_detached')
             }}
         humidifier_1_hum:
           unique_id: humidifier_1_hum
@@ -40,32 +38,17 @@ humidifier:
             {{ 
               is_state('fan.humidifier_1', 'on') 
             and
-              (
-                state_attr('fan.humidifier_1', 'motor_speed') > 0
-              or
-                state_attr('fan.humidifier_1', 'depth') > 125
-              )
+              state_attr('fan.humidifier_1', 'motor_speed') > 0
+            and
+              not state_attr('fan.humidifier_1', 'water_tank_detached')
             }}
         humidifier_1_water:
           unique_id: humidifier_1_water
           friendly_name: "Humidifier #1 Water Level"
           unit_of_measurement: '%'
-          value_template: >
-            {% set depth = state_attr('fan.humidifier_1', 'depth') | int %}
-            {%- if depth > 125 -%}
-              detached
-            {%- elif depth < 11 -%}
-              0
-            {%- else -%}
-              {{ ((depth - 10) / 115 * 100) | int }}
-            {% endif %}
+          value_template: "{{ state_attr('fan.humidifier_1', 'water_level') }}"
           availability_template: "{{ not is_state('fan.humidifier_1', 'unavailable') }}"
-          icon_template: >-
-            {% if states('sensor.humidifier_1_water') | int > 30 %}
-              mdi:waves
-            {% else %}
-              mdi:wave
-            {% endif %}
+          icon_template: "{{ iif(states('sensor.humidifier_1_water') | int > 30, 'mdi:waves', 'mdi:wave') }}"
         humidifier_2_temp:
           unique_id: humidifier_2_temp
           friendly_name: "Humidifier #2 Temperature"
@@ -75,11 +58,9 @@ humidifier:
             {{ 
               is_state('fan.humidifier_2', 'on') 
             and
-              (
-                state_attr('fan.humidifier_2', 'motor_speed') > 0
-              or
-                state_attr('fan.humidifier_2', 'depth') > 125
-              )
+              state_attr('fan.humidifier_2', 'motor_speed') > 0
+            and
+              not state_attr('fan.humidifier_2', 'water_tank_detached')
             }}
         humidifier_2_hum:
           unique_id: humidifier_2_hum
@@ -90,32 +71,17 @@ humidifier:
             {{ 
               is_state('fan.humidifier_2', 'on') 
             and
-              (
-                state_attr('fan.humidifier_2', 'motor_speed') > 0
-              or
-                state_attr('fan.humidifier_2', 'depth') > 125
-              )
+              state_attr('fan.humidifier_2', 'motor_speed') > 0
+            and
+              not state_attr('fan.humidifier_2', 'water_tank_detached')
             }}
         humidifier_2_water:
           unique_id: humidifier_2_water
           friendly_name: "Humidifier #2 Water Level"
           unit_of_measurement: '%'
-          value_template: >
-            {% set depth = state_attr('fan.humidifier_2', 'depth') | int %}
-            {%- if depth > 125 -%}
-              detached
-            {%- elif depth < 11 -%}
-              0
-            {%- else -%}
-              {{ ((depth - 10) / 115 * 100) | int }}
-            {% endif %}
+          value_template: "{{ state_attr('fan.humidifier_2', 'water_level') }}"
           availability_template: "{{ not is_state('fan.humidifier_2', 'unavailable') }}"
-          icon_template: >-
-            {% if states('sensor.humidifier_2_water') | int > 30 %}
-              mdi:waves
-            {% else %}
-              mdi:wave
-            {% endif %}
+          icon_template: "{{ iif(states('sensor.humidifier_2_water') | int > 30, 'mdi:waves', 'mdi:wave') }}"
     
   automation:
     
@@ -169,7 +135,7 @@ humidifier:
           event_type: automation_reloaded
         # Сенсор температуры в комнате стал доступен
         - platform: state
-          entity_id: fan.humidifier_1
+          entity_id: sensor.hall_humidity
           from: 'unavailable'
         # Влажность > 50%
         - platform: numeric_state
@@ -239,9 +205,40 @@ humidifier:
                   data:
                     preset_mode: "{{ target }}"
                 # Сообщение в LOG
-                - service: notify.log
-                  data_template:
-                    message: "Увлажнитель в зале переведён в режим {{ target }}"
+                # - service: notify.log
+                #   data_template:
+                #     message: "Увлажнитель в зале переведён в режим {{ target }}"
+    
+    - alias: Humidifier 1 brightness
+      id: Humidifier 1 brightness
+      trigger:
+        # Запущен HA
+        - platform: homeassistant
+          event: start
+        # Перезагружены автоматизации
+        - platform: event
+          event_type: automation_reloaded
+        # Подсветка включена более минуты          
+        - platform: numeric_state
+          entity_id: fan.humidifier_1
+          attribute: led_brightness
+          below: 2 # 0=Bright, 1=Dimm, 2=Off
+          for: "00:01:00"
+      condition:
+        - condition: numeric_state
+          entity_id: fan.humidifier_1
+          attribute: led_brightness
+          below: 2 # 0=Bright, 1=Dimm, 2=Off
+      action:
+        # Выключить подсветку кнопок
+        - service: xiaomi_miio_airpurifier.fan_set_led_brightness
+          data:
+            entity_id: fan.humidifier_1
+            brightness: 2 # 0=Bright, 1=Dimm, 2=Off
+        # Сообщение
+        - service: notify.sergey
+          data_template:
+            message: "Увлажнитель в зале: подсветка кнопок выключена"
 
     - alias: Humidifier 2 is off
       id: Humidifier 2 is off
@@ -293,12 +290,8 @@ humidifier:
           event_type: automation_reloaded
         # Сенсор температуры в комнате стал доступен
         - platform: state
-          entity_id: fan.humidifier_2
+          entity_id: sensor.bedroom_humidity
           from: 'unavailable'
-        # Увлажнитель включился
-        - platform: state
-          entity_id: fan.humidifier_2
-          to: 'on'
         # Влажность > 50%
         - platform: numeric_state
           entity_id: sensor.bedroom_humidity
@@ -320,6 +313,10 @@ humidifier:
           entity_id: sensor.humidifier_2_water
           above: 90
           for: "00:01:00"
+        # Увлажнитель включился
+        - platform: state
+          entity_id: fan.humidifier_2
+          to: 'on'
       condition:
         # Влажность известна
         - "{{ states('sensor.bedroom_humidity') | float(-1000) > -1000 }}"
@@ -363,6 +360,37 @@ humidifier:
                   data:
                     preset_mode: "{{ target }}"
                 # Сообщение в LOG
-                - service: notify.log
-                  data_template:
-                    message: "Увлажнитель в спальне переведён в режим {{ target }}"
+                # - service: notify.log
+                #   data_template:
+                #     message: "Увлажнитель в спальне переведён в режим {{ target }}"
+    
+    - alias: Humidifier 2 brightness
+      id: Humidifier 2 brightness
+      trigger:
+        # Запущен HA
+        - platform: homeassistant
+          event: start
+        # Перезагружены автоматизации
+        - platform: event
+          event_type: automation_reloaded
+        # Подсветка включена более минуты          
+        - platform: numeric_state
+          entity_id: fan.humidifier_2
+          attribute: led_brightness
+          below: 2 # 0=Bright, 1=Dimm, 2=Off
+          for: "00:01:00"
+      condition:
+        - condition: numeric_state
+          entity_id: fan.humidifier_2
+          attribute: led_brightness
+          below: 2 # 0=Bright, 1=Dimm, 2=Off
+      action:
+        # Выключить подсветку кнопок
+        - service: xiaomi_miio_airpurifier.fan_set_led_brightness
+          data:
+            entity_id: fan.humidifier_2
+            brightness: 2 # 0=Bright, 1=Dimm, 2=Off
+        # Сообщение
+        - service: notify.sergey
+          data_template:
+            message: "Увлажнитель в спальне: подсветка кнопок выключена"
