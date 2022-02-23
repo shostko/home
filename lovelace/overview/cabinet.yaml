@@ -57,8 +57,7 @@ cards:
       - type: horizontal-stack
         cards:
           - type: button
-            # entity: light.wled_aqua
-            entity: light.wled_parents
+            entity: light.wled_aqua
             name: Свет
             icon: mdi:lightbulb-on-outline
           - type: button
