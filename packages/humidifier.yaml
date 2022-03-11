@@ -96,7 +96,7 @@ humidifier:
       condition:
         - condition: numeric_state
           entity_id: sensor.humidifier_1_water
-          above: 3
+          above: 10
       action:
         # Сообщение
         - service: notify.sergey
@@ -109,7 +109,7 @@ humidifier:
         # Воды почти нету
         - platform: numeric_state
           entity_id: sensor.humidifier_1_water
-          below: 4
+          below: 11
           for: "00:00:10"
       condition:
         - condition: state
@@ -251,7 +251,7 @@ humidifier:
       condition:
         - condition: numeric_state
           entity_id: sensor.humidifier_2_water
-          above: 3
+          above: 10
       action:
         # Сообщение
         - service: notify.sergey
@@ -264,7 +264,7 @@ humidifier:
         # Воды почти нету
         - platform: numeric_state
           entity_id: sensor.humidifier_2_water
-          below: 4
+          below: 11
           for: "00:00:10"
       condition:
         - condition: state
