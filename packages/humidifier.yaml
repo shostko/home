@@ -96,7 +96,7 @@ humidifier:
       condition:
         - condition: numeric_state
           entity_id: sensor.humidifier_1_water
-          above: 10
+          above: 20
       action:
         # Сообщение
         - service: notify.sergey
@@ -109,7 +109,7 @@ humidifier:
         # Воды почти нету
         - platform: numeric_state
           entity_id: sensor.humidifier_1_water
-          below: 11
+          below: 21
           for: "00:00:10"
       condition:
         - condition: state
@@ -251,12 +251,31 @@ humidifier:
       condition:
         - condition: numeric_state
           entity_id: sensor.humidifier_2_water
-          above: 10
+          above: 20
       action:
         # Сообщение
         - service: notify.sergey
           data_template:
-            message: "Увлажнитель в спальне выключен, хотя уровень воды {{ states('sensor.humidifier_1_water') }}%"
+            message: "Увлажнитель в спальне выключен, хотя уровень воды {{ states('sensor.humidifier_2_water') }}%"
+        # Выключить текущую автоматизацию для предотравщения отправки дублирующих сообщений
+        - service: automation.turn_off
+          data:
+            entity_id: automation.humidifier_2_is_off
+            stop_actions: false
+
+    - alias: Humidifier 2 is on
+      id: Humidifier 2 is on
+      trigger:
+        # Увлажнитель включен
+        - platform: state
+          entity_id: fan.humidifier_2
+          to: 'on'
+          for: "00:01:00"
+      action:
+        # Включить автоматизацию про выключенный увлажнитель
+        - service: automation.turn_on
+          data:
+            entity_id: automation.humidifier_2_is_off
 
     - alias: Humidifier 2 no water
       id: Humidifier 2 no water
@@ -264,7 +283,7 @@ humidifier:
         # Воды почти нету
         - platform: numeric_state
           entity_id: sensor.humidifier_2_water
-          below: 11
+          below: 21
           for: "00:00:10"
       condition:
         - condition: state
