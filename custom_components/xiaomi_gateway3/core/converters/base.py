@@ -209,8 +209,17 @@ class TiltAngleConv(Converter):
 
 class CloudLinkConv(Converter):
     def decode(self, device: "XDevice", payload: dict, value: str):
-        value = json.loads(value)
-        payload[self.attr] = bool(value["cloud_link"])
+        if isinstance(value, str):
+            value = json.loads(value)["cloud_link"]
+        payload[self.attr] = bool(value)
+
+
+class ResetsConv(Converter):
+    def decode(self, device: "XDevice", payload: dict, value: int):
+        if 'resets0' not in device.extra:
+            device.extra['resets0'] = value
+        payload['new_resets'] = value - device.extra['resets0']
+        super().decode(device, payload, value)
 
 
 class ClimateConv(Converter):
@@ -441,7 +450,7 @@ Channel2_MI31 = Converter("channel_2", "switch", mi="3.p.1")
 
 # global props
 LUMI_GLOBALS = {
-    "8.0.2002": Converter("resets", "sensor"),
+    "8.0.2002": ResetsConv("resets", "sensor"),
     "8.0.2022": Converter("fw_ver", "sensor"),
     "8.0.2036": ParentConv("parent", "sensor"),
     "8.0.2091": OTAConv("ota_progress", "sensor"),

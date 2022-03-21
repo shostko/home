@@ -398,14 +398,14 @@ DEVICES += [{
     "spec": [
         MapConv("motor", "cover", mi="14.2.85", map=MOTOR),
         Converter("position", mi="1.1.85", parent="motor"),
-        MapConv("run_state", mi="14.4.85", map=RUN_STATE),
+        MapConv("run_state", mi="14.4.85", map=RUN_STATE, parent="motor"),
     ],
 }, {
     "lumi.curtain.hagl04": ["Aqara", "Curtain B1 EU", "ZNCLDJ12LM"],
     "spec": [
         MapConv("motor", "cover", mi="14.2.85", map=MOTOR),
         Converter("position", mi="1.1.85", parent="motor"),
-        MapConv("run_state", mi="14.4.85", map=RUN_STATE),
+        MapConv("run_state", mi="14.4.85", map=RUN_STATE, parent="motor"),
         Converter("battery", "sensor", mi="8.0.2001"),
         MapConv("power_mode", mi="14.5.85", map={
             1: "adapter", 3: "battery", 4: "charging"
@@ -550,8 +550,8 @@ DEVICES += [{
             0: "stop", 1: "close", 2: "open"
         }),
         Converter("target_position", mi="2.p.4"),
-        CurtainPosConv("position", mi="2.p.5"),
-        MapConv("run_state", mi="2.p.6", map=RUN_STATE),
+        CurtainPosConv("position", mi="2.p.5", parent="motor"),
+        MapConv("run_state", mi="2.p.6", map=RUN_STATE, parent="motor"),
         Converter("battery", "sensor", mi="3.p.4"),  # percent
         Converter("motor_reverse", "switch", mi="2.p.7", enabled=False),
         MapConv("battery_low", "binary_sensor", mi="3.p.1", map=BATTERY_LOW,
@@ -1062,6 +1062,15 @@ DEVICES += [{
         ZBrightnessConv("brightness", parent="light"),
     ],
 }, {
+    "TRADFRI bulb E14 WS opal 600lm": [
+        "IKEA", "Bulb E14 WS opal 600lm", "LED1738G7"
+    ],
+    "spec": [
+        ZOnOffConv("light", "light"),
+        ZXiaomiBrightnessConv("brightness", parent="light"),
+        ZXiaomiColorTempConv("color_temp", parent="light")
+    ],
+}, {
     "TRADFRI remote control": [
         "IKEA", "TRADFRI remote control", "E1524/E1810"
     ],
@@ -1220,6 +1229,7 @@ DEVICES += [{
     997: ["Yeelight", "Mesh Spotlight", "YLSD04YL"],  # flex
     1771: ["Xiaomi", "Mesh Bulb", "MJDP09YL"],  # flex
     1772: ["Xiaomi", "Mesh Downlight", "MJTS01YL/MJTS003"],  # flex
+    3291: ["Yeelight", "Mesh Downlight M1", "YLSD001"],  # flex
     2076: ["Yeelight", "Mesh Downlight M2", "YLTS02YL/YLTS04YL"],  # flex
     2342: ["Yeelight", "Mesh Bulb M2", "YLDP25YL/YLDP26YL"],  # flex
     "support": 4,  # @AlexxIT TODO: power_on_state values
@@ -1262,7 +1272,7 @@ DEVICES += [{
                         mink=3000, maxk=6400),
     ]
 }, {
-    1945: ["Unknown", "Mesh Wall Switch", "DHKG01ZM"],
+    1945: ["Xiaomi", "Mesh Wall Switch", "DHKG01ZM"],
     "spec": [
         Converter("switch", "switch", mi="2.p.1"),
         Converter("led", "switch", mi="10.p.1", enabled=False),
@@ -1330,6 +1340,8 @@ DEVICES += [{
         Converter("switch", "switch", mi="2.p.1"),
         Converter("humidity", "sensor", mi="6.p.1"),
         Converter("temperature", "sensor", mi="6.p.7"),
+        BoolConv("wireless", "switch", mi="2.p.2", enabled=False),
+        Converter("baby_mode", "switch", mi="11.p.1", enabled=False),
     ]
 }, {
     2716: ["Xiaomi", "Mesh Double Wall Switch", "ZNKG02HL"],
@@ -1338,6 +1350,9 @@ DEVICES += [{
         Converter("channel_2", "switch", mi="3.p.1"),
         Converter("humidity", "sensor", mi="6.p.1"),
         Converter("temperature", "sensor", mi="6.p.7"),
+        BoolConv("wireless_1", "switch", mi="2.p.2", enabled=False),
+        BoolConv("wireless_2", "switch", mi="3.p.2", enabled=False),
+        Converter("baby_mode", "switch", mi="11.p.1", enabled=False),
     ]
 }, {
     2717: ["Xiaomi", "Mesh Triple Wall Switch", "ZNKG03HL/ISA-KG03HL"],

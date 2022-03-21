@@ -209,7 +209,7 @@ class XDevice:
         if stats:
             kwargs["entities"] = {self.type: "sensor"}
 
-        for key in ("global", self.model, self.mac, self.did):
+        for key in (self.type, self.model, self.mac, self.did):
             if key in gateway.defaults:
                 update(kwargs, gateway.defaults[key])
 
@@ -396,14 +396,14 @@ class XDevice:
             if entity.subscribed_attrs & attrs:
                 entity.async_set_state(value)
                 # noinspection PyProtectedMember
-                if entity._added:
+                if entity.added:
                     entity.async_write_ha_state()
 
     def update_available(self):
         for entity in self.entities.values():
             entity.async_update_available()
             # noinspection PyProtectedMember
-            if entity._added:
+            if entity.added:
                 entity.async_write_ha_state()
 
 

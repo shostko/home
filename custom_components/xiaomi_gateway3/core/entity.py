@@ -79,14 +79,12 @@ ICONS = {
     MESH: "mdi:bluetooth",
     ZIGBEE: "mdi:zigbee",
     "action": "mdi:bell",
-    "alarm": "mdi:shield-home",
     "child_mode": "mdi:baby-carriage",
     "conductivity": "mdi:flower",
     "gas_density": "mdi:google-circles-communities",
     "group": "mdi:lightbulb-group",
     "idle_time": "mdi:timer",
     "led": "mdi:led-off",
-    "moisture": "mdi:water-percent",
     "outlet": "mdi:power-socket-us",
     "pair": "mdi:zigbee",
     "plug": "mdi:power-plug",
@@ -153,8 +151,26 @@ ENTITY_CATEGORIES = {
 
 STATE_TIMEOUT = timedelta(minutes=10)
 
+try:
+    # new from Hass 2022.3.3
+    # noinspection PyUnresolvedReferences
+    from homeassistant.helpers.entity import EntityPlatformState
 
-class XEntity(Entity):
+
+    class XEntityBase(Entity):
+        @property
+        def added(self) -> bool:
+            return self._platform_state == EntityPlatformState.ADDED
+
+except ImportError:
+    class XEntityBase(Entity):
+        @property
+        def added(self) -> bool:
+            # noinspection PyUnresolvedReferences
+            return self._added
+
+
+class XEntity(XEntityBase):
     # duplicate here because typing problem
     _attr_extra_state_attributes: dict = None
 
