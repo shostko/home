@@ -133,6 +133,52 @@ entrance_light:
           entity_id: light.xiaomi_gateway_light
           data:
             brightness: 64
+
+    - alias: Entrance puck ON (via other rooms)
+      id: Entrance puck ON (via other rooms)
+      trigger:
+        # Выключился свет на кухне
+        - platform: state
+          entity_id: light.kitchen_lights
+          from: 'on'
+          to: 'off'
+        # Выключился свет в туалете
+        - platform: state
+          entity_id: light.toilet_lights
+          from: 'on'
+          to: 'off'
+        # Выключился свет в ванной
+        - platform: state
+          entity_id: light.bath_lights
+          from: 'on'
+          to: 'off'
+      condition:
+        # Солнце за горизонтом
+        - condition: state
+          entity_id: sun.sun
+          state: 'below_horizon'
+        # Весь свет в прихожей выключен
+        - condition: state
+          entity_id: group.entrance_lights
+          state: 'off'
+        # Весь свет на кухне выключен
+        - condition: state
+          entity_id: light.kitchen_lights
+          state: 'off'
+        # Весь свет в туалете выключен
+        - condition: state
+          entity_id: light.toilet_lights
+          state: 'off'
+        # Весь свет в ванной выключен
+        - condition: state
+          entity_id: light.bath_lights
+          state: 'off'
+      action:
+        # Включить шайбу
+        - service: light.turn_on
+          entity_id: light.xiaomi_gateway_light
+          data:
+            brightness: 32
     
     - alias: Entrance top light finished recording
       id: Entrance top light finished recording
