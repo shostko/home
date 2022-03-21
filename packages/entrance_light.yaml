@@ -152,6 +152,11 @@ entrance_light:
           entity_id: light.bath_lights
           from: 'on'
           to: 'off'
+        # Появилось движение в зале
+        - platform: state
+          entity_id: binary_sensor.qingping_motion_detector
+          from: 'off'
+          to: 'on'
       condition:
         # Солнце за горизонтом
         - condition: state
@@ -172,6 +177,10 @@ entrance_light:
         # Весь свет в ванной выключен
         - condition: state
           entity_id: light.bath_lights
+          state: 'off'
+        # Весь свет в зале выключен
+        - condition: state
+          entity_id: group.hall_ceiling_lights
           state: 'off'
       action:
         # Включить шайбу
