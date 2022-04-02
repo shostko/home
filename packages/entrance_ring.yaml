@@ -19,6 +19,100 @@ entrance_ring:
             service: switch.turn_on
             entity_id: switch.entrance_ring_mute
 
+  script:
+
+    entrance_door_opened_to_long:
+      mode: restart
+      sequence:
+        - service: notify.family
+          data:
+            message: "Входная дверь открыта дольше минуты"
+            data:
+              inline_keyboard:
+                - "{{ 'не включать сирену:/entrance_siren_cancel' }}"
+        - service: notify.tv
+          data:
+            message: "Входная дверь открыта дольше минуты"
+        - wait_template: "{{ is_state('binary_sensor.entance_door_button', 'off') }}"
+          timeout: "00:01:00"
+        - choose:
+            - conditions: "{{ wait.completed }}"
+              sequence:
+                - service: notify.family
+                  data:
+                    message: "Входная дверь закрыта"
+                - service: notify.tv
+                  data:
+                    message: "Входная дверь закрыта"
+          default:
+            - service: notify.family
+              data:
+                message: "Входная дверь открыта 2 минуты"
+                data:
+                  inline_keyboard:
+                    - "{{ 'не включать сирену:/entrance_siren_cancel' }}"
+            - service: notify.tv
+              data:
+                message: "Входная дверь открыта 2 минуты"
+            - service: xiaomi_aqara.play_ringtone
+              data:
+                gw_mac: 7811DCB2404D
+                ringtone_id: '11' # стук в дверь
+                ringtone_vol: 5 
+            - delay: 2
+            - service: xiaomi_aqara.stop_ringtone
+              data:
+                gw_mac: 7811DCB2404D
+            - wait_template: "{{ is_state('binary_sensor.entance_door_button', 'off') }}"
+              timeout: "00:01:00"
+            - choose:
+                - conditions: "{{ wait.completed }}"
+                  sequence:
+                    - service: notify.family
+                      data:
+                        message: "Входная дверь закрыта"
+                    - service: notify.tv
+                      data:
+                        message: "Входная дверь закрыта"
+              default:
+                - service: notify.family
+                  data:
+                    message: "Входная дверь открыта 3 минуты!!!\nВключаю сирену!"
+                    data:
+                      inline_keyboard:
+                        - "{{ 'выключить сирену:/entrance_siren_cancel' }}"
+                - service: notify.tv
+                  data:
+                    message: "Входная дверь открыта 3 минуты!!!"
+                - service: xiaomi_aqara.play_ringtone
+                  data:
+                    gw_mac: 7811DCB2404D
+                    ringtone_id: '1' # сирена сплошная
+                    ringtone_vol: 50
+                - wait_template: "{{ is_state('binary_sensor.entance_door_button', 'off') }}"
+                  timeout: "00:28:00"
+                - choose:
+                    - conditions: "{{ wait.completed }}"
+                      sequence:
+                        - service: xiaomi_aqara.stop_ringtone
+                          data:
+                            gw_mac: 7811DCB2404D
+                        - service: notify.family
+                          data:
+                            message: "Входная дверь закрыта"
+                        - service: notify.tv
+                          data:
+                            message: "Входная дверь закрыта"
+                        - service: xiaomi_aqara.play_ringtone
+                          data:
+                            gw_mac: 7811DCB2404D
+                            ringtone_id: '11' # стук в дверь
+                            ringtone_vol: 5
+                  default:
+                    - service: notify.family
+                      data:
+                        message: "Что-то пошло не так: дверь не закрыта в течении 30 минут!"
+
   automation:
 
     - alias: Entrance Ring Button Clicked
@@ -39,3 +133,54 @@ entrance_ring:
             message: "Звонок в дверь"
         # Подождать 10 секунд (throttle из-за mode = single + silent)
         - delay: 10
+
+    - alias: Entrance door opened
+      id: 'Entrance-door-opened'
+      mode: single
+      max_exceeded: silent
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.entance_door_button
+          from: 'off'
+          to: 'on'
+      action:
+        - service: xiaomi_aqara.play_ringtone
+          data:
+            gw_mac: 7811DCB2404D
+            ringtone_id: '10' # дверной звонок
+            ringtone_vol: 25
+        - service: notify.log
+          data:
+            message: "Входная дверь открыта"
+        - service: notify.tv
+          data:
+            message: "Входная дверь открыта"
+        # Подождать 5 секунд (throttle из-за mode = single + silent)
+        - delay: 5
+
+    - alias: Entrance door opened to long
+      id: 'Entrance-door-opened-to-long'
+      mode: restart
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.entance_door_button
+          to: 'on'
+          for:
+            minutes: 1
+      action:
+        - service: script.entrance_door_opened_to_long
+
+    - alias: 'Entrance: cancel siren'
+      id: 'Entrance-cancel-siren'
+      trigger:
+        # Из телеграмма пришла команда
+        - platform: event
+          event_type: telegram_callback
+          event_data:
+            data: '/entrance_siren_cancel'
+      action:
+        - service: xiaomi_aqara.stop_ringtone
+          data:
+            gw_mac: 7811DCB2404D
+        - service: homeassistant.turn_off
+          entity_id: script.entrance_door_opened_to_long

@@ -50,45 +50,6 @@
 
 # Log
 
-- alias: 'Log: Entrance door opened'
-  id: 'Log: Entrance door opened'
-  mode: single
-  max_exceeded: silent
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.entance_door_button
-      from: 'off'
-      to: 'on'
-  action:
-    - service: notify.log
-      data:
-        message: "Входная дверь открыта"
-    - service: notify.tv
-      data:
-        message: "Входная дверь открыта"
-    # Подождать 5 секунд (throttle из-за mode = single + silent)
-    - delay: 5
-
-- alias: 'Log: Entrance door opened to long'
-  id: 'Log: Entrance door opened to long'
-  trigger:
-    - platform: state
-      entity_id: binary_sensor.entance_door_button
-      to: 'on'
-      for:
-        minutes: 1
-  action:
-    - service: notify.family
-      data:
-        message: "Входная дверь открыта дольше минуты"
-    - wait_for_trigger:
-        - platform: state
-          entity_id: binary_sensor.entance_door_button
-          to: 'off'
-    - service: notify.family
-      data:
-        message: "Входная дверь закрыта"
-
 - alias: 'Log: HA started'
   id: 'Log: HA started'
   trigger:
