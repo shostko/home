@@ -446,6 +446,8 @@ sensor:
       - filter: time_simple_moving_average
         window_size: "00:03"
 
+template: !include_dir_merge_list include/templates
+
 webostv:
   - host: 192.168.1.130
     name: TV

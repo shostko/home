@@ -1,0 +1,32 @@
+- binary_sensor:
+    - name: 'Entrance activity'
+      unique_id: entrance_activity
+      delay_on: 1
+      auto_off: 30
+      state: 'on'
+      device_class: occupancy
+  trigger: 
+    # Открытие входной двери
+    - platform: state
+      entity_id: binary_sensor.entance_door_button
+      from: 'off'
+      to: 'on'
+    # Закрытие входной двери
+    - platform: state
+      entity_id: binary_sensor.entance_door_button
+      from: 'on'
+      to: 'off'
+    # Закрытие нижнего замка входной двери
+    - platform: state
+      entity_id: binary_sensor.entrance_lock_bottom
+      from: 'on'
+      to: 'off'
+    # Нажатия на выключатель у выхода
+    - platform: state
+      entity_id: sensor.xiaomi_wallswitch_3_action
+      from: 'None'
+    # Нажатие на кнопку зеркала
+    - platform: state
+      entity_id: binary_sensor.mirror_button
+      from: 'off'
+      to: 'on'

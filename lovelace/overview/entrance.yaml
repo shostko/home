@@ -42,17 +42,23 @@ cards:
     cards:
       - type: glance
         entities:
-          - entity: binary_sensor.door_window_sensor_158d0001fa3431
-            name: Входная дверь
-            show_last_changed: true
           - entity: binary_sensor.entance_door_button
-            name: Входная дверь (кнопка)
+            name: Входная дверь
             show_last_changed: true
           - entity: binary_sensor.entrance_lock_bottom
             name: Замок
             show_last_changed: true
-          - entity: binary_sensor.lumi_motion_2639
+          - entity: binary_sensor.entrance_motion
             name: Движение
+            show_last_changed: true
+      - type: divider
+      - type: glance
+        entities:
+          - entity: binary_sensor.entrance_presence
+            name: Присутствие
+            show_last_changed: true
+          - entity: binary_sensor.entrance_activity
+            name: Активность
             show_last_changed: true
       - type: divider
       - type: sensor

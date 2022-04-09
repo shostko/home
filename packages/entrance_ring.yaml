@@ -1,4 +1,29 @@
 entrance_ring:
+    
+  binary_sensor:
+  
+    - platform: template
+      sensors:
+        entrance_presence:
+          unique_id: entrance_presence
+          friendly_name: "Entrance presence"
+          device_class: occupancy
+          value_template: >-
+            {{ 
+              is_state('binary_sensor.entrance_activity', 'on')
+            or
+              is_state('binary_sensor.entrance_motion', 'on')
+            or
+              is_state('binary_sensor.xiaomi_mijia_70f0_motion', 'on')
+            }}
+          icon_template: >-
+            {% if is_state("binary_sensor.entrance_presence", "on") %}
+              mdi:account
+            {% elif is_state("binary_sensor.entrance_presence", "off") %}
+              mdi:account-off-outline
+            {% else %}
+              mdi:account-question-outline
+            {% endif %}
 
   switch:
 
@@ -144,11 +169,18 @@ entrance_ring:
           from: 'off'
           to: 'on'
       action:
-        - service: xiaomi_aqara.play_ringtone
-          data:
-            gw_mac: 7811DCB2404D
-            ringtone_id: '10' # дверной звонок
-            ringtone_vol: 25
+        - choose:
+            - conditions:
+                # В прихожей никого нет
+                - condition: state
+                  entity_id: binary_sensor.entrance_presence
+                  state: 'off'
+              sequence:
+                - service: xiaomi_aqara.play_ringtone
+                  data:
+                    gw_mac: 7811DCB2404D
+                    ringtone_id: '10' # дверной звонок
+                    ringtone_vol: 25
         - service: notify.log
           data:
             message: "Входная дверь открыта"
