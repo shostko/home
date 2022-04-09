@@ -11,9 +11,11 @@ from homeassistant.const import *
 from homeassistant.core import callback, State
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, \
     CONNECTION_ZIGBEE
-from homeassistant.helpers.entity import DeviceInfo, Entity
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.template import Template
 
+from .backward import ENTITY_CATEGORY_CONFIG, ENTITY_CATEGORY_DIAGNOSTIC, \
+    XEntityBase
 from .const import DOMAIN
 from .converters import Converter, GATEWAY, ZIGBEE, BLE, MESH, MESH_GROUP_MODEL
 from .device import XDevice
@@ -106,16 +108,6 @@ STATE_CLASSES = {
     DEVICE_CLASS_ENERGY: STATE_CLASS_TOTAL_INCREASING,
 }
 
-try:
-    # backward compatibility
-    from homeassistant.helpers.entity import EntityCategory
-
-    ENTITY_CATEGORY_CONFIG = EntityCategory.CONFIG
-    ENTITY_CATEGORY_DIAGNOSTIC = EntityCategory.DIAGNOSTIC
-except:
-    ENTITY_CATEGORY_CONFIG = "config"
-    ENTITY_CATEGORY_DIAGNOSTIC = "diagnostic"
-
 ENTITY_CATEGORIES = {
     BLE: ENTITY_CATEGORY_DIAGNOSTIC,
     GATEWAY: ENTITY_CATEGORY_DIAGNOSTIC,
@@ -151,24 +143,6 @@ ENTITY_CATEGORIES = {
 
 STATE_TIMEOUT = timedelta(minutes=10)
 
-try:
-    # new from Hass 2022.3.3
-    # noinspection PyUnresolvedReferences
-    from homeassistant.helpers.entity import EntityPlatformState
-
-
-    class XEntityBase(Entity):
-        @property
-        def added(self) -> bool:
-            return self._platform_state == EntityPlatformState.ADDED
-
-except ImportError:
-    class XEntityBase(Entity):
-        @property
-        def added(self) -> bool:
-            # noinspection PyUnresolvedReferences
-            return self._added
-
 
 class XEntity(XEntityBase):
     # duplicate here because typing problem
@@ -198,7 +172,7 @@ class XEntity(XEntityBase):
         self.entity_id = device.entity_id(conv)
 
         if conv.domain == "sensor":  # binary_sensor moisture problem
-            self._attr_unit_of_measurement = UNITS.get(attr)
+            self._attr_native_unit_of_measurement = UNITS.get(attr)
 
             if attr in STATE_CLASSES:
                 self._attr_state_class = STATE_CLASSES[attr]

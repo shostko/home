@@ -106,7 +106,8 @@ class MathConv(Converter):
             if self.multiply:
                 value *= self.multiply
             if self.round is not None:
-                value = round(value, self.round)
+                # convert to int when round is zero
+                value = round(value, self.round or None)
             payload[self.attr] = value
 
     def encode(self, device: "XDevice", payload: dict, value: float):
@@ -288,7 +289,8 @@ class LockConv(Converter):
     mask: int = 0
 
     def decode(self, device: "XDevice", payload: dict, value: int):
-        payload[self.attr] = bool(value & self.mask)
+        # Hass: On means open (unlocked), Off means closed (locked)
+        payload[self.attr] = not bool(value & self.mask)
 
 
 # to get natgas sensitivity value - write: {"res_name": "4.1.85", "value": 1}

@@ -22,8 +22,8 @@ from miio import (  # pylint: disable=import-error
     Fan,
     Fan1C,
     FanLeshow,
-    FanP5,
     FanMiot,
+    FanP5,
 )
 from miio.airfresh import (  # pylint: disable=import-error, import-error
     LedBrightness as AirfreshLedBrightness,
@@ -41,9 +41,6 @@ from miio.airhumidifier import (  # pylint: disable=import-error, import-error
 from miio.airhumidifier_jsq import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierJsqLedBrightness,
     OperationMode as AirhumidifierJsqOperationMode,
-)
-from miio.integrations.humidifier.deerma.airhumidifier_jsqs import (  # pylint: disable=import-error, import-error
-    OperationMode as AirhumidifierJsqsOperationMode,
 )
 from miio.airhumidifier_miot import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierMiotLedBrightness,
@@ -72,12 +69,13 @@ from miio.fan_common import (  # pylint: disable=import-error, import-error
 from miio.integrations.fan.leshow.fan_leshow import (  # pylint: disable=import-error, import-error
     OperationMode as FanLeshowOperationMode,
 )
+from miio.integrations.humidifier.deerma.airhumidifier_jsqs import (  # pylint: disable=import-error, import-error
+    OperationMode as AirhumidifierJsqsOperationMode,
+)
 import voluptuous as vol
 
 from homeassistant.components.fan import (
-    ATTR_SPEED,
     PLATFORM_SCHEMA,
-    SPEED_OFF,
     SUPPORT_DIRECTION,
     SUPPORT_OSCILLATE,
     SUPPORT_PRESET_MODE,
@@ -223,7 +221,10 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     }
 )
 
+SPEED_OFF = "off"
+
 ATTR_MODEL = "model"
+ATTR_SPEED = "speed"
 
 # Air Purifier
 ATTR_TEMPERATURE = "temperature"
@@ -1895,7 +1896,9 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
             self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ
 
-        self._preset_modes = [mode.name for mode in AirhumidifierMjjsqOperationMode]
+        self._preset_modes = [mode.name for mode in AirhumidifierMjjsqOperationMode
+                              if self._device_features & FEATURE_SET_WET_PROTECTION != 0
+                              or mode != AirhumidifierMjjsqOperationMode.WetAndProtect]
         self._state_attrs = {ATTR_MODEL: self._model}
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
