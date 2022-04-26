@@ -46,9 +46,32 @@ entrance_ring:
 
   script:
 
+    entrance_notify_camera_snapshot:
+      mode: queued
+      sequence:
+        - service: camera.snapshot
+          data:
+            entity_id: camera.sonoff_camera_1
+            filename: "/config/www/snapshots/sonoff_camera_1.jpg"
+        - delay: 2
+        - service: telegram_bot.send_photo
+          data_template:
+            target:
+              - !secret telegram_chat_log
+            file: "/config/www/snapshots/sonoff_camera_1.jpg"
+            disable_notification: true
+
+    entrance_notify_camera_snapshot_async:
+      mode: parallel
+      sequence:
+        - service: script.turn_on
+          target:
+            entity_id: script.entrance_notify_camera_snapshot
+
     entrance_door_opened_to_long:
       mode: restart
       sequence:
+        - service: script.entrance_notify_camera_snapshot_async
         - service: notify.family
           data:
             message: "Входная дверь открыта дольше минуты"
@@ -63,6 +86,7 @@ entrance_ring:
         - choose:
             - conditions: "{{ wait.completed }}"
               sequence:
+                - service: script.entrance_notify_camera_snapshot_async
                 - service: notify.family
                   data:
                     message: "Входная дверь закрыта"
@@ -70,6 +94,7 @@ entrance_ring:
                   data:
                     message: "Входная дверь закрыта"
           default:
+            - service: script.entrance_notify_camera_snapshot_async
             - service: notify.family
               data:
                 message: "Входная дверь открыта 2 минуты"
@@ -93,6 +118,7 @@ entrance_ring:
             - choose:
                 - conditions: "{{ wait.completed }}"
                   sequence:
+                    - service: script.entrance_notify_camera_snapshot_async
                     - service: notify.family
                       data:
                         message: "Входная дверь закрыта"
@@ -100,6 +126,7 @@ entrance_ring:
                       data:
                         message: "Входная дверь закрыта"
               default:
+                - service: script.entrance_notify_camera_snapshot_async
                 - service: notify.family
                   data:
                     message: "Входная дверь открыта 3 минуты!!!\nВключаю сирену!"
@@ -119,6 +146,7 @@ entrance_ring:
                 - choose:
                     - conditions: "{{ wait.completed }}"
                       sequence:
+                        - service: script.entrance_notify_camera_snapshot_async
                         - service: xiaomi_aqara.stop_ringtone
                           data:
                             gw_mac: 7811DCB2404D
@@ -137,6 +165,7 @@ entrance_ring:
                     - service: notify.family
                       data:
                         message: "Что-то пошло не так: дверь не закрыта в течении 30 минут!"
+                    - service: script.entrance_notify_camera_snapshot_async
 
   automation:
 
@@ -169,6 +198,7 @@ entrance_ring:
           from: 'off'
           to: 'on'
       action:
+        - service: script.entrance_notify_camera_snapshot_async
         - choose:
             - conditions:
                 # В прихожей никого нет
@@ -187,6 +217,7 @@ entrance_ring:
         - service: notify.tv
           data:
             message: "Входная дверь открыта"
+        - service: script.entrance_notify_camera_snapshot_async
         # Подождать 5 секунд (throttle из-за mode = single + silent)
         - delay: 5
 
