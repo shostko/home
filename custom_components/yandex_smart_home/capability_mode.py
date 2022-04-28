@@ -491,6 +491,7 @@ class FanSpeedCapabilityClimate(FanSpeedCapability):
         ],
         const.MODE_INSTANCE_MODE_TURBO: [
             climate.const.FAN_FOCUS,
+            const.FAN_SPEED_HIGHEST,
             const.TION_FAN_SPEED_5,
         ],
         const.MODE_INSTANCE_MODE_MAX: [

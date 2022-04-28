@@ -169,6 +169,10 @@ if MAJOR_VERSION >= 2022 or (MAJOR_VERSION == 2021 and MINOR_VERSION == 12):
     from homeassistant.components import button
     DOMAIN_TO_YANDEX_TYPES[button.DOMAIN] = TYPE_OTHER
 
+if MAJOR_VERSION >= 2022:
+    from homeassistant.components import input_button
+    DOMAIN_TO_YANDEX_TYPES[input_button.DOMAIN] = TYPE_OTHER
+
 DEVICE_CLASS_TO_YANDEX_TYPES = {
     (media_player.DOMAIN, media_player.DEVICE_CLASS_TV): TYPE_MEDIA_DEVICE_TV,
     (media_player.DOMAIN, media_player.DEVICE_CLASS_RECEIVER): TYPE_MEDIA_DEVICE_RECIEVER,
@@ -602,6 +606,9 @@ FAN_SPEED_MAX = 'max'
 
 # https://github.com/dmitry-k/yandex_smart_home/issues/347
 FAN_SPEED_MID = 'mid'
+
+# SmartIR
+FAN_SPEED_HIGHEST = 'highest'
 
 DEVICE_CLASS_BUTTON = 'button'
 
