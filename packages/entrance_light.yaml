@@ -154,7 +154,7 @@ entrance_light:
           to: 'off'
         # Появилось движение в зале
         - platform: state
-          entity_id: binary_sensor.qingping_motion_detector
+          entity_id: binary_sensor.hall_motion
           from: 'off'
           to: 'on'
       condition:

@@ -10,7 +10,7 @@ cards:
         title: Зал
         hours_to_show: 24
         entities:
-          - entity: binary_sensor.qingping_motion_detector
+          - entity: binary_sensor.hall_motion
             name: qingping
           - entity: sensor.qingping_motion_idle_time
             name: idle

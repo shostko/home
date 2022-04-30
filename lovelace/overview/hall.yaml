@@ -35,7 +35,7 @@ cards:
     cards:
       - type: glance
         entities:
-          - entity: binary_sensor.qingping_motion_detector
+          - entity: binary_sensor.hall_motion
             name: Движение 
             show_last_changed: true
       - type: divider

@@ -11,6 +11,13 @@ virtual_motion:
           device_class: motion
           value_template: "{{ is_state('binary_sensor.lumi_motion_2639', 'on') }}"
           availability_template: "{{ not is_state('binary_sensor.lumi_motion_2639', 'unavailable') }}"
+
+        hall_motion:
+          unique_id: hall_motion
+          friendly_name: "Hall Motion"
+          device_class: motion
+          value_template: "{{ is_state('binary_sensor.qingping_motion_detector', 'on') }}"
+          availability_template: "{{ not is_state('binary_sensor.qingping_motion_detector', 'unavailable') }}"
         
         toilet_motion:
           unique_id: toilet_motion

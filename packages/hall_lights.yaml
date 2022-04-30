@@ -24,6 +24,19 @@ hall_lights:
 
   automation:
 
+    - alias: 'Hall Lights off (via sensor)'
+      id: 'Hall-Lights-off-via-sensor'
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.hall_motion
+          to: 'off'
+          for:
+            minutes: 15
+      action:
+        - service: homeassistant.turn_off
+          data_template:
+            entity_id: group.hall_lights
+
     - alias: Hall Ceiling Lights TOGGLE
       id: Hall Ceiling Lights TOGGLE
       trigger:
