@@ -185,6 +185,16 @@ entrance_ring:
         - service: notify.tv
           data:
             message: "Звонок в дверь"
+        - choose:
+            - conditions:
+                # Настольная лампа в кабинете включена
+                - condition: state
+                  entity_id: light.midesklamp1s_9133
+                  state: 'on'
+              sequence:
+                - service: button.press
+                  target:
+                    entity_id: button.midesklamp1s_9133_identify
         # Подождать 10 секунд (throttle из-за mode = single + silent)
         - delay: 10
 
