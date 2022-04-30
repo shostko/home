@@ -1,0 +1,14 @@
+hall_tv:
+
+  automation:
+
+    - alias: 'Hall: TV turn ON'
+      id: 'Hall-TV-turn-ON'
+      trigger:
+        - platform: webostv.turn_on
+          entity_id: media_player.tv
+      action:
+        - service: remote.send_command
+          data:
+            entity_id: remote.broadlink_ir_bridge_remote
+            command: !secret ir_tv_power

@@ -175,11 +175,6 @@ camera:
     name: Sonoff-Camera-1
     input: -rtsp_transport tcp -i rtsp://rtsp:sonoff@192.168.1.93:554/av_stream/ch0
 
-switch:
-  - platform: broadlink
-    host: 192.168.1.69
-    mac: 'C8:F7:42:62:FB:3B'
-
 sensor:
   - platform: template
     sensors:
@@ -448,33 +443,6 @@ sensor:
 
 template: !include_dir_merge_list include/templates
 
-webostv:
-  - host: 192.168.1.130
-    name: TV
-    turn_on_action:
-      service: remote.send_command
-      data:
-        entity_id: remote.broadlink_ir_bridge_remote
-        command: !secret ir_tv_power
-    customize:
-      sources:
-        - HDMI1
-        - HDMI2
-        - HDMI3
-        - HDMI4
-        - LiveTV
-        - MEGOGO TV & Movies
-        - Netflix
-        - Tvigle
-        - YouTube
-        - ivi
-        - Kinopoisk HD
-
-media_player:
-  - platform: webostv
-    host:  192.168.1.130
-    name: TV
-
 yandex_station:
   username: !secret ya_username
   password: !secret ya_password
@@ -503,6 +471,3 @@ notify:
     services:
       - service: sergey
       - service: alexa
-  - name: tv
-    platform: webostv
-    host: 192.168.1.130
