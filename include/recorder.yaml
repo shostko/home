@@ -32,11 +32,12 @@ include:
     - binary_sensor.toilet_motion
     - binary_sensor.bath_motion
     - binary_sensor.bath_motion_1
-    - binary_sensor.qingping_motion_detector
+    - binary_sensor.hall_motion
     - sensor.qingping_motion_idle_time
     # Occupancy
     - input_boolean.toilet_occupied
     - input_boolean.bath_occupied
+    - binary_sensor.entrance_presence
     # Water leak
     - binary_sensor.kitchen_water_leak
     # Smoke detection
