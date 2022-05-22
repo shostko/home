@@ -75,3 +75,11 @@ cards:
             show_last_changed: true
           - entity: binary_sensor.lumi_wleack_d9df
             name: Протечка
+      - type: divider
+      - type: entities
+        entities:
+          - entity: switch.blitzwoolf_socket_1
+            name: Бойлер
+            icon: mdi:water-boiler
+          - entity: sensor.blitzwoolf_socket_1_power
+            name: Энергия
