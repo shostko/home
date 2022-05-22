@@ -47,7 +47,7 @@ good_morning:
                     attribute: volume_level
                     below: 1
                   - condition: template
-                    value_template: "{{ repeat.index <= 10 }}"
+                    value_template: "{{ repeat.index <= 7 }}"
                 sequence:
                   - wait_for_trigger:
                       - platform: state
