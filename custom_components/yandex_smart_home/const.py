@@ -1,7 +1,9 @@
 """Constants for Yandex Smart Home."""
 from homeassistant.components import (
     air_quality,
+    automation,
     binary_sensor,
+    button,
     camera,
     climate,
     cover,
@@ -9,6 +11,7 @@ from homeassistant.components import (
     group,
     humidifier,
     input_boolean,
+    input_button,
     input_text,
     light,
     lock,
@@ -20,7 +23,6 @@ from homeassistant.components import (
     vacuum,
     water_heater,
 )
-from homeassistant.const import MAJOR_VERSION, MINOR_VERSION
 
 DOMAIN = 'yandex_smart_home'
 CONFIG = 'config'
@@ -46,6 +48,7 @@ CONF_CLOUD_INSTANCE_PASSWORD = 'password'
 CONF_CLOUD_INSTANCE_CONNECTION_TOKEN = 'token'
 CONF_USER_ID = 'user_id'
 CONF_DEVICES_DISCOVERED = 'devices_discovered'
+CONF_COLOR_PROFILE = 'color_profile'
 CONF_ENTITY_CONFIG = 'entity_config'
 CONF_FILTER = 'filter'
 CONF_NAME = 'name'
@@ -53,10 +56,10 @@ CONF_ROOM = 'room'
 CONF_TYPE = 'type'
 CONF_TURN_ON = 'turn_on'
 CONF_TURN_OFF = 'turn_off'
+CONF_DEVICE_CLASS = 'device_class'
 CONF_FEATURES = 'features'
 CONF_SUPPORT_SET_CHANNEL = 'support_set_channel'
 CONF_STATE_UNKNOWN = 'state_unknown'
-CONF_CHANNEL_SET_VIA_MEDIA_CONTENT_ID = 'channel_set_via_media_content_id'  # Deprecated
 CONF_ENTITY_PROPERTY_ENTITY = 'entity'
 CONF_ENTITY_PROPERTY_TYPE = 'type'
 CONF_ENTITY_PROPERTY_ATTRIBUTE = 'attribute'
@@ -145,7 +148,10 @@ TYPES = (
 )
 
 DOMAIN_TO_YANDEX_TYPES = {
+    air_quality.DOMAIN: TYPE_SENSOR,
+    automation.DOMAIN: TYPE_OTHER,
     binary_sensor.DOMAIN: TYPE_SENSOR,
+    button.DOMAIN: TYPE_OTHER,
     camera.DOMAIN: TYPE_CAMERA,
     climate.DOMAIN: TYPE_THERMOSTAT,
     cover.DOMAIN: TYPE_OPENABLE_CURTAIN,
@@ -153,25 +159,18 @@ DOMAIN_TO_YANDEX_TYPES = {
     group.DOMAIN: TYPE_SWITCH,
     humidifier.DOMAIN: TYPE_HUMIDIFIER,
     input_boolean.DOMAIN: TYPE_SWITCH,
+    input_button.DOMAIN: TYPE_OTHER,
     input_text.DOMAIN: TYPE_SENSOR,
     light.DOMAIN: TYPE_LIGHT,
     lock.DOMAIN: TYPE_OPENABLE,
     media_player.DOMAIN: TYPE_MEDIA_DEVICE,
     scene.DOMAIN: TYPE_OTHER,
     script.DOMAIN: TYPE_OTHER,
+    sensor.DOMAIN: TYPE_SENSOR,
     switch.DOMAIN: TYPE_SWITCH,
     vacuum.DOMAIN: TYPE_VACUUM_CLEANER,
     water_heater.DOMAIN: TYPE_KETTLE,
-    sensor.DOMAIN: TYPE_SENSOR,
-    air_quality.DOMAIN: TYPE_SENSOR,
 }
-if MAJOR_VERSION >= 2022 or (MAJOR_VERSION == 2021 and MINOR_VERSION == 12):
-    from homeassistant.components import button
-    DOMAIN_TO_YANDEX_TYPES[button.DOMAIN] = TYPE_OTHER
-
-if MAJOR_VERSION >= 2022:
-    from homeassistant.components import input_button
-    DOMAIN_TO_YANDEX_TYPES[input_button.DOMAIN] = TYPE_OTHER
 
 DEVICE_CLASS_TO_YANDEX_TYPES = {
     (media_player.DOMAIN, media_player.DEVICE_CLASS_TV): TYPE_MEDIA_DEVICE_TV,
@@ -248,6 +247,8 @@ MODE_INSTANCES = (
     MODE_INSTANCE_WORK_SPEED,
 )
 
+VIDEO_STREAM_INSTANCE_GET_STREAM = 'get_stream'
+
 # https://yandex.ru/dev/dialogs/smart-home/doc/concepts/color_setting.html#discovery__discovery-parameters-color-setting-table__entry__75
 COLOR_SETTING_RGB = 'rgb'
 COLOR_SETTING_TEMPERATURE_K = 'temperature_k'
@@ -289,6 +290,59 @@ COLOR_SCENES = (
     COLOR_SCENE_SIREN,
     COLOR_SCENE_SUNRISE,
     COLOR_SCENE_SUNSET,
+)
+
+COLOR_NAME_RED = 'red'
+COLOR_NAME_CORAL = 'coral'
+COLOR_NAME_ORANGE = 'orange'
+COLOR_NAME_YELLOW = 'yellow'
+COLOR_NAME_LIME = 'lime'
+COLOR_NAME_GREEN = 'green'
+COLOR_NAME_EMERALD = 'emerald'
+COLOR_NAME_TURQUOISE = 'turquoise'
+COLOR_NAME_CYAN = 'cyan'
+COLOR_NAME_BLUE = 'blue'
+COLOR_NAME_MOONLIGHT = 'moonlight'
+COLOR_NAME_LAVENDER = 'lavender'
+COLOR_NAME_VIOLET = 'violet'
+COLOR_NAME_PURPLE = 'purple'
+COLOR_NAME_ORCHID = 'orchid'
+COLOR_NAME_MAUVE = 'mauve'
+COLOR_NAME_RASPBERRY = 'raspberry'
+COLOR_TEMPERATURE_NAME_FIERY_WHITE = 'fiery_white'
+COLOR_TEMPERATURE_NAME_SOFT_WHITE = 'soft_white'
+COLOR_TEMPERATURE_NAME_WARM_WHITE = 'warm_white'
+COLOR_TEMPERATURE_NAME_WHITE = 'white'
+COLOR_TEMPERATURE_NAME_DAYLIGHT = 'daylight'
+COLOR_TEMPERATURE_NAME_COLD_WHITE = 'cold_white'
+COLOR_TEMPERATURE_NAME_MISTY_WHITE = 'misty_white'
+COLOR_TEMPERATURE_NAME_HEAVENLY_WHITE = 'heavenly_white'
+COLOR_NAMES = (
+    COLOR_NAME_RED,
+    COLOR_NAME_CORAL,
+    COLOR_NAME_ORANGE,
+    COLOR_NAME_YELLOW,
+    COLOR_NAME_LIME,
+    COLOR_NAME_GREEN,
+    COLOR_NAME_EMERALD,
+    COLOR_NAME_TURQUOISE,
+    COLOR_NAME_CYAN,
+    COLOR_NAME_BLUE,
+    COLOR_NAME_MOONLIGHT,
+    COLOR_NAME_LAVENDER,
+    COLOR_NAME_VIOLET,
+    COLOR_NAME_PURPLE,
+    COLOR_NAME_ORCHID,
+    COLOR_NAME_MAUVE,
+    COLOR_NAME_RASPBERRY,
+    COLOR_TEMPERATURE_NAME_FIERY_WHITE,
+    COLOR_TEMPERATURE_NAME_SOFT_WHITE,
+    COLOR_TEMPERATURE_NAME_WARM_WHITE,
+    COLOR_TEMPERATURE_NAME_WHITE,
+    COLOR_TEMPERATURE_NAME_DAYLIGHT,
+    COLOR_TEMPERATURE_NAME_COLD_WHITE,
+    COLOR_TEMPERATURE_NAME_MISTY_WHITE,
+    COLOR_TEMPERATURE_NAME_HEAVENLY_WHITE
 )
 
 # https://yandex.ru/dev/dialogs/smart-home/doc/concepts/mode-instance-modes.html
@@ -535,9 +589,6 @@ PRESSURE_UNIT_ATM = 'atm'
 PRESSURE_UNIT_BAR = 'bar'
 PRESSURE_UNIT_MBAR = 'mbar'
 
-# 2021.8+
-ELECTRIC_CURRENT_MILLIAMPERE = 'mA'
-
 # Additional states
 STATE_NONE = 'none'
 STATE_NONE_UI = '-'
@@ -610,6 +661,7 @@ FAN_SPEED_MID = 'mid'
 # SmartIR
 FAN_SPEED_HIGHEST = 'highest'
 
+# Fake device class
 DEVICE_CLASS_BUTTON = 'button'
 
 MEDIA_PLAYER_FEATURE_VOLUME_MUTE = 'volume_mute'
