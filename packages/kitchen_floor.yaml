@@ -80,24 +80,38 @@ kitchen_floor:
     - alias: "Kitchen floor: Restart"
       id: "Kitchen floor: Restart"
       trigger:
-        # Термостат недоступен в течении 5 минут
+        # Термостат недоступен в течении 10 минут
         - platform: state
           entity_id: climate.lytko_kitchen
           to: 'unavailable'
           for:
-            minutes: 5
+            minutes: 10
       action:
         # Перезагрузить термостат
         - service: rest_command.restart_lytko
-        # Подождать 30 секунд (загрузки термостата)
-        - delay: 30
-        # Сообщение
-        - service: notify.sergey
-          data:
-            title: "Термостат тёплого пола на кухне *перезагружен*!"
-            message: |-
-              Текущая: _{{ states('sensor.kitchen_floor_temp') | float }}_°C
-              Целевая: _{{ state_attr('climate.lytko_kitchen', 'temperature') | float }}_°C
+        # Дождаться загрузки термостата
+        - delay: 5
+        # - wait_for_trigger:
+        #     - platform: state
+        #       entity_id: climate.lytko_kitchen
+        #       from: 'unavailable'
+        #       # for: 10
+        - wait_template: "{{ not is_state('climate.lytko_kitchen', 'unavailable') }}"
+          timeout: "00:05:00"
+        - choose:
+            # timeout reached
+            - conditions: "{{ not wait.completed }}"
+              sequence:
+                - service: notify.sergey
+                  data:
+                    title: "*Не удалось* перезагрузить термостат тёплого пола на кухне!"
+          default:
+            # Термостат перезагружен
+            - delay: 10
+            - service: notify.sergey
+              data:
+                title: "Термостат тёплого пола на кухне *перезагружен*!"
+                message: "Целевая: _{{ state_attr('climate.lytko_kitchen', 'temperature') | float }}_°C"
 
     - alias: Kitchen floor adjust target
       id: Kitchen floor adjust target
