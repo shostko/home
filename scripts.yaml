@@ -10,6 +10,12 @@ good_morning:
                 - condition: state
                   entity_id: media_player.yandex_station_ff98f02997470e7b4ca9be2f
                   state: 'unavailable'
+                - condition: state
+                  entity_id: input_select.home_presence
+                  state: 'Away'
+                - condition: state
+                  entity_id: input_select.home_presence
+                  state: 'Noone'
           sequence:
             - service: media_player.volume_set
               entity_id: media_player.yandex_station_ff98f02997470e7b4ca9be2f
@@ -21,7 +27,7 @@ good_morning:
               data:
                 media_content_id: Включи плейлист дня
                 media_content_type: command
-            - delay: 5
+            - delay: 10
             - service: media_player.volume_set
               entity_id: media_player.yandex_station_ff98f02997470e7b4ca9be2f
               data:
