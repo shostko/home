@@ -185,6 +185,8 @@ kitchen_floor:
           target: >-
             {% if is_state('input_select.home_presence', 'Away') %}
               20
+            {% elif is_state('input_select.home_presence', 'Noone') %}
+              24
             {% elif
               is_state('binary_sensor.kitchen_floor_on_morning', 'on')
             or
