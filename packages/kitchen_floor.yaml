@@ -1,16 +1,29 @@
 kitchen_floor:
 
+  mqtt:
+    binary_sensor:
+      - name: "Kitchen Floor Relay"
+        unique_id: kitchen_floor_relay
+        state_topic: "climate/lytko/10763110/state"
+        value_template: "{{ value_json.relay }}"
+        payload_on: "1"
+        payload_off: "0"
+        availability_topic: "climate/lytko/10763110/available"
+        payload_available: "online"
+        payload_not_available: "offline"
+        device_class: "heat"
+    sensor:
+      - name: "Kitchen Floor Temp"
+        unique_id: kitchen_floor_temp
+        state_topic: "climate/lytko/10763110/state"
+        value_template: "{{ value_json.temp }}"
+        availability_topic: "climate/lytko/10763110/available"
+        payload_available: "online"
+        payload_not_available: "offline"
+        device_class: "temperature"
+        unit_of_measurement: "°C"
+
   sensor:
-    - name: "Kitchen Floor Temp"
-      unique_id: kitchen_floor_temp
-      platform: mqtt
-      state_topic: "climate/lytko/10763110/state"
-      value_template: "{{ value_json.temp }}"
-      availability_topic: "climate/lytko/10763110/available"
-      payload_available: "online"
-      payload_not_available: "offline"
-      device_class: "temperature"
-      unit_of_measurement: "°C"
     - platform: template
       sensors:
         kitchen_floor_relay_fake:
@@ -43,17 +56,6 @@ kitchen_floor:
       url: "http://192.168.1.170/reset"
 
   binary_sensor:
-    - name: "Kitchen Floor Relay"
-      unique_id: kitchen_floor_relay
-      platform: mqtt
-      state_topic: "climate/lytko/10763110/state"
-      value_template: "{{ value_json.relay }}"
-      payload_on: "1"
-      payload_off: "0"
-      availability_topic: "climate/lytko/10763110/available"
-      payload_available: "online"
-      payload_not_available: "offline"
-      device_class: "heat"
     - platform: tod
       name: kitchen_floor_off_night1
       after: '21:30'
