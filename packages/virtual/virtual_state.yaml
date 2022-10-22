@@ -50,6 +50,31 @@ virtual_state:
                 Undefined
               {%- endif -%}
     
+    - alias: 'Home Presence update: entrance door'
+      id: 'Home Presence update: entrance door'
+      mode: queued
+      trigger:
+        # Открылась дверь
+        - platform: state
+          entity_id: binary_sensor.entance_door_button
+          to: 'on'
+      condition:
+        # Никого дома нету
+        - condition: or
+          conditions:
+            - condition: state
+              entity_id: input_select.home_presence
+              state: Noone
+            - condition: state
+              entity_id: input_select.home_presence
+              state: Away
+      action:
+        - service: input_select.select_option
+          target:
+            entity_id: input_select.home_presence
+          data:
+            option: Someone
+    
     - alias: 'LOG: Home Presence updated'
       id: 'LOG: Home Presence updated'
       mode: queued
