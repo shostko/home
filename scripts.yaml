@@ -365,3 +365,15 @@ at_kitchen:
       data_template:
         entity_id: light.toilet_lights
     # Колонку на кухне не выключаем
+
+location_refresh_sergey:
+  sequence:
+    - service: notify.mobile_app_pixel4
+      data:
+        message: "request_location_update"
+
+location_refresh_aleksa:
+  sequence:
+    - service: notify.mobile_app_pixel6
+      data:
+        message: "request_location_update"

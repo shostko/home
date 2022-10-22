@@ -1,0 +1,20 @@
+title: Phone
+id: phone
+path: phone
+icon: mdi:cellphone-basic
+panel: false
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+    - type: entities
+      show_header_toggle: false
+      entities:
+        - entity: person.sergey
+          name: Папа
+        - entity: script.location_refresh_sergey
+          name: Обновить
+        - type: divider
+        - entity: person.alexa
+          name: Мама
+        - entity: script.location_refresh_aleksa
+          name: Обновить

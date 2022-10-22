@@ -1,5 +1,6 @@
 title: Устройства
 views:
+  - !include devices/phone.yaml
   - !include devices/night_light.yaml
   - !include devices/intercom.yaml
   - !include devices/floor.yaml
