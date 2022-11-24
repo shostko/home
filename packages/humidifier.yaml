@@ -96,7 +96,7 @@ humidifier:
       condition:
         - condition: numeric_state
           entity_id: sensor.humidifier_1_water
-          above: 20
+          above: 10
       action:
         # Сообщение
         - service: notify.sergey
@@ -109,7 +109,7 @@ humidifier:
         # Воды почти нету
         - platform: numeric_state
           entity_id: sensor.humidifier_1_water
-          below: 21
+          below: 11
           for: "00:00:10"
       condition:
         - condition: state
@@ -140,18 +140,18 @@ humidifier:
         # Влажность > 50%
         - platform: numeric_state
           entity_id: sensor.hall_humidity
-          above: 50
+          above: 45
           for: "00:02:00"
         # Влажность от 40% до 50% 
         - platform: numeric_state
           entity_id: sensor.hall_humidity
-          above: 40
-          below: 50
+          above: 35
+          below: 45
           for: "00:02:00"
         # Влажность < 40%
         - platform: numeric_state
           entity_id: sensor.hall_humidity
-          below: 40
+          below: 35
           for: "00:02:00"
         # Уровень воды > 90%
         - platform: numeric_state
@@ -180,9 +180,9 @@ humidifier:
         - variables: 
             target: >-
               {%- set hum = states('sensor.hall_humidity') | float %}
-              {%- if hum > 50 %}
+              {%- if hum > 45 %}
                 Silent
-              {%- elif hum >= 40 %}
+              {%- elif hum >= 35 %}
                 Medium
               {%- else %}
                 High
@@ -251,7 +251,7 @@ humidifier:
       condition:
         - condition: numeric_state
           entity_id: sensor.humidifier_2_water
-          above: 20
+          above: 10
       action:
         # Сообщение
         - service: notify.sergey
@@ -283,7 +283,7 @@ humidifier:
         # Воды почти нету
         - platform: numeric_state
           entity_id: sensor.humidifier_2_water
-          below: 21
+          below: 11
           for: "00:00:10"
       condition:
         - condition: state
@@ -314,18 +314,18 @@ humidifier:
         # Влажность > 50%
         - platform: numeric_state
           entity_id: sensor.bedroom_humidity
-          above: 50
+          above: 45
           for: "00:02:00"
         # Влажность от 40% до 50% 
         - platform: numeric_state
           entity_id: sensor.bedroom_humidity
-          above: 40
-          below: 50
+          above: 35
+          below: 45
           for: "00:02:00"
         # Влажность < 40%
         - platform: numeric_state
           entity_id: sensor.bedroom_humidity
-          below: 40
+          below: 35
           for: "00:02:00"
         # Уровень воды > 90%
         - platform: numeric_state
@@ -354,9 +354,9 @@ humidifier:
         - variables: 
             target: >-
               {%- set hum = states('sensor.bedroom_humidity') | float %}
-              {%- if hum > 50 %}
+              {%- if hum > 45 %}
                 Silent
-              {%- elif hum >= 40 %}
+              {%- elif hum >= 35 %}
                 Medium
               {%- else %}
                 High
