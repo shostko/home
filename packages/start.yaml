@@ -1,0 +1,29 @@
+start:
+
+  automation:
+    
+    - alias: 'HA start actualisation'
+      id: 'HA start actualisation'
+      trigger:
+        # Запущен HA
+        - platform: homeassistant
+          event: start
+        # Перезагружены автоматизации
+        - platform: event
+          event_type: automation_reloaded
+      action:
+        - delay: 10
+        # Включить питание подсветки на кухне
+        - service: homeassistant.turn_on
+          data_template:
+            entity_id: switch.kitchen_2_relay_l2
+        # Актуализировать правкую кнопку выключателя в кабинете
+        - choose:
+            - conditions: 
+                - condition: state
+                  entity_id: group.cabinet_lights
+                  state: 'on'
+              sequence:
+                - service: homeassistant.turn_on
+                  data_template:
+                    entity_id: switch.cabinet_wall_switch_right
