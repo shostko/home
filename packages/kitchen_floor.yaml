@@ -119,61 +119,75 @@ kitchen_floor:
       id: Kitchen floor adjust target
       trigger:
         # Запущен HA
-        - platform: homeassistant
+        - id: HA start
+          platform: homeassistant
           event: start
         # Перезагружены автоматизации
-        - platform: event
+        - id: Automations reloaded
+          platform: event
           event_type: automation_reloaded
         # Изменено состоятие сенсора КТО-ДОМА
-        - platform: state
+        - id: Home Presence changed
+          platform: state
           entity_id: input_select.home_presence
         # Ночь
-        - platform: state
+        - id: Night time 1 OFF
+          platform: state
           entity_id: binary_sensor.kitchen_floor_off_night1
           from: 'on'
           to: 'off'
-        - platform: state
+        - id: Night time 1 ON
+          platform: state
           entity_id: binary_sensor.kitchen_floor_off_night1
           from: 'off'
           to: 'on'
         # Ночь
-        - platform: state
+        - id: Night time 2 OFF
+          platform: state
           entity_id: binary_sensor.kitchen_floor_off_night2
           from: 'on'
           to: 'off'
-        - platform: state
+        - id: Night time 2 ON
+          platform: state
           entity_id: binary_sensor.kitchen_floor_off_night2
           from: 'off'
           to: 'on'
         # Завтрак
-        - platform: state
+        - id: Breakfast time OFF
+          platform: state
           entity_id: binary_sensor.kitchen_floor_on_morning
           from: 'on'
           to: 'off'
-        - platform: state
+        - id: Breakfast time ON
+          platform: state
           entity_id: binary_sensor.kitchen_floor_on_morning
           from: 'off'
           to: 'on'
         # Обед
-        - platform: state
+        - id: Lunch time OFF
+          platform: state
           entity_id: binary_sensor.kitchen_floor_on_day
           from: 'on'
           to: 'off'
-        - platform: state
+        - id: Lunch time ON
+          platform: state
           entity_id: binary_sensor.kitchen_floor_on_day
           from: 'off'
           to: 'on'
         # Ужин
-        - platform: state
+        - id: Dinner time OFF
+          platform: state
           entity_id: binary_sensor.kitchen_floor_on_evening
           from: 'on'
           to: 'off'
-        - platform: state
+        - id: Dinner time ON
+          platform: state
           entity_id: binary_sensor.kitchen_floor_on_evening
           from: 'off'
           to: 'on'
         # Термостат стал доступен
-        - platform: state
+        - id: Lytko become available
+          platform: state
           entity_id: climate.lytko_kitchen
           from: 'unavailable'
       condition:
@@ -186,9 +200,9 @@ kitchen_floor:
           # Необходимая целевая температура
           target: >-
             {% if is_state('input_select.home_presence', 'Away') %}
-              20
+              23
             {% elif is_state('input_select.home_presence', 'Noone') %}
-              24
+              25
             {% elif
               is_state('binary_sensor.kitchen_floor_on_morning', 'on')
             or
@@ -196,15 +210,15 @@ kitchen_floor:
             or
               is_state('binary_sensor.kitchen_floor_on_evening', 'on')
             %}
-              26
+              27
             {% elif 
               is_state('binary_sensor.kitchen_floor_off_night1', 'on') 
             or
               is_state('binary_sensor.kitchen_floor_off_night2', 'on') 
             %}
-              23
+              25
             {% else %}
-              24
+              25
             {% endif %}
       - choose:
         - conditions:
@@ -222,6 +236,6 @@ kitchen_floor:
               data:
                 title: "*Изменена температура тёплого пола на кухе*"
                 message: |-
-                  Тригер: {{ trigger.description | replace("_","\_") }}
+                  Тригер: {{ trigger.id | replace("_","\_") }}
                   Текущая: _{{ states('sensor.kitchen_floor_temp') | float }}_°C
                   Целевая: _{{ current }}_°C -> _{{ target }}_°C
