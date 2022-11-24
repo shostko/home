@@ -9,7 +9,6 @@ virtual_state:
         - 'Noone'
         - 'Someone'
         - 'Everyone'
-        - 'Undefined'
       icon: mdi:home-account
 
   automation:
@@ -27,27 +26,54 @@ virtual_state:
         # Изменилось количество людей в зоне ДОМ
         - platform: state
           entity_id: zone.home
-          for: '00:10:00'
-        # Изменилось количество людей в зоне ДАЧА
+          for: '00:03:00'
+        # Изменилось количество людей в зоне ГРОДНО
         - platform: state
-          entity_id: zone.dacha
-          for: '00:05:00'
+          entity_id: zone.grodno
+          for: '00:03:00'
+        - platform: state
+          entity_id: zone.b_rosy
+          for: '00:03:00'
+        - platform: state
+          entity_id: zone.iuzhnyi
+          for: '00:03:00'
+        - platform: state
+          entity_id: zone.lidskaja
+          for: '00:03:00'
+        - platform: state
+          entity_id: zone.camp
+          for: '00:03:00'
+        - platform: state
+          entity_id: zone.logoped
+          for: '00:03:00'
       action:
         - service: input_select.select_option
           target:
             entity_id: input_select.home_presence
           data:
             option: >
-              {%- if is_state('zone.dacha', '2') -%}
-                Away
-              {%- elif is_state('zone.home', '2') -%}
+              {%- if is_state('zone.home', '2') -%}
                 Everyone
               {%- elif is_state('zone.home', '1') -%}
                 Someone
-              {%- elif is_state('zone.home', '0') -%}
-                Noone
+              {%- elif
+                is_state('zone.home', '0') 
+                and
+                is_state('zone.b_rosy', '0') 
+                and
+                is_state('zone.camp', '0') 
+                and
+                is_state('zone.iuzhnyi', '0') 
+                and
+                is_state('zone.grodno', '0') 
+                and
+                is_state('zone.lidskaja', '0') 
+                and
+                is_state('zone.logoped', '0') 
+              -%}
+                Away
               {%- else %}
-                Undefined
+                Noone
               {%- endif -%}
     
     - alias: 'Home Presence update: entrance door'
