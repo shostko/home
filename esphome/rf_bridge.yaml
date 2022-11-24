@@ -9,7 +9,7 @@ wifi:
 
   # Enable fallback hotspot (captive portal) in case wifi connection fails
   ap:
-    ssid: "Mirror Fallback Hotspot"
+    ssid: "RfBridge Fallback Hotspot"
     password: !secret esphome_pwd
 
 captive_portal:
@@ -42,149 +42,6 @@ binary_sensor:
       code: '111110100111111110111110'
       protocol: 4
   - platform: remote_receiver
-    name: "RF Motion #1a"
-    id: rf_motion_1a
-    internal: true
-    device_class: motion
-    filters:
-      delayed_off: 10000ms
-    rc_switch_raw:
-      code: '00010101010100010010'
-    on_press:
-      then:
-        - binary_sensor.template.publish:
-            id: rf_motion_1
-            state: ON
-    on_release:
-      if:
-        condition:
-          and:
-            - binary_sensor.is_off: rf_motion_1a
-            - binary_sensor.is_off: rf_motion_1b
-            - binary_sensor.is_off: rf_motion_1c
-            - binary_sensor.is_off: rf_motion_1d
-            - binary_sensor.is_off: rf_motion_1e
-        then:
-          - binary_sensor.template.publish:
-              id: rf_motion_1
-              state: OFF
-  - platform: remote_receiver
-    name: "RF Motion #1b"
-    id: rf_motion_1b
-    internal: true
-    device_class: motion
-    filters:
-      delayed_off: 10000ms
-    rc_switch_raw:
-      code: '101010101000100101100'
-      protocol: 2
-    on_press:
-      then:
-        - binary_sensor.template.publish:
-            id: rf_motion_1
-            state: ON
-    on_release:
-      if:
-        condition:
-          and:
-            - binary_sensor.is_off: rf_motion_1a
-            - binary_sensor.is_off: rf_motion_1b
-            - binary_sensor.is_off: rf_motion_1c
-            - binary_sensor.is_off: rf_motion_1d
-            - binary_sensor.is_off: rf_motion_1e
-        then:
-          - binary_sensor.template.publish:
-              id: rf_motion_1
-              state: OFF
-  - platform: remote_receiver
-    name: "RF Motion #1c"
-    id: rf_motion_1c
-    internal: true
-    device_class: motion
-    filters:
-      delayed_off: 10000ms
-    rc_switch_raw:
-      code: '101010101000100101100'
-      protocol: 3
-    on_press:
-      then:
-        - binary_sensor.template.publish:
-            id: rf_motion_1
-            state: ON
-    on_release:
-      if:
-        condition:
-          and:
-            - binary_sensor.is_off: rf_motion_1a
-            - binary_sensor.is_off: rf_motion_1b
-            - binary_sensor.is_off: rf_motion_1c
-            - binary_sensor.is_off: rf_motion_1d
-            - binary_sensor.is_off: rf_motion_1e
-        then:
-          - binary_sensor.template.publish:
-              id: rf_motion_1
-              state: OFF
-  - platform: remote_receiver
-    name: "RF Motion #1d"
-    id: rf_motion_1d
-    internal: true
-    device_class: motion
-    filters:
-      delayed_off: 10000ms
-    rc_switch_raw:
-      code: '101010101000100101100'
-      protocol: 4
-    on_press:
-      then:
-        - binary_sensor.template.publish:
-            id: rf_motion_1
-            state: ON
-    on_release:
-      if:
-        condition:
-          and:
-            - binary_sensor.is_off: rf_motion_1a
-            - binary_sensor.is_off: rf_motion_1b
-            - binary_sensor.is_off: rf_motion_1c
-            - binary_sensor.is_off: rf_motion_1d
-            - binary_sensor.is_off: rf_motion_1e
-        then:
-          - binary_sensor.template.publish:
-              id: rf_motion_1
-              state: OFF
-  - platform: remote_receiver
-    name: "RF Motion #1e"
-    id: rf_motion_1e
-    internal: true
-    device_class: motion
-    filters:
-      delayed_off: 10000ms
-    rc_switch_raw:
-      code: '101010101000100101100'
-      protocol: 5
-    on_press:
-      then:
-        - binary_sensor.template.publish:
-            id: rf_motion_1
-            state: ON
-    on_release:
-      if:
-        condition:
-          and:
-            - binary_sensor.is_off: rf_motion_1a
-            - binary_sensor.is_off: rf_motion_1b
-            - binary_sensor.is_off: rf_motion_1c
-            - binary_sensor.is_off: rf_motion_1d
-            - binary_sensor.is_off: rf_motion_1e
-        then:
-          - binary_sensor.template.publish:
-              id: rf_motion_1
-              state: OFF
-  - platform: template
-    name: "RF Motion #1"
-    id: rf_motion_1
-    device_class: motion
-  - platform: remote_receiver
     name: "RF Smoke #0"
     device_class: smoke
     filters:
@@ -213,14 +70,6 @@ status_led:
     number: GPIO13
     inverted: yes
 
-switch:
-  - platform: template
-    name: "Table On/Off"
-    turn_on_action:
-      remote_transmitter.transmit_rc_switch_raw:
-        code: '110111001101000100000001'
-        protocol: 4
-        repeat: 5
 
 
 
