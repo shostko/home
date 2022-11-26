@@ -1,4 +1,68 @@
 kitchen_floor:
+    
+  input_datetime:
+    kitchen_floor_heat_morning:
+      name: 'Kitchen Floor HEAT: morning'
+      has_time: true
+    kitchen_floor_heat_day:
+      name: 'Kitchen Floor HEAT: day'
+      has_time: true
+    kitchen_floor_heat_evening:
+      name: 'Kitchen Floor HEAT: evening'
+      has_time: true
+    kitchen_floor_night_start:
+      name: 'Kitchen Floor NIGHT: start'
+      has_time: true
+    kitchen_floor_night_end:
+      name: 'Kitchen Floor NIGHT: end'
+      has_time: true
+
+  input_number:
+    kitchen_floor_temp_heat:
+      name: 'Kitchen Floor Temperature: HEAT'
+      min: 22
+      max: 30
+      step: 0.5
+    kitchen_floor_temp_night:
+      name: 'Kitchen Floor Temperature: NIGHT'
+      min: 22
+      max: 30
+      step: 0.5
+    kitchen_floor_temp_away:
+      name: 'Kitchen Floor Temperature: AWAY'
+      min: 22
+      max: 30
+      step: 0.5
+    kitchen_floor_temp_regular:
+      name: 'Kitchen Floor Temperature: REGULAR'
+      min: 22
+      max: 30
+      step: 0.5
+
+  template:
+    - binary_sensor:
+      - name: Kitchen Floor Heat
+        unique_id: kitchen_floor_heat
+        state: >-
+          {% set now = now() %}
+          {% set delta = timedelta(hours = 1, minutes = 30)  %}
+          {% set morning = today_at(states('input_datetime.kitchen_floor_heat_morning')) %}
+          {% set day = today_at(states('input_datetime.kitchen_floor_heat_day')) %}
+          {% set evening = today_at(states('input_datetime.kitchen_floor_heat_evening')) %}
+          {{ 
+            morning <= now <= morning + delta 
+            or
+            day <= now <= day + delta 
+            or
+            evening <= now <= evening + delta 
+          }}
+      - name: Kitchen Floor Night
+        unique_id: kitchen_floor_night
+        state: >-
+          {% set now = now() %}
+          {% set start = today_at(states('input_datetime.kitchen_floor_night_start')) %}
+          {% set end = today_at(states('input_datetime.kitchen_floor_night_end')) %}
+          {{ start <= now or now <= end }}
 
   mqtt:
     binary_sensor:
@@ -32,9 +96,9 @@ kitchen_floor:
           unit_of_measurement: '°C'
           value_template: >-
             {% if is_state('binary_sensor.kitchen_floor_relay', 'on') %}
-              28
+              30
             {% else %}
-              16
+              22
             {% endif %}
           availability_template: "{{ not is_state('binary_sensor.kitchen_floor_relay', 'unavailable') }}"
         kitchen_floor_target_temp:
@@ -54,28 +118,6 @@ kitchen_floor:
   rest_command:
     restart_lytko:
       url: "http://192.168.1.170/reset"
-
-  binary_sensor:
-    - platform: tod
-      name: kitchen_floor_off_night1
-      after: '21:30'
-      before: '00:00'
-    - platform: tod
-      name: kitchen_floor_off_night2
-      after: '00:00'
-      before: '07:00'
-    - platform: tod
-      name: kitchen_floor_on_morning
-      after: '08:00'
-      before: '09:30'
-    - platform: tod
-      name: kitchen_floor_on_day
-      after: '12:00'
-      before: '13:30'
-    - platform: tod
-      name: kitchen_floor_on_evening
-      after: '17:30'
-      before: '19:00'
 
   automation:
     
@@ -130,61 +172,45 @@ kitchen_floor:
         - id: Home Presence changed
           platform: state
           entity_id: input_select.home_presence
-        # Ночь
-        - id: Night time 1 OFF
+        # Heat time
+        - id: Heat time OFF
           platform: state
-          entity_id: binary_sensor.kitchen_floor_off_night1
+          entity_id: binary_sensor.kitchen_floor_heat
           from: 'on'
           to: 'off'
-        - id: Night time 1 ON
+        - id: Heat time ON
           platform: state
-          entity_id: binary_sensor.kitchen_floor_off_night1
+          entity_id: binary_sensor.kitchen_floor_heat
           from: 'off'
           to: 'on'
-        # Ночь
-        - id: Night time 2 OFF
+        # Night time
+        - id: Night time OFF
           platform: state
-          entity_id: binary_sensor.kitchen_floor_off_night2
+          entity_id: binary_sensor.kitchen_floor_night
           from: 'on'
           to: 'off'
-        - id: Night time 2 ON
+        - id: Night time ON
           platform: state
-          entity_id: binary_sensor.kitchen_floor_off_night2
+          entity_id: binary_sensor.kitchen_floor_night
           from: 'off'
           to: 'on'
-        # Завтрак
-        - id: Breakfast time OFF
+        # Изменены целевые значения
+        - id: Target for heat changed
           platform: state
-          entity_id: binary_sensor.kitchen_floor_on_morning
-          from: 'on'
-          to: 'off'
-        - id: Breakfast time ON
+          entity_id: input_number.kitchen_floor_temp_heat
+          for: '00:00:05'
+        - id: Target for night changed
           platform: state
-          entity_id: binary_sensor.kitchen_floor_on_morning
-          from: 'off'
-          to: 'on'
-        # Обед
-        - id: Lunch time OFF
+          entity_id: input_number.kitchen_floor_temp_night
+          for: '00:00:05'
+        - id: Target for away changed
           platform: state
-          entity_id: binary_sensor.kitchen_floor_on_day
-          from: 'on'
-          to: 'off'
-        - id: Lunch time ON
+          entity_id: input_number.kitchen_floor_temp_away
+          for: '00:00:05'
+        - id: Target for regular changed
           platform: state
-          entity_id: binary_sensor.kitchen_floor_on_day
-          from: 'off'
-          to: 'on'
-        # Ужин
-        - id: Dinner time OFF
-          platform: state
-          entity_id: binary_sensor.kitchen_floor_on_evening
-          from: 'on'
-          to: 'off'
-        - id: Dinner time ON
-          platform: state
-          entity_id: binary_sensor.kitchen_floor_on_evening
-          from: 'off'
-          to: 'on'
+          entity_id: input_number.kitchen_floor_temp_regular
+          for: '00:00:05'
         # Термостат стал доступен
         - id: Lytko become available
           platform: state
@@ -200,25 +226,13 @@ kitchen_floor:
           # Необходимая целевая температура
           target: >-
             {% if is_state('input_select.home_presence', 'Away') %}
-              23
-            {% elif is_state('input_select.home_presence', 'Noone') %}
-              25
-            {% elif
-              is_state('binary_sensor.kitchen_floor_on_morning', 'on')
-            or
-              is_state('binary_sensor.kitchen_floor_on_day', 'on')
-            or
-              is_state('binary_sensor.kitchen_floor_on_evening', 'on')
-            %}
-              27
-            {% elif 
-              is_state('binary_sensor.kitchen_floor_off_night1', 'on') 
-            or
-              is_state('binary_sensor.kitchen_floor_off_night2', 'on') 
-            %}
-              25
+              {{ states('input_number.kitchen_floor_temp_away') }}
+            {% elif is_state('binary_sensor.kitchen_floor_night', 'on') %}
+              {{ states('input_number.kitchen_floor_temp_night') }}
+            {% elif is_state('binary_sensor.kitchen_floor_heat', 'on') %}
+              {{ states('input_number.kitchen_floor_temp_heat') }}
             {% else %}
-              25
+              {{ states('input_number.kitchen_floor_temp_regular') }}
             {% endif %}
       - choose:
         - conditions:

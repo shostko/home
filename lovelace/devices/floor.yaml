@@ -28,3 +28,36 @@ cards:
             entities:
               - entity: sensor.kitchen_floor_on_time
                 name: Реле всего
+      - type: custom:vertical-stack-in-card
+        title: Настройки
+        cards:
+          - type: entities
+            title: Heat time
+            show_header_toggle: false
+            entities:
+              - entity: input_datetime.kitchen_floor_heat_morning
+                name: Утро
+              - entity: input_datetime.kitchen_floor_heat_day
+                name: День
+              - entity: input_datetime.kitchen_floor_heat_evening
+                name: Вечер
+          - type: entities
+            title: Night time
+            show_header_toggle: false
+            entities:
+              - entity: input_datetime.kitchen_floor_night_start
+                name: Начало
+              - entity: input_datetime.kitchen_floor_night_end
+                name: Конец
+          - type: entities
+            title: Target temperature
+            show_header_toggle: false
+            entities:
+              - entity: input_number.kitchen_floor_temp_heat
+                name: Heat
+              - entity: input_number.kitchen_floor_temp_night
+                name: Night
+              - entity: input_number.kitchen_floor_temp_away
+                name: Away
+              - entity: input_number.kitchen_floor_temp_regular
+                name: Reagular
