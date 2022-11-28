@@ -227,6 +227,8 @@ kitchen_floor:
           target: >-
             {% if is_state('input_select.home_presence', 'Away') %}
               {{ states('input_number.kitchen_floor_temp_away') }}
+            {% elif is_state('input_select.home_presence', 'Noone') %}
+              {{ states('input_number.kitchen_floor_temp_regular') }}
             {% elif is_state('binary_sensor.kitchen_floor_night', 'on') %}
               {{ states('input_number.kitchen_floor_temp_night') }}
             {% elif is_state('binary_sensor.kitchen_floor_heat', 'on') %}
