@@ -65,12 +65,19 @@ include:
     - sensor.kitchen_floor_relay_fake
     # Entrance Ring
     - binary_sensor.entrance_ring_button
-    # Energy Meter
+    # Energy Meter    
+    - input_number.energy_meter_total_correction
+    - sensor.energy_meter_final
     - sensor.energy_meter_total
     - sensor.energy_meter_since
-    - sensor.energy_meter_daily
+    - sensor.energy_meter_today
     - sensor.energy_meter_voltage
     - sensor.energy_meter_power
+    - sensor.energy_meter_value_midnight
+    - sensor.energy_meter_value_month
+    - sensor.energy_meter_value_last_month
+    - sensor.energy_meter_sum_this_month
+    - sensor.energy_meter_sum_last_month
     # Humidifier
     - fan.humidifier_1
     - sensor.humidifier_1_water

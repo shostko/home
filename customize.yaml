@@ -55,12 +55,6 @@ binary_sensor.door_window_sensor_158d0001fa3431:
 
 sensor.energy_meter_since:
   icon: mdi:calendar-clock
-sensor.energy_meter_daily:
-  device_class: energy
-  friendly_name: 'Energy Meter: Daily'
-sensor.energy_meter_monthly:
-  device_class: energy
-  friendly_name: 'Energy Meter: Monthly'
 sensor.energy_meter_sum:
   device_class: energy
 sensor.energy_meter_voltage:

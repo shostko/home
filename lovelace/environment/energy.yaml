@@ -11,23 +11,31 @@ cards:
           - type: entities
             title: Счётчик
             entities:
+              - entity: sensor.energy_meter_final
+                name: Итог
+              - entity: input_number.energy_meter_total_correction
+                name: Корректировка
+              - entity: sensor.energy_meter_value_midnight
+                name: Сегодня абсолют
+              - entity: sensor.energy_meter_today
+                name: За сегодня
+              - entity: sensor.energy_meter_value_month
+                name: Начало месяца абсолют
+              - entity: sensor.energy_meter_sum_this_month
+                name: За текущий месяц
+              - entity: sensor.energy_meter_value_last_month
+                name: Начало прошлого месяца абсолют
+              - entity: sensor.energy_meter_sum_last_month
+                name: За прошлый месяц
+          - type: entities
+            title: Счётчик
+            entities:
               - entity: sensor.energy_meter_total
                 name: Счётчик
               - entity: sensor.energy_meter_since
                 name: Без перебоев с
               - entity: sensor.energy_meter_sum
                 name: С последнего отключения
-              - entity: sensor.energy_meter_daily
-                name: Сегодня
-              - entity: sensor.energy_meter_yesterday
-                name: Вчера
-              - entity: sensor.energy_meter_monthly
-                name: Текущий месяц
-              - entity: sensor.energy_meter_prev_month
-                name: Прошлый месяц
-          - type: entities
-            title: Счётчик
-            entities:
               - entity: sensor.energy_meter_voltage
                 name: Напряжение
               - entity: sensor.energy_meter_current
@@ -44,7 +52,7 @@ cards:
         title: Показатели
         hours_to_show: 24
         entities:
-          - entity: sensor.energy_meter_daily
+          - entity: sensor.energy_meter_today
             name: Энергия
           - entity: sensor.energy_meter_power
             name: Мощность

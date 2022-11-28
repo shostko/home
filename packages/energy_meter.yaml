@@ -17,6 +17,14 @@ energy_meter:
         availability_topic: "energy-meter/tele/LWT"
         payload_available: "Online"
         payload_not_available: "Offline"
+      # Энергия (за сегодня)
+      - name: 'Energy Meter: Today'
+        unit_of_measurement: 'kWh'
+        state_topic: 'energy-meter/tele/SENSOR'
+        value_template: '{{ value_json.ENERGY.Today }}'
+        availability_topic: "energy-meter/tele/LWT"
+        payload_available: "Online"
+        payload_not_available: "Offline"
       # Напряжение
       - name: 'Energy Meter: Voltage'
         unit_of_measurement: 'V'
@@ -66,35 +74,94 @@ energy_meter:
         payload_available: "Online"
         payload_not_available: "Offline"
 
-  sensor:
-    - platform: template
-      sensors:
-        # Энергия за вчера (счётчик)
-        energy_meter_yesterday:
+  input_number:
+    energy_meter_total_correction:
+      name: 'Energy Meter: Correction'
+      min: 0
+      max: 1000000
+      step: 1
+      mode: box
+
+  template:
+    - sensor:
+        - name: 'Energy Meter: Value Midnight'
+          unique_id: energy_meter_value_midnight
+          state: "{{ states('sensor.energy_meter_total') }}"
+          unit_of_measurement: "kWh"
           device_class: energy
-          friendly_name: 'Energy Meter: Yesterday'
-          unit_of_measurement: 'kWh'
-          value_template: "{{ state_attr('sensor.energy_meter_daily', 'last_period') | float }}"
-        # Энергия за прошлый месяц (счётчик)
-        energy_meter_prev_month:
+      trigger: 
+        - platform: event
+          event_type: Energy_Meter_Midnight
+    - sensor:
+        - name: 'Energy Meter: Value Month'
+          unique_id: energy_meter_value_month
+          state: "{{ states('sensor.energy_meter_total') }}"
+          unit_of_measurement: "kWh"
           device_class: energy
-          friendly_name: 'Energy Meter: Prev Month'
-          unit_of_measurement: 'kWh'
-          value_template: "{{ state_attr('sensor.energy_meter_monthly', 'last_period') | float }}"    
+      trigger: 
+        - platform: event
+          event_type: Energy_Meter_Month
+    - sensor:
+        - name: 'Energy Meter: Value Last Month'
+          unique_id: energy_meter_value_last_month
+          state: "{{ states('sensor.energy_meter_value_month') }}"
+          unit_of_measurement: "kWh"
+          device_class: energy
+      trigger: 
+        - platform: event
+          event_type: Energy_Meter_Last_Month
+    - sensor:
+        - name: 'Energy Meter: Final'
+          unique_id: energy_meter_final
+          unit_of_measurement: "kWh"
+          device_class: energy
+          state: >-
+            {% set total = states('sensor.energy_meter_total') | int %}
+            {% set correction = states('input_number.energy_meter_total_correction') | int %}
+            {{ total + correction }}
+    - sensor:
+        - name: 'Energy Meter: Sum This Month'
+          unit_of_measurement: "kWh"
+          device_class: energy          
+          state: >
+            {% set total = states('sensor.energy_meter_total') | float %}
+            {% set month = states('sensor.energy_meter_value_month') | float %}
+            {{ (total - month) | round(4, default=0) }}
+    - sensor:
+        - name: 'Energy Meter: Sum Last Month'
+          unit_of_measurement: "kWh"
+          device_class: energy
+          state: >
+            {% set thisMonth = states('sensor.energy_meter_value_month') | float %}
+            {% set lastMonth = states('sensor.energy_meter_value_last_month') | float %}
+            {{ (thisMonth - lastMonth) | round(4, default=0) }}
+
+  sensor: 
     - platform: integration
       source: sensor.energy_meter_power
       name: 'Energy Meter: Total'
       unit_prefix: k
       round: 4
 
-  utility_meter:
-
-    # Энергия за день (счётчик)
-    energy_meter_daily:
-      source: sensor.energy_meter_sum
-      cycle: daily
+  automation:
     
-    # Энергия за месяц (счётчик)
-    energy_meter_monthly: 
-      source: sensor.energy_meter_sum
-      cycle: monthly
+    - alias: "Energy Meter: Record values"
+      id: "Energy Meter: Record values"
+      trigger:
+        - platform: time
+          at: "00:00:00"
+      action:
+        - service: notify.sergey
+          data:
+            message: "Начало нового дня!"
+        - event: Energy_Meter_Midnight
+        - choose:
+            # Начало месяца
+            - conditions: "{{ (now().strftime('%d') | int) == 1 }}"
+              sequence:
+                - service: notify.sergey
+                  data:
+                    message: "Начало нового месяца!"
+                - event: Energy_Meter_Last_Month
+                - delay: 3
+                - event: Energy_Meter_Month
