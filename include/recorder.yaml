@@ -38,6 +38,8 @@ include:
     - input_boolean.toilet_occupied
     - input_boolean.bath_occupied
     - binary_sensor.entrance_presence
+    - binary_sensor.cabinet_presence_chair
+    - sensor.cabinet_presence_chair_time_today
     # Water leak
     - binary_sensor.kitchen_water_leak
     # Smoke detection

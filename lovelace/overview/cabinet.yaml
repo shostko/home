@@ -31,6 +31,14 @@ cards:
             name: Правая кнопка
   - type: custom:vertical-stack-in-card
     cards:
+      - type: glance
+        title: Присутствие
+        entities:
+          - entity: binary_sensor.cabinet_presence_chair
+            name: Стул
+          - entity: sensor.cabinet_presence_chair_time_today
+            name: За сегодня
+      - type: divider
       - type: sensor
         name: Температура
         entity: sensor.xiaomi_mijia_cb5b_temperature

@@ -1,0 +1,18 @@
+virtual_presence:
+
+  template:
+    - binary_sensor:
+        - name: 'Cabinet Presence: Chair'
+          state: "{{ is_state('binary_sensor.lumi_magnet_e9c4_contact', 'off') }}"
+          availability: "{{ not is_state('binary_sensor.lumi_magnet_e9c4_contact', 'unavailable') }}"
+          delay_off: '00:00:01'
+          device_class: occupancy
+
+  sensor:
+    - name: "Cabinet Presence: Chair Time Today"
+      platform: history_stats
+      entity_id: binary_sensor.cabinet_presence_chair
+      state: 'on'
+      type: time
+      start: "{{ now().replace(hour=0, minute=0, second=0) }}"
+      end: "{{ now() }}"
