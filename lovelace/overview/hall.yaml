@@ -5,10 +5,6 @@ icon: mdi:television-classic
 cards:
   - type: custom:vertical-stack-in-card
     cards:
-      # - type: light
-      #   entity: light.wled_tree
-      #   name: Ёлка
-      #   icon: mdi:pine-tree
       - type: horizontal-stack
         cards:
           - type: button
@@ -29,6 +25,16 @@ cards:
             entity: light.shellydimmerwn0
             name: Бра 2
             icon: mdi:lightbulb-multiple
+      - type: horizontal-stack
+        cards:
+          - type: button
+            entity: light.holiday_garland_hall
+            name: Гирлянда
+            icon: mdi:string-lights
+          # - type: light
+          #   entity: light.wled_tree
+          #   name: Ёлка
+          #   icon: mdi:pine-tree
   - type: media-control
     entity: media_player.tv
   - type: custom:vertical-stack-in-card

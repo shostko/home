@@ -38,6 +38,10 @@ light.wled_tree:
   type: devices.types.light
   name: 'Ёлка'
   room: 'Зал'
+light.holiday_garland_hall:
+  type: devices.types.light
+  name: 'Гирлянда'
+  room: 'Зал'
 media_player.tv:
   type: devices.types.media_device.tv
   name: 'Телевизор'
@@ -111,7 +115,7 @@ light.kitchen_ceiling:
   type: devices.types.light
   name: 'Свет'
   room: 'Кухня'
-switch.kitchen_2_relay_l1:
+light.holiday_garland_kitchen:
   type: devices.types.light
   name: 'Гирлянда'
   room: 'Кухня'

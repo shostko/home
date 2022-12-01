@@ -137,6 +137,10 @@ good_night:
     - service: light.turn_off
       data_template:
         entity_id: light.toilet_lights
+    # Выключить гирлянды
+    - service: light.turn_off
+      data_template:
+        entity_id: light.holiday_garland_lights
     # Выключить колонку на кухне
     - service: media_player.turn_off
       data_template:
@@ -187,6 +191,10 @@ goodbye:
     - service: light.turn_off
       data_template:
         entity_id: light.toilet_lights
+    # Выключить гирлянды
+    - service: light.turn_off
+      data_template:
+        entity_id: light.holiday_garland_lights
     # Выключить колонку на кухне
     - service: media_player.turn_off
       data_template:

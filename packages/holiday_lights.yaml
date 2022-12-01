@@ -1,0 +1,19 @@
+holiday_lights:
+
+  light:
+
+    - platform: switch
+      name: holiday_garland_hall
+      entity_id: switch.tuya_plug_e0c2
+
+    - platform: switch
+      name: holiday_garland_kitchen
+      entity_id: switch.kitchen_2_relay_l1
+ 
+  group:
+  
+    holiday_garland_lights:
+      name: Holiday All Graland Lights
+      entities:
+        - light.holiday_garland_hall
+        - light.holiday_garland_kitchen

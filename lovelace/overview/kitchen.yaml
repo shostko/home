@@ -15,10 +15,12 @@ cards:
             entity: light.kitchen_work_hack
             name: Подсветка
             icon: mdi:led-strip-variant
-          # - type: button
-          #   entity: light.kitchen_2_relay_l1
-          #   name: Гирлянда
-          #   icon: mdi:string-lights
+      - type: horizontal-stack
+        cards:
+          - type: button
+            entity: light.holiday_garland_kitchen
+            name: Гирлянда
+            icon: mdi:string-lights
       - type: entities
         entities:
           - type: section

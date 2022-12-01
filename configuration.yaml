@@ -108,9 +108,6 @@ light:
     token: !secret xiaomi_bulb1_token
     model: philips.light.bulb
   - platform: switch
-    name: Kitchen 2 Relay L1
-    entity_id: switch.kitchen_2_relay_l1
-  - platform: switch
     name: Kitchen 2 Relay L2
     entity_id: switch.kitchen_2_relay_l2
   - platform: switch

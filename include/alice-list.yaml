@@ -11,6 +11,7 @@
 - light.wled_tree
 - media_player.tv
 - fan.humidifier_1
+- light.holiday_garland_hall
 # Спальня
 - sensor.bedroom_average_temperature
 - group.bedroom_lights
@@ -25,7 +26,7 @@
 - group.kitchen_lights
 - light.kitchen_ceiling
 - light.kitchen_work_hack
-- switch.kitchen_2_relay_l1
+- light.holiday_garland_kitchen
 - media_player.yandex_station_ff98f0102ae5595dd3b0bd40
 # Санузлы
 - sensor.xiaomi_mijia_4a07_temperature_2
