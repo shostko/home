@@ -106,10 +106,3 @@ cards:
         name: Питьевая сегодня
       - entity: sensor.kitchen_filter_raw_daily
         name: Сырая сегодня
-  - type: glance
-    title: Тесто
-    entities:
-      - entity: sensor.xiaomi_mijia_30d0_temperature
-        name: Температура
-      - entity: sensor.xiaomi_mijia_30d0_humidity
-        name: Влажность
