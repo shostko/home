@@ -32,6 +32,9 @@ ota:
 
 esp32_ble_tracker:
 
+bluetooth_proxy:
+  active: true
+
 sensor:
   - platform: xiaomi_lywsdcgq
     mac_address: 58:2D:34:35:CB:15

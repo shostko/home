@@ -37,6 +37,9 @@ uart:
 
 esp32_ble_tracker:
 
+bluetooth_proxy:
+  active: true
+
 switch:
   - platform: template
     name: "MH-Z19 (1) Automatic Baseline Calibration"
