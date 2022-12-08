@@ -208,26 +208,43 @@ entrance_ring:
           from: 'off'
           to: 'on'
       action:
-        - service: script.entrance_notify_camera_snapshot_async
         - choose:
+            # В прихожей кто-то есть
             - conditions:
-                # В прихожей никого нет
                 - condition: state
                   entity_id: binary_sensor.entrance_presence
-                  state: 'off'
+                  state: 'on'
               sequence:
-                - service: xiaomi_aqara.play_ringtone
-                  data:
-                    gw_mac: 7811DCB2404D
-                    ringtone_id: '10' # дверной звонок
-                    ringtone_vol: 25
+                - service: script.entrance_notify_camera_snapshot_async
+          # В прихожей никого нет
+          default:
+            - service: xiaomi_aqara.play_ringtone
+              data:
+                gw_mac: 7811DCB2404D
+                ringtone_id: '10' # дверной звонок
+                ringtone_vol: 25
         - service: notify.log
           data:
             message: "Входная дверь открыта"
         - service: notify.tv
           data:
             message: "Входная дверь открыта"
-        - service: script.entrance_notify_camera_snapshot_async
+        - choose:
+            # В прихожей кто-то есть
+            - conditions:
+                - condition: state
+                  entity_id: binary_sensor.entrance_presence
+                  state: 'on'
+              sequence:
+                - service: script.entrance_notify_camera_snapshot_async
+          # В прихожей никого нет
+          default:
+            - wait_for_trigger:
+                - platform: state
+                  entity_id: binary_sensor.entrance_presence
+                  to: "on"
+              timeout: "00:00:30"
+            - service: script.entrance_notify_camera_snapshot_async
         # Подождать 5 секунд (throttle из-за mode = single + silent)
         - delay: 5
 
