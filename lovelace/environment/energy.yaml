@@ -32,8 +32,10 @@ cards:
             entities:
               - entity: sensor.energy_meter_total
                 name: Счётчик
-              - entity: sensor.energy_meter_since
-                name: Без перебоев с
+              - entity: sensor.energy_meter_restart_time
+                name: Перезапуск
+              - entity: sensor.energy_meter_restart_reason
+                name: Причина
               - entity: sensor.energy_meter_sum
                 name: С последнего отключения
               - entity: sensor.energy_meter_voltage
