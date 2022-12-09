@@ -7,18 +7,44 @@ cards:
   - type: custom:vertical-stack-in-card
     cards:
       - type: history-graph
-        title: Освещенность
+        title: Зал
         hours_to_show: 24
         entities:
-          - entity: sensor.qingping_motion_illuminance
-            name: Зал
+          - entity: sensor.qingping_2d86_illuminance
+            name: qingping
+      - type: history-graph
+        title: Спальня
+        hours_to_show: 24
+        entities:
+          - entity: sensor.qingping_0ae9_illuminance
+            name: qingping
+      - type: history-graph
+        title: Кухня
+        hours_to_show: 24
+        entities:
           - entity: sensor.kitchen_motion_2_illuminance
-            name: Кухня
-          - entity: sensor.xiaomi_mijia_70f0_illuminance
-            name: Корридор
+            name: zigbee
+          - entity: sensor.qingping_069e_illuminance
+            name: qingping
+      - type: history-graph
+        title: Санузлы
+        hours_to_show: 24
+        entities:
           - entity: sensor.toilet_motion_illuminance
             name: Туалет
           - entity: sensor.bath_motion_1_illuminance
             name: Ванна
+      # - type: history-graph
+      #   title: Кабинет
+      #   hours_to_show: 24
+      #   entities:
+      #     - entity: sensor.toilet_motion_illuminance
+      #       name: Туалет
+      - type: history-graph
+        title: Прихожая
+        hours_to_show: 24
+        entities:
+          - entity: sensor.xiaomi_mijia_70f0_illuminance
+            name: Корридор
           - entity: sensor.xiaomi_gateway_illuminance
-            name: Прихожая
+            name: Шайба

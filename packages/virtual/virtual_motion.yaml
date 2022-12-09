@@ -16,8 +16,8 @@ virtual_motion:
           unique_id: hall_motion
           friendly_name: "Hall Motion"
           device_class: motion
-          value_template: "{{ is_state('binary_sensor.qingping_motion_detector', 'on') }}"
-          availability_template: "{{ not is_state('binary_sensor.qingping_motion_detector', 'unavailable') }}"
+          value_template: "{{ is_state('binary_sensor.qingping_2d86_motion', 'on') }}"
+          availability_template: "{{ not is_state('binary_sensor.qingping_2d86_motion', 'unavailable') }}"
         
         toilet_motion:
           unique_id: toilet_motion
@@ -35,10 +35,14 @@ virtual_motion:
               is_state('binary_sensor.rf_motion_0', 'on')
             or
               is_state('binary_sensor.kitchen_motion_2', 'on')
+            or
+              is_state('binary_sensor.qingping_069e_motion', 'on')
             }}
           availability_template: >-
             {{ 
               not is_state('binary_sensor.rf_motion_0', 'unavailable')
             or
               not is_state('binary_sensor.kitchen_motion_2', 'unavailable')
+            or
+              not is_state('binary_sensor.qingping_069e_motion', 'unavailable')
             }}
