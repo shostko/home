@@ -25,7 +25,7 @@ cards:
     cards:
       - type: glance
         entities:
-          - entity: binary_sensor.honeywell_smoke_sensor
+          - entity: binary_sensor.honeywell_08c5_smoke
             name: Задымление
       - type: divider
       - type: sensor
