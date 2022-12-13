@@ -6,7 +6,7 @@ badges:
     name: Папа
   - entity: person.alexa
     name: Мама
-  - entity: binary_sensor.door_window_sensor_158d0001fa3431
+  - entity: binary_sensor.entance_door_button
     name: Вход
   - entity: sun.sun
     name: Солнце

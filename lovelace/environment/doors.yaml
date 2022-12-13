@@ -11,9 +11,7 @@ cards:
         hours_to_show: 24
         entities:
           - entity: binary_sensor.entance_door_button
-            name: кнопка
-          - entity: binary_sensor.door_window_sensor_158d0001fa3431
-            name: zigbee
+            name: Входная
       - type: history-graph
         title: Сан.узел
         hours_to_show: 24
