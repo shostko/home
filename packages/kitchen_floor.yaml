@@ -248,10 +248,10 @@ kitchen_floor:
               data_template:
                 temperature: "{{ target }}"
             # Отправить сообщение в log
-            - service: notify.log
-              data:
-                title: "*Изменена температура тёплого пола на кухе*"
-                message: |-
-                  Тригер: {{ trigger.id | replace("_","\_") }}
-                  Текущая: _{{ states('sensor.kitchen_floor_temp') | float }}_°C
-                  Целевая: _{{ current }}_°C -> _{{ target }}_°C
+            # - service: notify.log
+            #   data:
+            #     title: "*Изменена температура тёплого пола на кухе*"
+            #     message: |-
+            #       Тригер: {{ trigger.id | replace("_","\_") }}
+            #       Текущая: _{{ states('sensor.kitchen_floor_temp') | float }}_°C
+            #       Целевая: _{{ current }}_°C -> _{{ target }}_°C
