@@ -1,88 +1,84 @@
-auto_purge: true
-purge_keep_days: 1
-commit_interval: 30
-include:
-  domains:
-    - light
-    - switch
-  entity_globs:
-    - sensor.*_hum
-    - sensor.*_humidity
-    - sensor.*_humidity_2
-    - sensor.*_temp
-    - sensor.*_temperature
-    - sensor.*_temperature_2
-    - sensor.*_pressure_mmhg
-    - sensor.*_co2
-    - sensor.*_power
-    - sensor.*_action
-    - binary_sensor.*_motion
-    - sensor.*_illuminance
-    - sensor.radiation_*
-  entities:
-    # System
-    - binary_sensor.rpi_power_status
-    # Person
-    - person.sergey
-    - person.alexa
-    # Motion
-    - binary_sensor.rf_motion_0
-    - binary_sensor.kitchen_motion_2
-    - binary_sensor.bath_motion_1
-    # Occupancy
-    - input_boolean.toilet_occupied
-    - input_boolean.bath_occupied
-    - binary_sensor.entrance_presence
-    - binary_sensor.cabinet_presence_chair
-    - sensor.cabinet_presence_chair_time_today
-    # Water leak
-    - binary_sensor.kitchen_water_leak
-    # Smoke detection
-    - binary_sensor.rf_smoke_0
-    - binary_sensor.honeywell_smoke_sensor
-    # Doors
-    - binary_sensor.door_window_sensor_158d0001fa3431
-    - binary_sensor.entance_door_button
-    - binary_sensor.entrance_lock_bottom
-    - binary_sensor.bath_door
-    - binary_sensor.toilet_door
-    # Thermostat
-    - sensor.moes_radiator_actuator_1_position
-    - sensor.moes_radiator_actuator_2_position
-    - sensor.moes_radiator_actuator_3_position
-    - binary_sensor.kitchen_floor_relay
-    - sensor.kitchen_floor_relay_fake
-    # Entrance Ring
-    - binary_sensor.entrance_ring_button
-    # Energy Meter    
-    - input_number.energy_meter_total_correction
-    - sensor.energy_meter_final
-    - sensor.energy_meter_total
-    - sensor.energy_meter_since
-    - sensor.energy_meter_today
-    - sensor.energy_meter_voltage
-    - sensor.energy_meter_power
-    - sensor.energy_meter_value_midnight
-    - sensor.energy_meter_value_month
-    - sensor.energy_meter_value_last_month
-    - sensor.energy_meter_sum_this_month
-    - sensor.energy_meter_sum_last_month
-    # Humidifier
-    - fan.humidifier_1
-    - sensor.humidifier_1_water
-    - fan.humidifier_2
-    - sensor.humidifier_2_water
-    # Filter drink
-    - sensor.kitchen_filter_drink_pulses
-    - sensor.kitchen_filter_drink_sum
-    - binary_sensor.kitchen_filter_drink_flows
-    - sensor.kitchen_filter_drink_daily
-    # Filter raw
-    - sensor.kitchen_filter_raw_pulses
-    - sensor.kitchen_filter_raw_sum
-    - binary_sensor.kitchen_filter_raw_flows
-    - sensor.kitchen_filter_raw_daily
-    # Time
-    - sensor.kitchen_floor_on_time
-    # Power
-    - sensor.blitzwoolf_socket_1_power
+domains:
+  - light
+  - switch
+entity_globs:
+  - sensor.*_hum
+  - sensor.*_humidity
+  - sensor.*_humidity_2
+  - sensor.*_temp
+  - sensor.*_temperature
+  - sensor.*_temperature_2
+  - sensor.*_pressure_mmhg
+  - sensor.*_co2
+  - sensor.*_power
+  - sensor.*_action
+  - binary_sensor.*_motion
+  - sensor.*_illuminance
+  - sensor.radiation_*
+entities:
+  # System
+  - binary_sensor.rpi_power_status
+  # Person
+  - person.sergey
+  - person.alexa
+  # Motion
+  - binary_sensor.rf_motion_0
+  - binary_sensor.kitchen_motion_2
+  - binary_sensor.bath_motion_1
+  # Occupancy
+  - input_boolean.toilet_occupied
+  - input_boolean.bath_occupied
+  - binary_sensor.entrance_presence
+  - binary_sensor.cabinet_presence_chair
+  - sensor.cabinet_presence_chair_time_today
+  # Water leak
+  - binary_sensor.kitchen_water_leak
+  # Smoke detection
+  - binary_sensor.rf_smoke_0
+  - binary_sensor.honeywell_smoke_sensor
+  # Doors
+  - binary_sensor.door_window_sensor_158d0001fa3431
+  - binary_sensor.entance_door_button
+  - binary_sensor.entrance_lock_bottom
+  - binary_sensor.bath_door
+  - binary_sensor.toilet_door
+  # Thermostat
+  - sensor.moes_radiator_actuator_1_position
+  - sensor.moes_radiator_actuator_2_position
+  - sensor.moes_radiator_actuator_3_position
+  - binary_sensor.kitchen_floor_relay
+  - sensor.kitchen_floor_relay_fake
+  # Entrance Ring
+  - binary_sensor.entrance_ring_button
+  # Energy Meter    
+  - input_number.energy_meter_total_correction
+  - sensor.energy_meter_final
+  - sensor.energy_meter_total
+  - sensor.energy_meter_since
+  - sensor.energy_meter_today
+  - sensor.energy_meter_voltage
+  - sensor.energy_meter_power
+  - sensor.energy_meter_value_midnight
+  - sensor.energy_meter_value_month
+  - sensor.energy_meter_value_last_month
+  - sensor.energy_meter_sum_this_month
+  - sensor.energy_meter_sum_last_month
+  # Humidifier
+  - fan.humidifier_1
+  - sensor.humidifier_1_water
+  - fan.humidifier_2
+  - sensor.humidifier_2_water
+  # Filter drink
+  - sensor.kitchen_filter_drink_pulses
+  - sensor.kitchen_filter_drink_sum
+  - binary_sensor.kitchen_filter_drink_flows
+  - sensor.kitchen_filter_drink_daily
+  # Filter raw
+  - sensor.kitchen_filter_raw_pulses
+  - sensor.kitchen_filter_raw_sum
+  - binary_sensor.kitchen_filter_raw_flows
+  - sensor.kitchen_filter_raw_daily
+  # Time
+  - sensor.kitchen_floor_on_time
+  # Power
+  - sensor.blitzwoolf_socket_1_power

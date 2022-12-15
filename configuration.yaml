@@ -32,7 +32,18 @@ logger:
     homeassistant.components.mqtt: debug
 
 recorder:
-  !include include/recorder.yaml
+  auto_purge: true
+  purge_keep_days: 1
+  commit_interval: 30
+  include:
+    !include include/recorder.yaml
+
+influxdb:
+  database: 'homeassistant'
+  username: !secret influxdb_user
+  password: !secret influxdb_password
+  include:
+    !include include/recorder.yaml
 
 lovelace:
   mode: yaml
