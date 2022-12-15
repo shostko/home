@@ -65,13 +65,6 @@ lovelace:
 automation: !include automations.yaml
 script: !include scripts.yaml
 
-mqtt:
-  broker: core-mosquitto
-  discovery: true
-  discovery_prefix: homeassistant  
-  username: !secret mqtt_user
-  password: !secret mqtt_pwd
-
 yeelight:
   devices:
     192.168.1.226:
