@@ -230,23 +230,22 @@ entrance_ring:
           data:
             message: "Входная дверь открыта"
         - choose:
-            # В прихожей кто-то есть
+            # В прихожей есть движение
             - conditions:
                 - condition: state
-                  entity_id: binary_sensor.entrance_presence
+                  entity_id: binary_sensor.entrance_motion
                   state: 'on'
               sequence:
+                - delay: 3
                 - service: script.entrance_notify_camera_snapshot_async
-          # В прихожей никого нет
+          # В прихожей нет движения
           default:
             - wait_for_trigger:
                 - platform: state
-                  entity_id: binary_sensor.entrance_presence
+                  entity_id: binary_sensor.entrance_motion
                   to: "on"
               timeout: "00:00:30"
             - service: script.entrance_notify_camera_snapshot_async
-        # Подождать 5 секунд (throttle из-за mode = single + silent)
-        - delay: 5
 
     - alias: Entrance door opened to long
       id: 'Entrance-door-opened-to-long'
