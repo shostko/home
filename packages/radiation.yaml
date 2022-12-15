@@ -1,0 +1,11 @@
+radiation:
+
+  scrape:
+    - resource: https://www.belaes.by/images/karta/SZZ.svg
+      verify_ssl: false
+      scan_interval: 1800
+      sensor:
+        - name: "Radiation: BelAES"
+          select: "text#textBY010000 > *"
+          icon: mdi:radioactive
+          unit_of_measurement: 'μSv/hour'

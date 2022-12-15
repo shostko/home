@@ -18,6 +18,7 @@ include:
     - sensor.*_action
     - binary_sensor.*_motion
     - sensor.*_illuminance
+    - sensor.radiation_*
   entities:
     # System
     - binary_sensor.rpi_power_status

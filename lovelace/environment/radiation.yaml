@@ -1,0 +1,14 @@
+title: Радиация
+id: radiation
+path: radiation
+icon: mdi:radioactive
+panel: true
+cards:
+  - type: custom:vertical-stack-in-card
+    cards:
+      - type: history-graph
+        title: Радиация
+        hours_to_show: 24
+        entities:
+          - entity: sensor.radiation_belaes
+            name: БелАЭС

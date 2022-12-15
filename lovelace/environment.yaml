@@ -11,4 +11,5 @@ views:
   - !include environment/filter.yaml
   - !include environment/energy.yaml
   - !include environment/lights.yaml
+  - !include environment/radiation.yaml
   - !include environment/system.yaml
