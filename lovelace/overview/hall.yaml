@@ -31,10 +31,6 @@ cards:
             entity: light.holiday_garland_hall
             name: Гирлянда
             icon: mdi:string-lights
-          # - type: light
-          #   entity: light.wled_tree
-          #   name: Ёлка
-          #   icon: mdi:pine-tree
   - type: media-control
     entity: media_player.tv
   - type: custom:vertical-stack-in-card

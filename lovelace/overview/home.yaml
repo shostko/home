@@ -133,6 +133,12 @@ cards:
     cards:
       - type: horizontal-stack
         cards:
+          - type: light
+            entity: light.wled_tree
+            name: Ёлка
+            icon: mdi:pine-tree
+      - type: horizontal-stack
+        cards:
           - type: button
             entity: light.holiday_garland_kitchen
             name: Кухня
@@ -141,7 +147,3 @@ cards:
             entity: light.holiday_garland_hall
             name: Зал
             icon: mdi:string-lights
-          # - type: light
-          #   entity: light.wled_tree
-          #   name: Ёлка
-          #   icon: mdi:pine-tree
