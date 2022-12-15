@@ -41,11 +41,11 @@ cards:
       - type: divider
       - type: sensor
         name: Температура
-        entity: sensor.xiaomi_mijia_cb5b_temperature
+        entity: sensor.mijia_cb5b_temperature
       - type: divider
       - type: sensor
         name: Влажность
-        entity: sensor.xiaomi_mijia_cb5b_humidity
+        entity: sensor.mijia_cb5b_humidity
   - type: custom:vertical-stack-in-card
     title: Мониторы
     cards:

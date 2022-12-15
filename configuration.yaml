@@ -199,7 +199,7 @@ sensor:
         value_template: >-
           {% set arr =
             ([
-              states('sensor.xiaomi_mijia_d107_temperature'),
+              states('sensor.mijia_d107_temperature'),
               states('sensor.humidifier_1_temp'),
               states('sensor.xiaomi_thp_1_temperature')
             ]) | map('float', -1000) | select('gt', -1000) | list
@@ -213,7 +213,7 @@ sensor:
           {% endif %}
         availability_template: >-
           {{
-            not is_state('sensor.xiaomi_mijia_d107_temperature', 'unavailable')
+            not is_state('sensor.mijia_d107_temperature', 'unavailable')
           or
             not is_state('sensor.humidifier_1_temp', 'unavailable')
           or
@@ -226,7 +226,7 @@ sensor:
         value_template: >-
           {% set arr =
             ([
-              states('sensor.xiaomi_mijia_d107_humidity'),
+              states('sensor.mijia_d107_humidity'),
               states('sensor.humidifier_1_hum'),
               states('sensor.xiaomi_thp_1_humidity')
             ]) | map('float', -1000) | select('gt', -1000) | list
@@ -240,7 +240,7 @@ sensor:
           {% endif %}
         availability_template: >-
           {{
-            not is_state('sensor.xiaomi_mijia_d107_humidity', 'unavailable')
+            not is_state('sensor.mijia_d107_humidity', 'unavailable')
           or
             not is_state('sensor.humidifier_1_hum', 'unavailable')
           or
@@ -254,7 +254,7 @@ sensor:
           {% set arr =
             ([
               states('sensor.bedroom_temp_and_hum_temperature'),
-              states('sensor.xiaomi_mijia_a4db_temperature'),
+              states('sensor.mijia_a4db_temperature'),
               states('sensor.humidifier_2_temp')
             ]) | map('float', -1000) | select('gt', -1000) | list
           %}
@@ -269,7 +269,7 @@ sensor:
           {{
             not is_state('sensor.bedroom_temp_and_hum_temperature', 'unavailable')
           or
-            not is_state('sensor.xiaomi_mijia_a4db_temperature', 'unavailable')
+            not is_state('sensor.mijia_a4db_temperature', 'unavailable')
           or
             not is_state('sensor.humidifier_2_temp', 'unavailable')
           }}
@@ -281,7 +281,7 @@ sensor:
           {% set arr =
             ([
               states('sensor.bedroom_temp_and_hum_humidity'),
-              states('sensor.xiaomi_mijia_a4db_humidity'),
+              states('sensor.mijia_a4db_humidity'),
               states('sensor.humidifier_2_hum')
             ]) | map('float', -1000) | select('gt', -1000) | list
           %}
@@ -296,7 +296,7 @@ sensor:
           {{
             not is_state('sensor.bedroom_temp_and_hum_humidity', 'unavailable')
           or
-            not is_state('sensor.xiaomi_mijia_a4db_humidity', 'unavailable')
+            not is_state('sensor.mijia_a4db_humidity', 'unavailable')
           or
             not is_state('sensor.humidifier_2_hum', 'unavailable')
           }}
@@ -307,8 +307,8 @@ sensor:
         value_template: >-
           {% set arr =
             ([
-              states('sensor.xiaomi_mijia_cb15_temperature'),
-              states('sensor.xiaomi_mijia_a810_temperature_2')
+              states('sensor.mijia_cb15_temperature'),
+              states('sensor.mijia_a810_temperature')
             ]) | map('float', -1000) | select('gt', -1000) | list
           %}
           {% set count = arr | count %}
@@ -320,9 +320,9 @@ sensor:
           {% endif %}
         availability_template: >-
           {{
-            not is_state('sensor.xiaomi_mijia_cb15_temperature', 'unavailable')
+            not is_state('sensor.mijia_cb15_temperature', 'unavailable')
           or
-            not is_state('sensor.xiaomi_mijia_a810_temperature_2', 'unavailable')
+            not is_state('sensor.mijia_a810_temperature', 'unavailable')
           }}
       kitchen_average_humidity:
         unique_id: kitchen_average_humidity
@@ -331,8 +331,8 @@ sensor:
         value_template: >-
           {% set arr =
             ([
-              states('sensor.xiaomi_mijia_cb15_humidity'),
-              states('sensor.xiaomi_mijia_a810_humidity_2')
+              states('sensor.mijia_cb15_humidity'),
+              states('sensor.mijia_a810_humidity')
             ]) | map('float', -1000) | select('gt', -1000) | list
           %}
           {% set count = arr | count %}
@@ -344,9 +344,9 @@ sensor:
           {% endif %}
         availability_template: >-
           {{
-            not is_state('sensor.xiaomi_mijia_cb15_humidity', 'unavailable')
+            not is_state('sensor.mijia_cb15_humidity', 'unavailable')
           or
-            not is_state('sensor.xiaomi_mijia_a810_humidity_2', 'unavailable')
+            not is_state('sensor.mijia_a810_humidity', 'unavailable')
           }}
   - platform: filter
     name: "Hall Temperature"

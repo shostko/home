@@ -63,11 +63,11 @@ cards:
       - type: divider
       - type: sensor
         name: Температура
-        entity: sensor.xiaomi_mijia_8ecf_temperature
+        entity: sensor.mijia_8ecf_temperature
       - type: divider
       - type: sensor
         name: Влажность
-        entity: sensor.xiaomi_mijia_8ecf_humidity
+        entity: sensor.mijia_8ecf_humidity
       - type: divider
       - type: sensor
         name: Освещенность

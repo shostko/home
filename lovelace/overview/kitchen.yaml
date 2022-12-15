@@ -59,9 +59,9 @@ cards:
       - type: glance
         show_icon: false
         entities:
-          - entity: sensor.xiaomi_mijia_cb15_temperature
+          - entity: sensor.mijia_cb15_temperature
             name: Вход
-          - entity: sensor.xiaomi_mijia_a810_temperature_2
+          - entity: sensor.mijia_a810_temperature
             name: Стол
       - type: divider
       - type: sensor
@@ -70,9 +70,9 @@ cards:
       - type: glance
         show_icon: false
         entities:
-          - entity: sensor.xiaomi_mijia_cb15_humidity
+          - entity: sensor.mijia_cb15_humidity
             name: Вход
-          - entity: sensor.xiaomi_mijia_a810_humidity_2
+          - entity: sensor.mijia_a810_humidity
             name: Стол
       - type: divider
       - type: sensor

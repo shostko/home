@@ -16,15 +16,15 @@ cards:
             name: Спальня
           - entity: sensor.kitchen_temperature
             name: Кухня
-          - entity: sensor.xiaomi_mijia_4a07_temperature_2
+          - entity: sensor.mijia_4a07_temperature
             name: Ванна
-          - entity: sensor.xiaomi_mijia_cb5b_temperature
+          - entity: sensor.mijia_cb5b_temperature
             name: Кабинет
       - type: history-graph
         title: Зал
         hours_to_show: 24
         entities:
-          - entity: sensor.xiaomi_mijia_d107_temperature
+          - entity: sensor.mijia_d107_temperature
             name: Датчик
           - entity: sensor.humidifier_1_temp
             name: Увлажнитель
@@ -40,7 +40,7 @@ cards:
             name: Кроватка
           - entity: sensor.humidifier_2_temp
             name: Увлажнитель
-          - entity: sensor.xiaomi_mijia_a4db_temperature
+          - entity: sensor.mijia_a4db_temperature
             name: Зеркало
           - entity: sensor.bedroom_temperature
             name: Среднее
@@ -50,23 +50,31 @@ cards:
         entities:
           - entity: sensor.kitchen_floor_temp
             name: Пол
-          - entity: sensor.xiaomi_mijia_cb15_temperature
+          - entity: sensor.mijia_cb15_temperature
             name: Датчик
           - entity: sensor.xiaomi_mijia_a810_temperature_2
             name: Стол
+          - entity: sensor.mijia_a810_temperature
+            name: СтолNEW
           - entity: sensor.kitchen_temperature
             name: Среднее
       - type: history-graph
         title: Ванна
         hours_to_show: 24
         entities:
-          - entity: sensor.xiaomi_mijia_4a07_temperature_2
+          - entity: sensor.mijia_4a07_temperature
             name: Датчик
       - type: history-graph
         title: Кабинет
         hours_to_show: 24
         entities:
-          - entity: sensor.xiaomi_mijia_cb5b_temperature
+          - entity: sensor.mijia_cb5b_temperature
+            name: Датчик
+      - type: history-graph
+        title: Прихожая
+        hours_to_show: 24
+        entities:
+          - entity: sensor.mijia_8ecf_temperature
             name: Датчик
       - type: history-graph
         title: Балкон

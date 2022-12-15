@@ -51,7 +51,7 @@ cards:
       - type: glance
         show_icon: false
         entities:
-          - entity: sensor.xiaomi_mijia_d107_temperature
+          - entity: sensor.mijia_d107_temperature
             name: Датчик
           - entity: sensor.xiaomi_thp_1_temperature
             name: Столик
@@ -64,7 +64,7 @@ cards:
       - type: glance
         show_icon: false
         entities:
-          - entity: sensor.xiaomi_mijia_d107_humidity
+          - entity: sensor.mijia_d107_humidity
             name: Датчик
           - entity: sensor.xiaomi_thp_1_humidity
             name: Столик
