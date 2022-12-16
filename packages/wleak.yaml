@@ -7,7 +7,6 @@ wleak:
       trigger:
         - platform: state
           entity_id: binary_sensor.lumi_wleak_9bbf
-          from: 'off'
           to: 'on'
       action:
         - service: notify.family
@@ -31,7 +30,6 @@ wleak:
       trigger:
         - platform: state
           entity_id: binary_sensor.lumi_wleak_dbd1
-          from: 'off'
           to: 'on'
       action:
         - service: notify.family
@@ -55,7 +53,6 @@ wleak:
       trigger:
         - platform: state
           entity_id: binary_sensor.lumi_wleack_d9df
-          from: 'off'
           to: 'on'
       action:
         - service: notify.family
