@@ -9,15 +9,23 @@ cards:
       - entity: script.balcony_panel_auto
       - entity: input_select.balcony_panel_effect
   - type: custom:vertical-stack-in-card
+    title: Большой
     cards:
       - type: sensor
         name: Температура
         entity: sensor.xiaomi_thp_2_temperature
-      - type: divider
       - type: sensor
         name: Влажность
         entity: sensor.xiaomi_thp_2_humidity
-      - type: divider
       - type: sensor
         name: Давление
         entity: sensor.xiaomi_thp_2_pressure_mmhg
+  - type: custom:vertical-stack-in-card
+    title: Малый
+    cards:
+      - type: sensor
+        name: Температура
+        entity: sensor.tuya_th_1_temperature
+      - type: sensor
+        name: Влажность
+        entity: sensor.tuya_th_1_humidity

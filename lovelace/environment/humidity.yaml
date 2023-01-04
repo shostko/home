@@ -77,4 +77,6 @@ cards:
         hours_to_show: 24
         entities:
           - entity: sensor.xiaomi_thp_2_humidity
-            name: Датчик
+            name: Большой
+          - entity: sensor.tuya_th_1_humidity
+            name: Малый
