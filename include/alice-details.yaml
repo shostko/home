@@ -79,6 +79,10 @@ light.wled_maria_bed:
   type: devices.types.light
   name: 'Ночник'
   room: 'Спальня'
+light.wled_lamp:
+  type: devices.types.light
+  name: 'Лампа'
+  room: 'Спальня'
 media_player.yandex_station_ff98f02997470e7b4ca9be2f:
   type: devices.types.media_device
   name: 'Колонка'

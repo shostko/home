@@ -53,6 +53,12 @@ cards:
             entity: switch.xiaomi_power_plug_1_switch
             name: Кровать
             icon: mdi:bed-king-outline
+      - type: horizontal-stack
+        cards:
+          - type: light
+            entity: light.wled_lamp
+            name: Лампа
+            icon: mdi:lava-lamp
   - type: custom:vertical-stack-in-card
     title: Кухня
     cards:

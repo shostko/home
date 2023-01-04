@@ -24,7 +24,11 @@ cards:
           - type: light
             entity: light.wled_tree
             name: Ёлка
-            icon: mdi:pine-tree
+            icon: mdi:pine-tree            
+          - type: light
+            entity: light.wled_lamp
+            name: Лампа
+            icon: mdi:lava-lamp
   - type: media-control
     entity: media_player.yandex_station_ff98f02997470e7b4ca9be2f
   - type: custom:vertical-stack-in-card

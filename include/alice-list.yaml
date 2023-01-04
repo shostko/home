@@ -18,6 +18,7 @@
 - switch.bedroom_wall_switch_left
 - switch.xiaomi_power_plug_1_switch
 - light.wled_maria_bed
+- light.wled_lamp
 - media_player.yandex_station_ff98f02997470e7b4ca9be2f
 - fan.humidifier_2
 # Кухня
