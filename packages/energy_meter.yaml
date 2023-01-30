@@ -77,17 +77,17 @@ energy_meter:
         - platform: time
           at: "00:00:00"
       action:
-        - service: notify.sergey
-          data:
-            message: "Начало нового дня!"
+        # - service: notify.sergey
+        #   data:
+        #     message: "Начало нового дня!"
         - event: Energy_Meter_Midnight
         - choose:
             # Начало месяца
             - conditions: "{{ (now().strftime('%d') | int) == 1 }}"
               sequence:
-                - service: notify.sergey
-                  data:
-                    message: "Начало нового месяца!"
+                # - service: notify.sergey
+                #   data:
+                #     message: "Начало нового месяца!"
                 - event: Energy_Meter_Last_Month
                 - delay: 3
                 - event: Energy_Meter_Month
