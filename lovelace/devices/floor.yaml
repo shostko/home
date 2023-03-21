@@ -32,15 +32,13 @@ cards:
         title: Настройки
         cards:
           - type: entities
-            title: Heat time
+            title: Calendars
             show_header_toggle: false
             entities:
-              - entity: input_datetime.kitchen_floor_heat_morning
-                name: Утро
-              - entity: input_datetime.kitchen_floor_heat_day
-                name: День
-              - entity: input_datetime.kitchen_floor_heat_evening
-                name: Вечер
+              - entity: calendar.kitchen_floor
+                name: Heat
+              - entity: calendar.kitchen_floor_boost
+                name: Boost
           - type: entities
             title: Night time
             show_header_toggle: false
@@ -53,6 +51,8 @@ cards:
             title: Target temperature
             show_header_toggle: false
             entities:
+              - entity: input_number.kitchen_floor_temp_boost
+                name: Boost
               - entity: input_number.kitchen_floor_temp_heat
                 name: Heat
               - entity: input_number.kitchen_floor_temp_night

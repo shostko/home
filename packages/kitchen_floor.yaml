@@ -1,15 +1,6 @@
 kitchen_floor:
     
   input_datetime:
-    kitchen_floor_heat_morning:
-      name: 'Kitchen Floor HEAT: morning'
-      has_time: true
-    kitchen_floor_heat_day:
-      name: 'Kitchen Floor HEAT: day'
-      has_time: true
-    kitchen_floor_heat_evening:
-      name: 'Kitchen Floor HEAT: evening'
-      has_time: true
     kitchen_floor_night_start:
       name: 'Kitchen Floor NIGHT: start'
       has_time: true
@@ -18,6 +9,11 @@ kitchen_floor:
       has_time: true
 
   input_number:
+    kitchen_floor_temp_boost:
+      name: 'Kitchen Floor Temperature: BOOST'
+      min: 22
+      max: 30
+      step: 0.5
     kitchen_floor_temp_heat:
       name: 'Kitchen Floor Temperature: HEAT'
       min: 22
@@ -41,21 +37,6 @@ kitchen_floor:
 
   template:
     - binary_sensor:
-      - name: Kitchen Floor Heat
-        unique_id: kitchen_floor_heat
-        state: >-
-          {% set now = now() %}
-          {% set delta = timedelta(hours = 1, minutes = 30)  %}
-          {% set morning = today_at(states('input_datetime.kitchen_floor_heat_morning')) %}
-          {% set day = today_at(states('input_datetime.kitchen_floor_heat_day')) %}
-          {% set evening = today_at(states('input_datetime.kitchen_floor_heat_evening')) %}
-          {{ 
-            morning <= now <= morning + delta 
-            or
-            day <= now <= day + delta 
-            or
-            evening <= now <= evening + delta 
-          }}
       - name: Kitchen Floor Night
         unique_id: kitchen_floor_night
         state: >-
@@ -172,17 +153,30 @@ kitchen_floor:
         - id: Home Presence changed
           platform: state
           entity_id: input_select.home_presence
+        # Boost time
+        - id: Boost calendar changed
+          platform: state
+          entity_id: calendar.kitchen_floor_boost
+        - id: Boost event start
+          platform: calendar          
+          entity_id: calendar.kitchen_floor_boost
+          event: start
+        - id: Boost event end
+          platform: calendar          
+          entity_id: calendar.kitchen_floor_boost
+          event: end
         # Heat time
-        - id: Heat time OFF
+        - id: Heat calendar changed
           platform: state
-          entity_id: binary_sensor.kitchen_floor_heat
-          from: 'on'
-          to: 'off'
-        - id: Heat time ON
-          platform: state
-          entity_id: binary_sensor.kitchen_floor_heat
-          from: 'off'
-          to: 'on'
+          entity_id: calendar.kitchen_floor
+        - id: Heat event start
+          platform: calendar          
+          entity_id: calendar.kitchen_floor
+          event: start
+        - id: Heat event end
+          platform: calendar          
+          entity_id: calendar.kitchen_floor
+          event: end
         # Night time
         - id: Night time OFF
           platform: state
@@ -195,6 +189,10 @@ kitchen_floor:
           from: 'off'
           to: 'on'
         # Изменены целевые значения
+        - id: Target for boost changed
+          platform: state
+          entity_id: input_number.kitchen_floor_temp_boost
+          for: '00:00:05'
         - id: Target for heat changed
           platform: state
           entity_id: input_number.kitchen_floor_temp_heat
@@ -225,14 +223,16 @@ kitchen_floor:
           current: "{{ state_attr('climate.lytko_kitchen', 'temperature') | float }}"
           # Необходимая целевая температура
           target: >-
-            {% if is_state('input_select.home_presence', 'Away') %}
+            {% if is_state('calendar.kitchen_floor_boost', 'on') %}
+              {{ states('input_number.kitchen_floor_temp_boost') }}
+            {% elif is_state('input_select.home_presence', 'Away') %}
               {{ states('input_number.kitchen_floor_temp_away') }}
             {% elif is_state('input_select.home_presence', 'Noone') %}
               {{ states('input_number.kitchen_floor_temp_regular') }}
+            {% elif is_state('calendar.kitchen_floor', 'on') %}
+              {{ states('input_number.kitchen_floor_temp_heat') }}
             {% elif is_state('binary_sensor.kitchen_floor_night', 'on') %}
               {{ states('input_number.kitchen_floor_temp_night') }}
-            {% elif is_state('binary_sensor.kitchen_floor_heat', 'on') %}
-              {{ states('input_number.kitchen_floor_temp_heat') }}
             {% else %}
               {{ states('input_number.kitchen_floor_temp_regular') }}
             {% endif %}
@@ -252,6 +252,7 @@ kitchen_floor:
             #   data:
             #     title: "*Изменена температура тёплого пола на кухе*"
             #     message: |-
-            #       Тригер: {{ trigger.id | replace("_","\_") }}
+            #       Тригер: {{ trigger.id | replace("_","\_") }} 
+            #       {%- if trigger.platform == 'calendar' %} : {{ trigger.calendar_event.summary }} {% endif %}
             #       Текущая: _{{ states('sensor.kitchen_floor_temp') | float }}_°C
             #       Целевая: _{{ current }}_°C -> _{{ target }}_°C
