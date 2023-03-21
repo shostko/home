@@ -1,0 +1,37 @@
+cert:
+
+  script:
+
+    cert_update:
+      mode: single
+      sequence:
+        - service: notify.sergey
+          data: 
+            message: "Cert expiration date: {{ states('sensor.cert_expiry_timestamp') }}"
+        - service: hassio.addon_start
+          data:
+            addon: "core_letsencrypt"
+        - service: notify.sergey
+          data_template:
+            message: 'LetsEncrypt started to create new certificate'
+        - delay: 180
+        # TODO create logic to check letsencrypt addon status
+        - service: hassio.addon_restart
+          data:
+            addon: "core_nginx_proxy"
+        - service: notify.sergey
+          data_template:
+            message: 'NGinx proxy restarted to activate new certificate'
+        - delay: 180
+        # TODO create logic to check nginx addon status
+        - service: homeassistant.reload_config_entry
+          data:
+            entry_id: 56c06e76f16a7c245254290fccc25d9f
+        - service: notify.sergey
+          data_template:
+            message: 'Certificate Expiry integration reloaded to check new certificate'
+        - delay: 30
+        # TODO create logic to check integration status or sensor state changes
+        - service: notify.sergey
+          data: 
+            message: "Cert expiration date: {{ states('sensor.cert_expiry_timestamp') }}"
