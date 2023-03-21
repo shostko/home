@@ -77,10 +77,8 @@ class BoolConv(Converter):
 
 @dataclass
 class EventConv(Converter):
-    value: Any = None
-
     def decode(self, device: "XDevice", payload: dict, value: list):
-        payload[self.attr] = self.value
+        payload[self.attr] = True
         if len(value) > 0:
             payload.update(device.decode_lumi(value))
 
@@ -336,6 +334,17 @@ class ParentConv(Converter):
             payload[self.attr] = device.nwk
         except Exception:
             payload[self.attr] = "-"
+
+
+@dataclass
+class BLEEvent(Converter):
+    map: dict = None
+
+    def decode(self, device: "XDevice", payload: dict, value: list):
+        try:
+            payload[self.attr] = self.map.get(value[0]["value"])
+        except:
+            pass
 
 
 class OTAConv(Converter):
