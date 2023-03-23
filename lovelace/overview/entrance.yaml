@@ -88,7 +88,7 @@ cards:
       - entity: switch.entrance_ring_impulse
         name: Режим "Импульс"
   - type: 'custom:webrtc-camera'
-    entity: camera.sonoff_camera_1
+    entity: camera.reolink1_sub
     muted: false
     ui: true
     # background: true

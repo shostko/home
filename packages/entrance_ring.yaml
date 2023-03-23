@@ -49,17 +49,17 @@ entrance_ring:
     entrance_notify_camera_snapshot:
       mode: queued
       sequence:
-        # - service: camera.snapshot
-        #   data:
-        #     entity_id: camera.sonoff_camera_1
-        #     filename: "/config/www/snapshots/sonoff_camera_1.jpg"
-        # - delay: 2
-        # - service: telegram_bot.send_photo
-        #   data_template:
-        #     target:
-        #       - !secret telegram_chat_log
-        #     file: "/config/www/snapshots/sonoff_camera_1.jpg"
-        #     disable_notification: true
+        - service: camera.snapshot
+          data:
+            entity_id: camera.reolink1_ext
+            filename: "/config/www/snapshots/reolink_camera_1.jpg"
+        - delay: 2
+        - service: telegram_bot.send_photo
+          data_template:
+            target:
+              - !secret telegram_chat_log
+            file: "/config/www/snapshots/reolink_camera_1.jpg"
+            disable_notification: true
 
     entrance_notify_camera_snapshot_async:
       mode: parallel
