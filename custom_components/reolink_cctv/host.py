@@ -1,5 +1,6 @@
 """This component encapsulates the NVR/camera API and subscription."""
 
+import asyncio
 import logging
 import os
 import ssl
@@ -494,6 +495,11 @@ class ReolinkHost:
 
 
 async def handle_webhook(hass: HomeAssistant, webhook_id: str, request):
+    """Shield the incoming webhook callback from cancellation."""
+    await asyncio.shield(handle_webhook_shielded(hass, webhook_id, request))
+#endof handle_webhook()
+
+async def handle_webhook_shielded(hass: HomeAssistant, webhook_id: str, request):
     """Handle incoming webhook from Reolink for inbound messages and calls."""
 
     _LOGGER.info("Webhook called (%s).", webhook_id)
@@ -597,7 +603,7 @@ async def handle_webhook(hass: HomeAssistant, webhook_id: str, request):
         hass.bus.async_fire(webhook_id, {PET_DETECTION_TYPE: pet})
     if visitor is not None:
         hass.bus.async_fire(webhook_id, {VISITOR_DETECTION_TYPE: visitor})
-#endof handle_webhook()
+#endof handle_webhook_shielded()
 
 
 def searchtime_to_datetime(self: SearchTime, timezone: dt.tzinfo):
